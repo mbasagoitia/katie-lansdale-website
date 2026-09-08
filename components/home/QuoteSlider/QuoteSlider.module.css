@@ -1,0 +1,185 @@
+.quoteWrapper {
+    margin-right: 25px;
+}
+
+.quotePanel {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    color: #5c3a21;
+}
+
+.quotePanel figcaption {
+    color: #bb8350;
+    font-size: 1.2rem;
+    margin-top: 10px;
+
+    font-family: var(--font-cormorant);
+    font-weight: 300;
+    font-style: italic;
+
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+
+    text-align: center;
+}
+
+.quoteBox {
+    position: relative;
+    width: 100%;
+    min-height: 150px;
+}
+
+.quoteBox figure {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.quoteDecoration {
+    position: absolute;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    gap: 10px;
+}
+
+.quoteTop {
+    top: 0;
+}
+
+.quoteBottom {
+    bottom: 0;
+}
+
+.quoteLine {
+    flex: 1;
+    max-width: 155px;
+    height: 1px;
+    background: #bb8350;
+}
+
+.quoteDiamond {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+
+    background: #bb8350;
+
+    transform: rotate(45deg);
+}
+
+.quoteContent {
+    position: absolute;
+
+    top: 70px;
+    right: 0;
+    bottom: 70px;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    opacity: 0;
+
+    animation: quoteFade 30s infinite ease-in-out;
+}
+
+.quoteBox figure:nth-child(1) .quoteContent {
+    animation-delay: -5s;
+}
+
+.quoteBox figure:nth-child(2) .quoteContent {
+    animation-delay: -15s;
+}
+
+.quoteBox figure:nth-child(3) .quoteContent {
+    animation-delay: -25s;
+}
+
+.quoteBox blockquote {
+    width: 100%;
+    max-width: 400px;
+
+    margin: 0 auto;
+
+    font-family: var(--font-cormorant);
+    font-weight: 300;
+    font-style: italic;
+
+    font-size: 1.5rem;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+
+    text-align: center;
+    text-wrap: balance;
+}
+
+@keyframes quoteFade {
+    0% {
+        opacity: 0;
+    }
+
+    3% {
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    33% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (min-width: 1100px) {
+
+    .quotePanel {
+        margin-top: 0;
+    }
+
+    .quoteBox {
+        min-height: 250px;
+    }
+
+    .quoteBox blockquote {
+        max-width: 500px;
+        font-size: 2rem;
+    }
+
+    .quotePanel figcaption {
+        font-size: 1.5rem;
+    }
+
+    .quoteContent {
+        top: 80px;
+        bottom: 80px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .quoteContent {
+        animation: none;
+        opacity: 0;
+    }
+
+    .quoteBox figure:first-child .quoteContent {
+        opacity: 1;
+    }
+
+}
