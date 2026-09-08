@@ -1,0 +1,124 @@
+.intro {
+    max-width: 1400px;
+    margin: 70px auto 80px;
+    padding: 0 25px;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 50px;
+}
+
+.portraitWrapper {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.portrait {
+    display: block;
+    width: auto;
+    height: 100%;
+    box-shadow: 0 10px 20px rgba(0,0,0,.25);
+}
+
+.introTextWrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.introTextWrapper h1 {
+    font-family: var(--font-cormorant);
+    font-size: 2.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #c6915f;
+    margin-bottom: 24px;
+}
+
+.introTextWrapper p:first-of-type {
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 200;
+    color: #c6915f;
+    line-height: 1.5;
+    margin-bottom: 40px;
+}
+
+.introTextWrapper p:last-of-type {
+    font-size: 1.2rem;
+    line-height: 2;
+    color: #5c3a21;
+}
+
+.bio {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 25px;
+}
+
+.bio section {
+    margin-bottom: 70px;
+}
+
+.bio h2 {
+    color: #c6915f;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+}
+
+.bio p {
+    color: #5c3a21;
+    font-size: 1.2rem;
+    line-height: 2;
+    margin-bottom: 26px;
+}
+
+.bio p:last-child {
+    margin-bottom: 0;
+}
+
+@media (min-width: 1100px) {
+
+    .intro {
+        grid-template-columns: 430px 1fr;
+        gap: 80px;
+
+        margin: 100px auto 150px;
+        padding: 0 80px;
+
+    }
+
+    .portraitWrapper {
+        max-width: none;
+        margin: 0;
+        height: 75%;
+    }
+
+    .portrait {
+        height: 100%;
+    }
+
+    .introTextWrapper {
+        max-width: 750px;
+        margin: 0;
+    }
+
+    .introTextWrapper h1 {
+        font-size: 4rem;
+    }
+
+    .introTextWrapper p:last-of-type {
+        line-height: 2.1;
+    }
+
+    .bio {
+        padding: 0 60px;
+        margin: 120px auto;
+    }
+
+}
