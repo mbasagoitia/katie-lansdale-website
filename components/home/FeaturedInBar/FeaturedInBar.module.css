@@ -1,0 +1,114 @@
+.wrapper {
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px 0 24px;
+  box-sizing: border-box;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.heading span {
+  color: #6f5a49;
+  font-family: var(--font-cormorant), serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.line {
+  flex: 1;
+  max-width: none;
+  height: 1px;
+  background: rgba(193, 149, 84, 0.45);
+}
+
+.logos {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 25px;
+  padding: 5px 0 0;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.7;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.logo:hover {
+  opacity: 1;
+  transform: translateY(-3px);
+  filter: drop-shadow(0 0 8px rgba(193, 149, 84, 0.2));
+}
+
+.logo img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.strings img {
+  width: 120px;
+}
+
+.asta img {
+  width: 115px;
+}
+
+.suzuki img {
+  width: 145px;
+}
+
+@media (min-width: 900px) {
+
+  .wrapper {
+    padding: 20px 0 30px;
+    position: relative;
+    top: 159px;
+    margin-top: 0;
+  }
+
+  .heading {
+    gap: 28px;
+  }
+
+  .heading span {
+    font-size: 0.9rem;
+    letter-spacing: 0.28em;
+  }
+
+  .line {
+    max-width: 200px;
+  }
+
+  .logos {
+    gap: 60px;
+    padding: 5px 50px 0;
+  }
+
+  .strings img {
+    width: 250px;
+  }
+
+  .asta img {
+    width: 270px;
+  }
+
+  .suzuki img {
+    width: 280px;
+  }
+
+}
