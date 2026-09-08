@@ -1,13 +1,43 @@
-import Image from "next/image";
+import styles from "./page.module.css";
+import PhotoSlider from "@/components/home/PhotoSlider/PhotoSlider";
+import QuoteSlider from "@/components/home/quote-slider/quote-slider";
+import FeaturedInBar from "@/components/home/FeaturedInBar/FeaturedInBar";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="text-5xl font-bold text-black dark:text-white sm:text-6xl">Katie Lansdale Website</h1>
+    <>
+      <section className={styles.hero}>
+        <div className={styles.portraitWrapper}>
+          <PhotoSlider />
         </div>
-      </main>
-    </div>
+        <div className={styles.quoteWrapper}>
+          <QuoteSlider />
+          <FeaturedInBar />
+        </div>
+      </section>
+    </>
   );
 }
+
+// Todo:
+
+// Rethinking the entire "Add Music" process
+
+// I think three options: Remove the album button entirely. Just have a single button...."Add music"
+// 1. This is a single movement work (ask if this is a new recording of an existing work (if yes, search for the work); associate composer and work; add recording info)
+// 2. This is a multi-movement work that is not part of an album (ask if this is a new recording of an existing work; add new work if needed (very likely needed); render "add movements"; doing this will modify both work and recording under the hood)
+// 3. I am creating an album and want to add music to it (now add a combination of single and/or multi-movement works and their associated recording info)
+
+// Don't have a separate create product button. Just at the end of adding new music, ask if it's for sale. If so, open the product interface. If not, save for later and have the option to add it as a product at a later time.
+
+// It is very important that we specifically ask the question "is this a new recording of an existing work?"
+// If no, then render all the info needed for registering a new work; if yes, search through a list of existing works
+
+// For composer, have either a search bar or if "add new composer" is triggered, open the interface to register a new composer and all associated data
+// Remove the text "add a recording and associate it with a musical work" it is confusing
+
+// Test out adding music through Sanity
+
+// Think about what actually needs to be exposed (remove product etc. on the left side?)
+
+// Create singleton pages so she can edit her content
