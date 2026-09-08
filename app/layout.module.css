@@ -1,0 +1,39 @@
+.pageWrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-image: url("/images/art/rock-art.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.contentCard {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1280px;
+  min-height: calc(100vh - 80px);
+  background-color: #f7eee6;
+  border-radius: 4px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+@media (min-width: 576px) {
+  .pageWrapper {
+    padding: 40px 20px;
+  }
+
+  .contentCard {
+    padding: 40px 60px;
+  }
+}
