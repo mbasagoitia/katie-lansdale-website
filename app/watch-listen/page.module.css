@@ -1,0 +1,179 @@
+.page {
+  max-width: 1120px;
+  margin: 56px auto 100px;
+  color: #5c3a21;
+}
+
+.intro {
+  max-width: 680px;
+  margin: 0 auto 72px;
+  text-align: center;
+}
+
+.eyebrow,
+.kind,
+.trackHeading {
+  margin: 0;
+  color: #a86c34;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.intro h1,
+.section h2,
+.card h3 {
+  font-family: var(--font-cormorant), serif;
+  font-weight: 400;
+}
+
+.intro h1 {
+  margin: 12px 0;
+  color: #9d5e28;
+  font-size: clamp(3.2rem, 8vw, 5.6rem);
+  line-height: 0.95;
+}
+
+.intro > p:last-child {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.section + .section {
+  margin-top: 84px;
+}
+
+.section h2 {
+  margin: 0 0 28px;
+  color: #c6915f;
+  font-size: 2.4rem;
+  letter-spacing: 0.04em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 32px;
+}
+
+.card {
+  overflow: hidden;
+  background: rgba(255, 253, 249, 0.52);
+  border: 1px solid rgba(166, 103, 49, 0.25);
+  box-shadow: 0 16px 34px rgba(92, 58, 33, 0.11);
+}
+
+.cover {
+  position: relative;
+  aspect-ratio: 1;
+  background: #d8b184;
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.coverPlaceholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background: linear-gradient(135deg, #9e5c2a, #dfbd91);
+  color: #f8ecdf;
+  font-family: var(--font-cormorant), serif;
+  font-size: 2.5rem;
+  font-style: italic;
+}
+
+.cardContent {
+  padding: 26px;
+}
+
+.card h3 {
+  margin: 7px 0 6px;
+  color: #5c3a21;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.meta,
+.description,
+.empty {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.meta {
+  color: #7b583d;
+  font-size: 0.95rem;
+}
+
+.description {
+  margin-top: 16px;
+}
+
+.purchase {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(166, 103, 49, 0.25);
+  border-bottom: 1px solid rgba(166, 103, 49, 0.25);
+  color: #9d5e28;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tracks {
+  margin-top: 22px;
+}
+
+.trackHeading {
+  margin-bottom: 10px;
+}
+
+.track + .track {
+  margin-top: 14px;
+}
+
+.track > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.94rem;
+}
+
+.duration {
+  color: #7b583d;
+  white-space: nowrap;
+}
+
+.audio,
+.video {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.video {
+  aspect-ratio: 16 / 9;
+  background: #20150d;
+}
+
+@media (max-width: 700px) {
+  .page {
+    margin: 40px auto 70px;
+  }
+
+  .intro {
+    margin-bottom: 52px;
+  }
+
+  .section + .section {
+    margin-top: 58px;
+  }
+}

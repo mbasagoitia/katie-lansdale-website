@@ -20,9 +20,14 @@ export interface Product {
 
   availableForPurchase: boolean;
 
+  coverArt?: unknown;
+
   album?: {
     _id: string;
     title: string;
+    artist?: string;
+    yearReleased?: number;
+    coverArt?: unknown;
   };
 
   work?: {
@@ -30,6 +35,9 @@ export interface Product {
     title: string;
     subtitle?: string;
     catalogNumber?: string;
+    composer?: {
+      name?: string;
+    };
   };
 
   recordings: {
@@ -41,5 +49,6 @@ export interface Product {
     mediaType: "audio" | "video";
     previewAudio?: string;
     previewVideo?: string;
+    coverArt?: unknown;
   }[];
 }
