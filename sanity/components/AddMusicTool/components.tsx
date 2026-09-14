@@ -18,7 +18,8 @@ export function MediaFields({draft, onChange, sanityToken}: {draft: RecordingDra
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const upload = async (kind: "preview" | "full", event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.currentTarget.files?.[0]
+    const input = event.currentTarget
+    const file = input.files?.[0]
     if (!file) return
     setUploading(kind); setError(null)
     try {
@@ -30,7 +31,7 @@ export function MediaFields({draft, onChange, sanityToken}: {draft: RecordingDra
       const pathField = kind === "preview" ? result.mediaType === "audio" ? "previewAudio" : "previewVideo" : result.mediaType === "audio" ? "fullAudio" : "fullVideo"
       onChange({...draft, mediaType: result.mediaType, [pathField]: result.path, duration: result.duration ?? draft.duration})
     } catch (uploadError) { setError(uploadError instanceof Error ? uploadError.message : "The file could not be uploaded.") }
-    finally { setUploading(null); event.currentTarget.value = "" }
+    finally { setUploading(null); input.value = "" }
   }
   const generatePreview = async () => {
     const fullPath = draft.mediaType === "video" ? draft.fullVideo : draft.fullAudio

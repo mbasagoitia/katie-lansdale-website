@@ -36,7 +36,10 @@ export async function generateRecordingPreview(fullPath: string, mediaType: Reco
     await delay(2_000)
     const statusResponse = await fetch(`/api/preview-jobs/${job.id}`, {headers: {Authorization: `Bearer ${sanityToken}`}})
     const status = await readJson<PreviewJob>(statusResponse)
-    if (!statusResponse.ok) throw new Error(status.error || "Could not check preview generation.")
+    if (!statusResponse.ok) {
+      if (statusResponse.status >= 500) continue
+      throw new Error(status.error || "Could not check preview generation.")
+    }
     if (status.status === "completed" && status.preview_path) return status.preview_path
     if (status.status === "failed") throw new Error(status.error || "Preview generation failed.")
   }
