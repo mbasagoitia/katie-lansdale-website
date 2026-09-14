@@ -67,7 +67,7 @@ export default defineType({
     defineField({
       name: "mediaType",
       title: "Media Type",
-      description: "Choose whether this recording is audio or video.",
+      description: "Inferred automatically from the uploaded media file.",
       type: "string",
       options: {
         list: [
@@ -83,7 +83,7 @@ export default defineType({
     defineField({
       name: "previewAudio",
       title: "Preview Audio Path",
-      description: "Public Supabase path for the audio preview.",
+      description: "Managed automatically when a preview audio file is uploaded.",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "audio",
     }),
@@ -91,7 +91,7 @@ export default defineType({
     defineField({
       name: "fullAudio",
       title: "Full Audio Path",
-      description: "Private Supabase path for the full recording.",
+      description: "Managed automatically when the full audio file is uploaded.",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "audio",
     }),
@@ -99,7 +99,7 @@ export default defineType({
     defineField({
       name: "previewVideo",
       title: "Preview Video Path",
-      description: "Public Supabase path for the video preview.",
+      description: "Managed automatically when a preview video file is uploaded.",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "video",
     }),
@@ -107,7 +107,7 @@ export default defineType({
     defineField({
       name: "fullVideo",
       title: "Full Video Path",
-      description: "Private Supabase path for the full recording.",
+      description: "Managed automatically when the full video file is uploaded.",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "video",
     }),

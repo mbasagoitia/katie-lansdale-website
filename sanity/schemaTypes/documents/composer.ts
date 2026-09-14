@@ -24,14 +24,20 @@ export default defineType({
 
   defineField({
     name: "birthYear",
-    title: "Birth Year",
-    type: "number"
+    title: "Birth Year (Deprecated)",
+    type: "number",
+    readOnly: true,
+    hidden: ({value}) => value === undefined,
+    deprecated: {reason: "This information is no longer collected for new composers."},
   }),
 
   defineField({
     name: "deathYear",
-    title: "Death Year",
-    type: "number"
+    title: "Death Year (Deprecated)",
+    type: "number",
+    readOnly: true,
+    hidden: ({value}) => value === undefined,
+    deprecated: {reason: "This information is no longer collected for new composers."},
   }),
 
 ]

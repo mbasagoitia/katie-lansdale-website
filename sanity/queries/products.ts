@@ -7,6 +7,7 @@ export const allProductsQuery = groq`
   slug,
   shortDescription,
   price,
+  deliveryTypes,
   coverImage,
 
   recordings[]->{

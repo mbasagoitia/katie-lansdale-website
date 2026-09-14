@@ -13,7 +13,10 @@ export interface Product {
 
   productKind: "album" | "work" | "recording" | "bundle";
 
-  type: "digitalDownload" | "physicalCD";
+  /** Legacy single delivery option retained for older products. */
+  type?: "digitalDownload" | "physicalCD";
+
+  deliveryTypes?: Array<"digitalDownload" | "physicalCD">;
 
   availableForPurchase: boolean;
 

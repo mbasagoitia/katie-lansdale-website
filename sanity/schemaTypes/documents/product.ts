@@ -64,18 +64,32 @@ export default defineType({
 
     defineField({
       name: "type",
-      title: "Product Type",
-      description:
-        "How will the product be delivered?",
+      title: "Product Type (Deprecated)",
       type: "string",
       options: {
         list: [
           { title: "Digital Download", value: "digitalDownload" },
           { title: "Physical CD", value: "physicalCD" },
         ],
-        layout: "radio",
       },
-      validation: (Rule) => Rule.required(),
+      readOnly: true,
+      hidden: ({value}) => value === undefined,
+      deprecated: {reason: "Use Delivery Options. This field is kept for existing products."},
+    }),
+
+    defineField({
+      name: "deliveryTypes",
+      title: "Delivery Options",
+      description: "Select one or both delivery options.",
+      type: "array",
+      of: [{type: "string"}],
+      options: {
+        list: [
+          {title: "Digital Download", value: "digitalDownload"},
+          {title: "Physical CD", value: "physicalCD"},
+        ],
+      },
+      validation: (Rule) => Rule.required().min(1).unique(),
     }),
 
     defineField({
@@ -128,6 +142,7 @@ export default defineType({
     select: {
       title: "title",
       productKind: "productKind",
+      deliveryTypes: "deliveryTypes",
       type: "type",
       album: "album.title",
       work: "work.title",
@@ -137,6 +152,7 @@ export default defineType({
   prepare({
     title,
     productKind,
+    deliveryTypes,
     type,
     album,
     work,
@@ -144,15 +160,17 @@ export default defineType({
   }: {
     title: string;
     productKind: ProductKind;
+    deliveryTypes?: string[];
     type: string;
     album?: string;
     work?: string;
     recordings?: unknown[];
   }) {
-      const productType =
-        type === "physicalCD"
-          ? "Physical CD"
-          : "Digital Download";
+      const productType = (deliveryTypes?.length
+        ? deliveryTypes
+        : type ? [type] : ["digitalDownload"])
+        .map((deliveryType) => deliveryType === "physicalCD" ? "Physical CD" : "Digital Download")
+        .join(" + ");
 
       const kindLabel = {
         album: "Album",

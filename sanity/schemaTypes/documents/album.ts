@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import AddRecordingsByWork from "@/sanity/components/AddMusicTool/components/AddRecordingWorkflow/AddRecordingsByWork/AddRecordingsByWork";
 
 export default defineType({
   name: "album",
@@ -50,9 +49,6 @@ export default defineType({
           to: [{ type: "recording" }],
         },
       ],
-      components: {
-        input: AddRecordingsByWork,
-      },
       validation: (Rule) => Rule.min(1),
     }),
   ],
