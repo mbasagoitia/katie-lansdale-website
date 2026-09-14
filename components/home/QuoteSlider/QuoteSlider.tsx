@@ -1,4 +1,4 @@
-import styles from "./quote-slider.module.css";
+import styles from "./QuoteSlider.module.css";
 
 const quotes = [
   {

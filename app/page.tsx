@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 import PhotoSlider from "@/components/home/PhotoSlider/PhotoSlider";
-import QuoteSlider from "@/components/home/quote-slider/quote-slider";
+import QuoteSlider from "@/components/home/QuoteSlider/QuoteSlider";
 import FeaturedInBar from "@/components/home/FeaturedInBar/FeaturedInBar";
 
 export default function Home() {
