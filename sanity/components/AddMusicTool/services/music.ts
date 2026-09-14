@@ -35,6 +35,23 @@ export async function listAlbumPieces(client: SanityClient) {
   )
 }
 
+export async function listMusicLibrary(client: SanityClient) {
+  return client.fetch<import("../types").MusicLibraryItem[]>(
+    `*[_type == "recording"] | order(work->composer->sortName asc, work->composer->name asc, work->title asc, movementNumber asc, title asc){
+      _id,
+      title,
+      artist,
+      yearReleased,
+      movementNumber,
+      work->{title, composer->{_id, name, sortName}},
+      "productTitles": *[_type == "product" && availableForPurchase == true && (references(^._id) || work._ref == ^.work._ref)].title
+    } | order(count(productTitles) desc){
+      ...,
+      "isListed": count(productTitles) > 0
+    }`,
+  )
+}
+
 export async function createComposer(client: SanityClient, draft: ComposerDraft) {
   return client.create({_type: "composer", ...draft, sortName: draft.name})
 }

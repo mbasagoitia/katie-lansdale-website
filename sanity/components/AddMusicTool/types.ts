@@ -59,3 +59,14 @@ export type SaleDraft = {
 export type CreatedMusic = {recordingIds: string[]; workId: string}
 
 export type AlbumPiece = {workId: string; title: string; recordingIds: string[]}
+
+export type MusicLibraryItem = {
+  _id: string
+  title: string
+  artist: string
+  yearReleased?: number
+  movementNumber?: number
+  work?: {title: string; composer?: Composer}
+  isListed: boolean
+  productTitles: string[]
+}
