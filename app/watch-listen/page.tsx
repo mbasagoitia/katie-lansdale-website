@@ -58,7 +58,7 @@ function AlbumFeature({product}: {product: Product}) {
   const previewRecording = product.recordings.find(hasPreview)
 
   return <article className={styles.albumFeature}>
-    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 760px) calc(100vw - 64px), 410px" />
+    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 280px" />
     <div className={styles.albumContent}>
       <p className={styles.kind}>Album</p>
       <h3>{product.title}</h3>
@@ -76,7 +76,7 @@ function SingleTile({product}: {product: Product}) {
   const previewRecording = product.recordings.find(hasPreview)
 
   return <article className={styles.singleTile}>
-    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 650px) calc(100vw - 64px), (max-width: 1000px) calc(50vw - 48px), 340px" />
+    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 280px" />
     <div className={styles.tileContent}>
       <p className={styles.kind}>Single</p>
       <h3>{product.title}</h3>

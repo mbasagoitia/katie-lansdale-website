@@ -11,9 +11,9 @@
 .section h2 { margin: 5px 0 0; color: #c6915f; font-size: clamp(2.4rem, 5vw, 3.45rem); letter-spacing: .04em; line-height: .95; }
 .empty { margin: 0; color: #7b583d; line-height: 1.55; }
 .albumFeatures { display: grid; gap: 34px; }
-.albumFeature { display: grid; grid-template-columns: minmax(250px, .86fr) minmax(0, 1.14fr); overflow: hidden; background: #fffdf9; border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 16px 34px rgba(92, 58, 33, .11); }
+.albumFeature { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 3fr); overflow: hidden; background: #fffdf9; border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 16px 34px rgba(92, 58, 33, .11); }
 .cover { position: relative; aspect-ratio: 1; overflow: hidden; background: #d8b184; }
-.albumFeature .cover { min-height: 100%; }
+.albumFeature .cover, .singleTile .cover { aspect-ratio: auto; min-height: 100%; }
 .coverImage { object-fit: cover; }
 .coverPlaceholder { display: grid; width: 100%; height: 100%; place-items: center; background: linear-gradient(135deg, #9e5c2a, #dfbd91); color: #f8ecdf; font-family: var(--font-cormorant), serif; font-size: 2.5rem; font-style: italic; }
 .albumContent { display: flex; flex-direction: column; padding: clamp(28px, 4vw, 50px); }
@@ -31,8 +31,8 @@
 .purchaseAction > div { display: grid; gap: 3px; }
 .purchaseAction strong { color: #9d5e28; font-family: var(--font-cormorant), serif; font-size: 1.7rem; font-weight: 500; line-height: 1; }
 .purchaseAction span { color: #7b583d; font-family: var(--font-inter), sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
-.singleTiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 25px; }
-.singleTile { overflow: hidden; background: rgba(255, 253, 249, .7); border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 12px 27px rgba(92, 58, 33, .08); }
+.singleTiles { display: grid; gap: 20px; }
+.singleTile { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 3fr); overflow: hidden; background: rgba(255, 253, 249, .7); border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 12px 27px rgba(92, 58, 33, .08); }
 .tileContent { padding: 21px; }
 .singleTile h3, .listItem h3 { margin: 7px 0 6px; color: #5c3a21; font-size: clamp(1.65rem, 2.3vw, 2.15rem); line-height: 1; }
 .previewCompact { margin-top: 16px; }
@@ -45,7 +45,6 @@
 .listPreview .preview { margin: 0; }
 
 @media (max-width: 900px) {
-  .singleTiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .listItem { grid-template-columns: 1fr 1fr; }
   .listItem .purchaseAction { grid-column: 1 / -1; }
 }
@@ -54,8 +53,8 @@
   .intro { margin-bottom: 52px; }
   .section + .section { margin-top: 64px; }
   .albumFeature { grid-template-columns: 1fr; }
-  .albumFeature .cover { min-height: auto; }
-  .singleTiles { grid-template-columns: 1fr; }
+  .albumFeature .cover, .singleTile .cover { aspect-ratio: 1; min-height: auto; }
+  .singleTile { grid-template-columns: 1fr; }
   .listItem { grid-template-columns: 1fr; gap: 18px; }
   .listItem .purchaseAction { grid-column: auto; }
 }
