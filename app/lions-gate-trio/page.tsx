@@ -5,6 +5,7 @@ import {getPageById} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
 import {RichTextContent} from "@/components/cms/PageContent"
+import RecordingPlayer from "@/components/lions-gate-trio/RecordingPlayer"
 import {getLionsGateCalendarEvents, type LionsGateCalendarEvent} from "@/lib/lions-gate-calendar"
 import {getLionsGateNews, type LionsGateNewsItem} from "@/lib/lions-gate-news"
 import styles from "./page.module.css"
@@ -23,10 +24,9 @@ const defaultMembers: TrioMember[] = [
 ]
 
 const defaultRecordings: TrioRecording[] = [
-  {_key: "beethoven-archduke", title: "Beethoven: Archduke Trio", subtitle: "Piano Trio in B-flat major, Op. 97 — I. Allegro moderato", youtubeUrl: "https://www.youtube.com/watch?v=iEXzFDaLKm4"},
-  {_key: "ravel-ives-clarke", title: "Ravel · Ives · Clarke", subtitle: "Piano trios by Ravel, Ives, and Rebecca Clarke"},
-  {_key: "schumann", title: "Complete Music of Robert Schumann", subtitle: "A selected Lions Gate Trio recording"},
-  {_key: "american-trios", title: "American Trios", subtitle: "Music by Helps, Moe, Diesendruck, and Thomas"},
+  { _key: "ravel-finale", title: "Piano Trio in A minor — IV. Finale: Animé", subtitle: "Maurice Ravel · Ravel, Ives & Clarke: Piano Trios", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1785280687262-S648O08QEVEHDEX4FZ1Q/Ravel_Ives_Clarke.jpg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84b1aa8165f5ac7e90a42a/1785181515342/04+IV.+Finale_+Anime.m4a" },
+  { _key: "clarke-moderato", title: "Piano Trio I — Moderato ma appassionato", subtitle: "Rebecca Clarke · Ravel, Ives & Clarke: Piano Trios", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1785280687262-S648O08QEVEHDEX4FZ1Q/Ravel_Ives_Clarke.jpg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84ae6bc8302508420e196c/1785181515355/08+I.+Moderato+ma+appassionato.m4a" },
+  { _key: "schumann-mit-innigem-ausdruck", title: "Piano Trio No. 2 — II. Mit innigem Ausdruck", subtitle: "Robert Schumann · Complete Music of Robert Schumann", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517078901961-S48A1QYF5LL5J38PXMHO/Schumann.jpeg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84afefe4966b15dd8961a7/1785181515368/1-10+Piano+Trio+No.+2+in+F+major%2C+Op.+80+-+II.+Mit+innigem+Ausdruck.m4a" },
 ]
 
 export default async function LionsGateTrioPage() {
@@ -120,22 +120,15 @@ function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
 }
 
 function RecordingCard({recording}: {recording: TrioRecording}) {
-  const src = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : null
-  const embedUrl = youtubeEmbedUrl(recording.youtubeUrl)
+  const coverArtUrl = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : recording.coverArtUrl
   const details = <>
     <h3>{recording.title}</h3>
     {recording.subtitle && <p>{recording.subtitle}</p>}
   </>
   return <article className={styles.recordingCard}>
-    {embedUrl ? <YoutubeEmbed embedUrl={embedUrl} title={recording.title} /> : <div className={styles.albumArt}>{src ? <Image src={src} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
+    {recording.audioUrl && coverArtUrl ? <RecordingPlayer audioUrl={recording.audioUrl} coverArtUrl={coverArtUrl} coverArtAlt={recording.coverArt?.alt || `Cover art for ${recording.title}`} title={recording.title} /> : <div className={styles.albumArt}>{coverArtUrl ? <Image src={coverArtUrl} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
     {recording.url ? <ExternalLink href={recording.url}>{details}</ExternalLink> : details}
   </article>
-}
-
-function YoutubeEmbed({embedUrl, title}: {embedUrl: string; title: string}) {
-  return <div className={styles.videoFrame}>
-    <iframe src={embedUrl} title={`${title} by Lions Gate Trio`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
-  </div>
 }
 
 function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: LionsGateNewsItem | null}) {
@@ -160,22 +153,6 @@ function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: Lion
       {linkUrl && <ExternalLink href={linkUrl}>Learn more</ExternalLink>}
     </div>
   </section>
-}
-
-function youtubeEmbedUrl(url?: string): string | null {
-  if (!url) return null
-  try {
-    const parsedUrl = new URL(url)
-    const hostname = parsedUrl.hostname.replace(/^www\./, "")
-    const videoId = hostname === "youtu.be"
-      ? parsedUrl.pathname.slice(1).split("/")[0]
-      : hostname === "youtube.com"
-        ? parsedUrl.searchParams.get("v") || parsedUrl.pathname.split("/").filter(Boolean).at(-1)
-        : null
-    return videoId && /^[\w-]{11}$/.test(videoId) ? `https://www.youtube-nocookie.com/embed/${videoId}` : null
-  } catch {
-    return null
-  }
 }
 
 function EventCard({event}: {event: TrioEvent | LionsGateCalendarEvent}) {

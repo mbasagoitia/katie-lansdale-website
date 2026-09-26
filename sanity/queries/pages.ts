@@ -22,7 +22,7 @@ export const pageByIdQuery = groq`
     trioNewsHeading,
     trioNewsImage{alt, asset->{_id, url, metadata {dimensions}}},
     trioNewsLink,
-    trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, url, youtubeUrl},
+    trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, url, audioUrl, youtubeUrl},
     trioEvents[]{_key, date, title, venue, location, url},
     trioWebsiteUrl,
     seoTitle,

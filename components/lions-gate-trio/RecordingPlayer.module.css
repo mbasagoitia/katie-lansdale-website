@@ -1,0 +1,9 @@
+.player { display: grid; gap: 14px; }
+.coverButton { position: relative; display: block; aspect-ratio: 1; width: 100%; overflow: hidden; padding: 0; border: 0; background: #2c1c10; cursor: pointer; }
+.coverArt { object-fit: cover; transition: transform .35s ease, filter .25s ease; }
+.coverButton:hover .coverArt, .coverButton:focus-visible .coverArt { transform: scale(1.035); filter: brightness(.7); }
+.coverButton:focus-visible { outline: 3px solid #c6915f; outline-offset: 4px; }
+.playIndicator { position: absolute; inset: 50% auto auto 50%; display: grid; width: 66px; height: 66px; place-items: center; transform: translate(-50%, -50%); border: 1px solid rgba(255, 250, 245, .85); border-radius: 50%; background: rgba(47, 27, 13, .72); color: #fffaf5; font-size: 1.4rem; line-height: 1; transition: background-color .2s ease, transform .2s ease; }
+.coverButton:hover .playIndicator, .coverButton:focus-visible .playIndicator { background: #9d5e28; transform: translate(-50%, -50%) scale(1.06); }
+.playPrompt { position: absolute; right: 0; bottom: 0; left: 0; padding: 10px 12px; background: rgba(47, 27, 13, .78); color: #fffaf5; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.player audio { display: block; width: 100%; height: 34px; }
