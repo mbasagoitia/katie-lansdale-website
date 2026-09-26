@@ -7,8 +7,8 @@ const quotes = [
   },
   {
     quote:
-      '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"',
-    attribution: "placeholder attribution 1",
+      '“These three stunning musicians are wonderful soloists, and as a team, unbeatable. They communicate joy in music-making not only in technical brilliance but in an unbelievable playful lightness, and their joy is infectious…a wonderful addition to the international music scene.”',
+    attribution: "Berliner Morgenpost on the Lions Gate Trio",
   },
   {
     quote:
