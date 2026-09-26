@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./PageTransition.module.css";
 
@@ -31,17 +31,27 @@ export default function PageTransition({
     const pathname = usePathname();
     const [transitionState, setTransitionState] =
         useState<TransitionState>("idle");
+    const startingPathname = useRef<string | null>(null);
 
     const startTransition = () => {
+        startingPathname.current = pathname;
         setTransitionState("covering");
     };
 
     useEffect(() => {
-        if (transitionState !== "covering") return;
+        const hasNavigated =
+            transitionState === "covering" &&
+            startingPathname.current !== null &&
+            pathname !== startingPathname.current;
 
-        requestAnimationFrame(() => {
+        if (!hasNavigated) return;
+
+        const animationFrame = requestAnimationFrame(() => {
+            startingPathname.current = null;
             setTransitionState("revealing");
         });
+
+        return () => cancelAnimationFrame(animationFrame);
     }, [pathname, transitionState]);
 
     return (
