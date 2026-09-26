@@ -19,18 +19,13 @@ export default async function ContactPage() {
       </div>
       <div className={styles.introText}>
         <p className={styles.eyebrow}>Get in touch</p>
-        <h1>{page?.title || "Contact"}</h1>
+        <h1 id="contact-heading">{page?.title || "Contact"}</h1>
         <p className={styles.excerpt}>{page?.excerpt || "For concert engagements, collaborations, teaching, and general inquiries, please use the form below."}</p>
         {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
+        <div className={styles.form} aria-labelledby="contact-heading">
+          <ContactForm />
+        </div>
       </div>
-    </section>
-
-    <section className={styles.formSection} aria-labelledby="contact-form-heading">
-      <div>
-        <p className={styles.eyebrow}>Send a message</p>
-        <h2 id="contact-form-heading">How can we help?</h2>
-      </div>
-      <ContactForm />
     </section>
   </main>
 }
