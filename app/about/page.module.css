@@ -49,7 +49,7 @@
 .introTextWrapper p:last-of-type {
     font-size: 1.2rem;
     line-height: 2;
-    color: #5c3a21;
+    color: #795333;
 }
 
 .bio {
@@ -72,7 +72,7 @@
 }
 
 .bio p {
-    color: #5c3a21;
+    color: #795333;
     font-size: 1.2rem;
     line-height: 2;
     margin-bottom: 26px;
