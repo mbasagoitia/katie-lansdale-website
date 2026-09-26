@@ -1,12 +1,13 @@
 import type {Metadata} from "next"
 import Image from "next/image"
 import type {SanityImageSource} from "@sanity/image-url"
-import styles from "./page.module.css"
+import AddToCartButton from "@/components/music/AddToCartButton"
+import {RichTextContent} from "@/components/cms/PageContent"
+import {getPageById} from "@/sanity/data/pages"
 import {getProducts} from "@/sanity/data/products"
 import {urlFor} from "@/sanity/lib/image"
 import type {Product} from "@/types/product"
-import {RichTextContent} from "@/components/cms/PageContent"
-import {getPageById} from "@/sanity/data/pages"
+import styles from "./page.module.css"
 
 export const revalidate = 60
 
@@ -19,6 +20,8 @@ export default async function WatchListen() {
   const [products, page] = await Promise.all([getProducts(), getPageById("page-watch-listen")])
   const albums = products.filter((product) => product.productKind === "album")
   const singles = products.filter((product) => product.productKind !== "album")
+  const singlesWithArtwork = singles.filter((product) => product.coverArt)
+  const singlesWithoutArtwork = singles.filter((product) => !product.coverArt)
 
   return <div className={styles.page}>
     <header className={styles.intro}>
@@ -29,57 +32,115 @@ export default async function WatchListen() {
 
     {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
 
-    <ReleaseSection title="Albums" products={albums} emptyMessage="Albums will appear here when they are available for purchase." />
-    <ReleaseSection title="Singles" products={singles} emptyMessage="Singles will appear here when they are available for purchase." />
+    <section className={styles.section}>
+      <SectionHeading title="Albums" description="Featured releases" />
+      {albums.length ? <div className={styles.albumFeatures}>{albums.map((product) => <AlbumFeature key={product._id} product={product} />)}</div> : <p className={styles.empty}>Albums will appear here when they are available for purchase.</p>}
+    </section>
+
+    <section className={styles.section}>
+      <SectionHeading title="Singles" description="Individual recordings" />
+      {singles.length === 0 ? <p className={styles.empty}>Singles will appear here when they are available for purchase.</p> : <>
+        {singlesWithArtwork.length > 0 && <div className={styles.singleTiles}>{singlesWithArtwork.map((product) => <SingleTile key={product._id} product={product} />)}</div>}
+        {singlesWithoutArtwork.length > 0 && <div className={styles.singleList}>{singlesWithoutArtwork.map((product) => <SingleListItem key={product._id} product={product} />)}</div>}
+      </>}
+    </section>
   </div>
 }
 
-function ReleaseSection({title, products, emptyMessage}: {title: string; products: Product[]; emptyMessage: string}) {
-  return <section className={styles.section}>
-    <h2>{title}</h2>
-    {products.length === 0 ? <p className={styles.empty}>{emptyMessage}</p> : <div className={styles.grid}>{products.map((product) => <ReleaseCard key={product._id} product={product} />)}</div>}
-  </section>
+function SectionHeading({title, description}: {title: string; description: string}) {
+  return <div className={styles.sectionHeading}>
+    <div><p className={styles.sectionLabel}>{description}</p><h2>{title}</h2></div>
+  </div>
 }
 
-function ReleaseCard({product}: {product: Product}) {
-  const imageUrl = product.coverArt ? urlFor(product.coverArt as SanityImageSource).width(900).height(900).fit("crop").url() : null
-  const artist = product.album?.artist || product.recordings[0]?.artist || "Katie Lansdale"
-  const year = product.album?.yearReleased || product.recordings[0]?.yearReleased
-  const composer = product.work?.composer?.name
+function AlbumFeature({product}: {product: Product}) {
+  const imageUrl = coverUrl(product, 1100)
+  const previewRecording = product.recordings.find(hasPreview)
 
-  return <article className={styles.card}>
-    <div className={styles.cover}>
-      {imageUrl ? <Image src={imageUrl} alt={`Cover art for ${product.title}`} fill sizes="(max-width: 700px) calc(100vw - 80px), (max-width: 1050px) calc(50vw - 80px), 350px" className={styles.coverImage} /> : <div className={styles.coverPlaceholder} aria-hidden="true"><span>{product.productKind === "album" ? "Album" : "Single"}</span></div>}
-    </div>
-    <div className={styles.cardContent}>
-      <p className={styles.kind}>{product.productKind === "album" ? "Album" : "Single"}</p>
+  return <article className={styles.albumFeature}>
+    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 760px) calc(100vw - 64px), 410px" />
+    <div className={styles.albumContent}>
+      <p className={styles.kind}>Album</p>
       <h3>{product.title}</h3>
-      <p className={styles.meta}>{[artist, year, composer].filter(Boolean).join(" · ")}</p>
+      <p className={styles.meta}>{releaseMeta(product)}</p>
       {product.shortDescription && <p className={styles.description}>{product.shortDescription}</p>}
-      <div className={styles.purchase}><span>${product.price.toFixed(2)}</span><span>{deliveryLabel(product)}</span></div>
-      <TrackList recordings={product.recordings} />
+      <p className={styles.trackCount}>{product.recordings.length} {product.recordings.length === 1 ? "recording" : "recordings"}</p>
+      {previewRecording ? <Preview recording={previewRecording} label={`Preview: ${previewRecording.title}`} /> : <p className={styles.noPreview}>Preview coming soon</p>}
+      <PurchaseAction product={product} />
     </div>
   </article>
 }
 
-function TrackList({recordings}: {recordings: Product["recordings"]}) {
-  if (!recordings.length) return null
-  return <div className={styles.tracks}>
-    <p className={styles.trackHeading}>{recordings.length === 1 ? "Recording" : "Track list"}</p>
-    {recordings.map((recording) => <div className={styles.track} key={recording._id}>
-      <div><span>{recording.title}</span>{recording.duration && <span className={styles.duration}>{recording.duration}</span>}</div>
-      <Preview recording={recording} />
-    </div>)}
+function SingleTile({product}: {product: Product}) {
+  const imageUrl = coverUrl(product, 780)
+  const previewRecording = product.recordings.find(hasPreview)
+
+  return <article className={styles.singleTile}>
+    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 650px) calc(100vw - 64px), (max-width: 1000px) calc(50vw - 48px), 340px" />
+    <div className={styles.tileContent}>
+      <p className={styles.kind}>Single</p>
+      <h3>{product.title}</h3>
+      <p className={styles.meta}>{releaseMeta(product)}</p>
+      {previewRecording ? <Preview recording={previewRecording} label="Play preview" compact /> : <p className={styles.noPreview}>Preview coming soon</p>}
+      <PurchaseAction product={product} compact />
+    </div>
+  </article>
+}
+
+function SingleListItem({product}: {product: Product}) {
+  const previewRecording = product.recordings.find(hasPreview)
+
+  return <article className={styles.listItem}>
+    <div className={styles.listDetails}>
+      <p className={styles.kind}>Single</p>
+      <h3>{product.title}</h3>
+      <p className={styles.meta}>{releaseMeta(product)}</p>
+      {product.shortDescription && <p className={styles.description}>{product.shortDescription}</p>}
+    </div>
+    <div className={styles.listPreview}>{previewRecording ? <Preview recording={previewRecording} label="Play preview" compact /> : <p className={styles.noPreview}>Preview coming soon</p>}</div>
+    <PurchaseAction product={product} compact />
+  </article>
+}
+
+function Cover({product, imageUrl, sizes}: {product: Product; imageUrl: string | null; sizes: string}) {
+  return <div className={styles.cover}>
+    {imageUrl ? <Image src={imageUrl} alt={`Cover art for ${product.title}`} fill sizes={sizes} className={styles.coverImage} /> : <div className={styles.coverPlaceholder} aria-hidden="true"><span>{product.productKind === "album" ? "Album" : "Single"}</span></div>}
   </div>
 }
 
-function Preview({recording}: {recording: Product["recordings"][number]}) {
+function PurchaseAction({product, compact = false}: {product: Product; compact?: boolean}) {
+  return <div className={`${styles.purchaseAction} ${compact ? styles.purchaseActionCompact : ""}`}>
+    <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel(product)}</span></div>
+    <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} />
+  </div>
+}
+
+function Preview({recording, label, compact = false}: {recording: Product["recordings"][number]; label: string; compact?: boolean}) {
   const path = recording.mediaType === "video" ? recording.previewVideo : recording.previewAudio
   const url = path ? publicPreviewUrl(recording.mediaType, path) : null
   if (!url) return null
-  return recording.mediaType === "video"
-    ? <video className={styles.video} controls preload="metadata" src={url}>Your browser does not support video previews.</video>
-    : <audio className={styles.audio} controls preload="metadata" src={url}>Your browser does not support audio previews.</audio>
+
+  return <div className={`${styles.preview} ${compact ? styles.previewCompact : ""}`}>
+    <p>{label}</p>
+    {recording.mediaType === "video"
+      ? <video className={styles.video} controls preload="metadata" src={url}>Your browser does not support video previews.</video>
+      : <audio className={styles.audio} controls preload="metadata" src={url}>Your browser does not support audio previews.</audio>}
+  </div>
+}
+
+function coverUrl(product: Product, width: number): string | null {
+  return product.coverArt ? urlFor(product.coverArt as SanityImageSource).width(width).height(width).fit("crop").url() : null
+}
+
+function hasPreview(recording: Product["recordings"][number]): boolean {
+  return Boolean(recording.mediaType === "video" ? recording.previewVideo : recording.previewAudio)
+}
+
+function releaseMeta(product: Product): string {
+  const artist = product.album?.artist || product.recordings[0]?.artist || "Katie Lansdale"
+  const year = product.album?.yearReleased || product.recordings[0]?.yearReleased
+  const composer = product.work?.composer?.name
+  return [artist, year, composer].filter(Boolean).join(" · ")
 }
 
 function publicPreviewUrl(mediaType: "audio" | "video", path: string): string | null {
