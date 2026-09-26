@@ -13,6 +13,14 @@ export const pageByIdQuery = groq`
     gallery[]{_key, alt, asset->{_id, url, metadata {dimensions}}},
     quotes[]{_key, quote, attribution},
     featuredIn[]{_key, name, url, image{alt, asset->{_id, url, metadata {dimensions}}}},
+    trioMembers[]{_key, name, instrument},
+    trioStatement,
+    trioQuote,
+    trioQuoteAttribution,
+    trioHighlight{title, description, image{alt, asset->{_id, url, metadata {dimensions}}}, linkLabel, linkUrl},
+    trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, url},
+    trioEvents[]{_key, date, title, venue, location, url},
+    trioWebsiteUrl,
     seoTitle,
     seoDescription
   }

@@ -2,6 +2,8 @@ import {DocumentIcon} from "@sanity/icons";
 import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
 
+const isLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
+
 export default defineType({
   name: "page",
   title: "Pages",
@@ -117,6 +119,110 @@ export default defineType({
         preview: {select: {title: "name", media: "image"}},
       })],
       validation: (Rule) => Rule.max(6),
+    }),
+
+    defineField({
+      name: "trioMembers",
+      title: "Trio Members",
+      description: "Add the ensemble members in performance order.",
+      type: "array",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "name", title: "Name", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "instrument", title: "Instrument", type: "string", validation: (Rule) => Rule.required()}),
+        ],
+        preview: {select: {title: "name", subtitle: "instrument"}},
+      })],
+      validation: (Rule) => Rule.max(3),
+    }),
+
+    defineField({
+      name: "trioStatement",
+      title: "About the Trio",
+      description: "A short introduction to Katie's work with the Lions Gate Trio.",
+      type: "text",
+      rows: 5,
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "trioQuote",
+      title: "Featured Quote",
+      type: "text",
+      rows: 4,
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "trioQuoteAttribution",
+      title: "Quote Attribution",
+      type: "string",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "trioHighlight",
+      title: "Current Highlight",
+      description: "Feature one current release, project, or announcement.",
+      type: "object",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      fields: [
+        defineField({name: "title", title: "Title", type: "string"}),
+        defineField({name: "description", title: "Description", type: "text", rows: 4}),
+        defineField({name: "image", title: "Image", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+        defineField({name: "linkLabel", title: "Link Label", type: "string"}),
+        defineField({name: "linkUrl", title: "Link URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+      ],
+    }),
+
+    defineField({
+      name: "trioRecordings",
+      title: "Selected Recordings",
+      description: "Show a small, curated selection. For the complete discography, link to the Lions Gate Trio site.",
+      type: "array",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "subtitle", title: "Subtitle", type: "string"}),
+          defineField({name: "coverArt", title: "Cover Art", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+          defineField({name: "url", title: "Listen or Learn More URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+        ],
+        preview: {select: {title: "title", subtitle: "subtitle", media: "coverArt"}},
+      })],
+      validation: (Rule) => Rule.max(5),
+    }),
+
+    defineField({
+      name: "trioEvents",
+      title: "Selected Upcoming Performances",
+      description: "Keep this list to a few current performances and link to the trio's complete calendar.",
+      type: "array",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "date", title: "Date", type: "date", options: {dateFormat: "MMMM D, YYYY"}, validation: (Rule) => Rule.required()}),
+          defineField({name: "title", title: "Performance Title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "venue", title: "Venue", type: "string"}),
+          defineField({name: "location", title: "Location", type: "string"}),
+          defineField({name: "url", title: "Event URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+        ],
+        preview: {select: {title: "title", subtitle: "date"}},
+      })],
+      validation: (Rule) => Rule.max(3),
+    }),
+
+    defineField({
+      name: "trioWebsiteUrl",
+      title: "Lions Gate Trio Website URL",
+      type: "url",
+      initialValue: "https://lionsgatetrio.org/",
+      validation: (Rule) => Rule.uri({scheme: ["http", "https"]}),
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
     }),
 
     defineField({
