@@ -5,6 +5,7 @@ import {getPageById} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
 import {RichTextContent} from "@/components/cms/PageContent"
+import {getLionsGateCalendarEvents, type LionsGateCalendarEvent} from "@/lib/lions-gate-calendar"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -28,7 +29,7 @@ const defaultRecordings: TrioRecording[] = [
 ]
 
 export default async function LionsGateTrioPage() {
-  const page = await getPageById("page-lions-gate-trio")
+  const [page, calendarEvents] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents()])
   const websiteUrl = page?.trioWebsiteUrl || "https://lionsgatetrio.org/"
   const members = page?.trioMembers?.length ? page.trioMembers : defaultMembers
   const recordings = page?.trioRecordings?.length ? page.trioRecordings : defaultRecordings
@@ -37,7 +38,6 @@ export default async function LionsGateTrioPage() {
     <header className={styles.hero}>
       <HeroImage image={page?.heroImage} />
       <div className={styles.heroContent}>
-        <p className={styles.eyebrow}>Katie Lansdale · Violin</p>
         <h1>{page?.title || "Lions Gate Trio"}</h1>
         <p className={styles.intro}>{page?.excerpt || "A long-standing musical partnership shaped by curiosity, generosity, and the joy of chamber music."}</p>
       </div>
@@ -88,11 +88,11 @@ export default async function LionsGateTrioPage() {
         </div>
         <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/calendar`}>Full calendar</ExternalLink>
       </div>
-      {page?.trioEvents?.length ? <div className={styles.eventList}>{page.trioEvents.map((event) => <EventCard key={event._key} event={event} />)}</div> : <p className={styles.empty}>Upcoming Lions Gate Trio performances will be announced soon.</p>}
+      {calendarEvents.length || page?.trioEvents?.length ? <div className={styles.eventList}>{calendarEvents.length ? calendarEvents.map((event) => <EventCard key={event.id} event={event} />) : page?.trioEvents?.map((event) => <EventCard key={event._key} event={event} />)}</div> : <p className={styles.empty}>Upcoming Lions Gate Trio performances will be announced soon.</p>}
     </section>
 
     <section className={styles.cta}>
-      <p>For complete concert information, recordings, and news, visit the Lions Gate Trio.</p>
+      <p>For complete concert information, recordings, and news, visit the Lions Gate Trio official website.</p>
       <ExternalLink href={websiteUrl}>Visit LionsGateTrio.org</ExternalLink>
     </section>
   </main>
@@ -163,9 +163,15 @@ function youtubeEmbedUrl(url?: string): string | null {
   }
 }
 
-function EventCard({event}: {event: TrioEvent}) {
+function EventCard({event}: {event: TrioEvent | LionsGateCalendarEvent}) {
   const date = new Intl.DateTimeFormat("en-US", {month: "short", day: "numeric", year: "numeric", timeZone: "UTC"}).format(new Date(`${event.date}T12:00:00Z`))
-  const content = <><p className={styles.eventDate}>{date}</p><h3>{event.title}</h3><p>{[event.venue, event.location].filter(Boolean).join(" · ")}</p></>
+  const description = "description" in event ? event.description : undefined
+  const imageUrl = "imageUrl" in event ? event.imageUrl : undefined
+  const imageAlt = "imageAlt" in event ? event.imageAlt : undefined
+  const content = <>
+    {imageUrl && <div className={styles.eventImage}><Image src={imageUrl} alt={imageAlt || "Lions Gate Trio performance"} fill sizes="(max-width: 800px) 100vw, 260px" /></div>}
+    <div className={styles.eventContent}><p className={styles.eventDate}>{date}</p><h3>{event.title}</h3><p className={styles.eventVenue}>{[event.venue, event.location].filter(Boolean).join(" · ")}</p>{description && <p className={styles.eventDescription}>{description}</p>}</div>
+  </>
   return event.url ? <ExternalLink href={event.url} className={styles.event}>{content}</ExternalLink> : <article className={styles.event}>{content}</article>
 }
 
