@@ -187,9 +187,9 @@ function EventCard({event}: {event: TrioEvent | LionsGateCalendarEvent}) {
     {imageUrl && <div className={styles.eventImage}><Image src={imageUrl} alt={imageAlt || "Lions Gate Trio performance"} fill sizes="(max-width: 800px) 100vw, 260px" /></div>}
     <div className={styles.eventContent}><p className={styles.eventDate}>{date}</p><h3>{event.title}</h3><p className={styles.eventVenue}>{[event.venue, event.location].filter(Boolean).join(" · ")}</p>{description && <p className={styles.eventDescription}>{description}</p>}</div>
   </>
-  return event.url ? <ExternalLink href={event.url} className={styles.event}>{content}</ExternalLink> : <article className={styles.event}>{content}</article>
+  return event.url ? <ExternalLink href={event.url} className={styles.event} showIcon={false}>{content}</ExternalLink> : <article className={styles.event}>{content}</article>
 }
 
-function ExternalLink({href, children, className}: {href: string; children: React.ReactNode; className?: string}) {
-  return <a className={className} href={href} target="_blank" rel="noreferrer">{children}<span aria-hidden="true"> ↗</span></a>
+function ExternalLink({href, children, className, showIcon = true}: {href: string; children: React.ReactNode; className?: string; showIcon?: boolean}) {
+  return <a className={className} href={href} target="_blank" rel="noreferrer">{children}{showIcon && <span aria-hidden="true"> ↗</span>}</a>
 }

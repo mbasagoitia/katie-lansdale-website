@@ -97,7 +97,8 @@
 .videoFrame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 .eventList { border-top: 1px solid #decab6; }
-.event { display: grid; grid-template-columns: minmax(150px, 260px) 1fr; gap: 28px; padding: 25px 0; border-bottom: 1px solid #decab6; color: inherit; text-decoration: none; }
+.event { display: grid; grid-template-columns: minmax(150px, 260px) 1fr; gap: 28px; padding: 25px 0; border-bottom: 1px solid #decab6; color: inherit; text-decoration: none; transition: background-color .2s ease; }
+.event[href]:hover, .event[href]:focus-visible { background: #fbf6ef; }
 .eventImage { position: relative; min-height: 175px; overflow: hidden; background: #e8d5c1; }
 .eventImage :global(img) { object-fit: cover; }
 .eventContent { align-self: center; }
