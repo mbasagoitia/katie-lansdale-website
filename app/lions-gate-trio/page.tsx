@@ -6,6 +6,7 @@ import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
 import {RichTextContent} from "@/components/cms/PageContent"
 import {getLionsGateCalendarEvents, type LionsGateCalendarEvent} from "@/lib/lions-gate-calendar"
+import {getLionsGateNews, type LionsGateNewsItem} from "@/lib/lions-gate-news"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -29,7 +30,7 @@ const defaultRecordings: TrioRecording[] = [
 ]
 
 export default async function LionsGateTrioPage() {
-  const [page, calendarEvents] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents()])
+  const [page, calendarEvents, sourceNews] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents(), getLionsGateNews()])
   const websiteUrl = page?.trioWebsiteUrl || "https://lionsgatetrio.org/"
   const members = page?.trioMembers?.length ? page.trioMembers : defaultMembers
   const recordings = page?.trioRecordings?.length ? page.trioRecordings : defaultRecordings
@@ -65,7 +66,7 @@ export default async function LionsGateTrioPage() {
 
     <Highlight highlight={page?.trioHighlight} />
 
-    <NewsSection news={page?.trioNews} />
+    <NewsSection page={page} sourceNews={sourceNews} />
 
     <section className={styles.recordings}>
       <div className={styles.sectionHeading}>
@@ -137,12 +138,26 @@ function YoutubeEmbed({embedUrl, title}: {embedUrl: string; title: string}) {
   </div>
 }
 
-function NewsSection({news}: {news?: CmsPage["trioNews"]}) {
-  return <section className={styles.news}>
-    <p className={styles.sectionLabel}>News</p>
-    <h2>Latest from the Lions Gate Trio</h2>
-    <div className={styles.newsContent}>
-      {news?.length ? <RichTextContent content={news} /> : <p>The Lions Gate Trio will be releasing the album <strong>Lumiéres</strong> on September 18, 2026. It will be available on Spotify, Apple Music, Amazon Music, and through <a href="http://www.editionshortus.com/" target="_blank" rel="noreferrer">Editions Hortus</a>. <strong>Lumiéres</strong> features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. Singles will be released every Friday from August 21 - September 11.</p>}
+function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: LionsGateNewsItem | null}) {
+  const defaultNews: LionsGateNewsItem = {
+    heading: "Recently released: Lumiéres",
+    body: "Lumiéres features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
+    linkUrl: "https://www.editionshortus.com/",
+  }
+  const news = sourceNews || defaultNews
+  const imageUrl = page?.trioNewsImage?.asset ? urlFor(page.trioNewsImage as SanityImageSource).width(900).height(700).fit("crop").url() : news.imageUrl
+  const heading = page?.trioNewsHeading || news.heading
+  const linkUrl = page?.trioNewsLink || news.linkUrl
+
+  return <section className={`${styles.news} ${imageUrl ? styles.newsWithImage : ""}`}>
+    {imageUrl && <div className={styles.newsImage}><Image src={imageUrl} alt={page?.trioNewsImage?.alt || "Lions Gate Trio news"} fill sizes="(max-width: 800px) 100vw, 360px" /></div>}
+    <div className={styles.newsText}>
+      <p className={styles.sectionLabel}>News</p>
+      <h2>{heading}</h2>
+      <div className={styles.newsContent}>
+        {page?.trioNews?.length ? <RichTextContent content={page.trioNews} /> : <p>{news.body}</p>}
+      </div>
+      {linkUrl && <ExternalLink href={linkUrl}>Learn more</ExternalLink>}
     </div>
   </section>
 }

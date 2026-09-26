@@ -180,13 +180,40 @@ export default defineType({
     defineField({
       name: "trioNews",
       title: "News",
-      description: "Share a current Lions Gate Trio announcement. This appears above the selected recordings.",
+      description: "Optional wording override for the Lions Gate Trio news item. Leave blank to show the current item pulled from the official site.",
       type: "array",
       hidden: ({document}) => isLionsGateTrioPage(document?._id),
       of: [defineArrayMember({
         type: "block",
         styles: [{title: "Normal", value: "normal"}],
       })],
+    }),
+
+    defineField({
+      name: "trioNewsHeading",
+      title: "News Heading Override",
+      description: "Leave blank to use the heading pulled from the Lions Gate Trio site.",
+      type: "string",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "trioNewsImage",
+      title: "News Image Override",
+      description: "Leave blank to use the image pulled from the Lions Gate Trio site.",
+      type: "image",
+      options: {hotspot: true},
+      fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "trioNewsLink",
+      title: "News Link Override",
+      description: "Leave blank to use the link pulled from the Lions Gate Trio site.",
+      type: "url",
+      validation: (Rule) => Rule.uri({scheme: ["http", "https"]}),
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
     }),
 
     defineField({
