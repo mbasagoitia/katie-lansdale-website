@@ -37,6 +37,7 @@ export type TrioRecording = {
   subtitle?: string
   coverArt?: SanityImage
   url?: string
+  youtubeUrl?: string
 }
 
 export type TrioEvent = {

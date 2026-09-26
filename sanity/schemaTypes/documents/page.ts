@@ -190,6 +190,7 @@ export default defineType({
           defineField({name: "subtitle", title: "Subtitle", type: "string"}),
           defineField({name: "coverArt", title: "Cover Art", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
           defineField({name: "url", title: "Listen or Learn More URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({name: "youtubeUrl", title: "YouTube Video URL", description: "Paste a YouTube watch or share URL to display the performance on this page.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
         ],
         preview: {select: {title: "title", subtitle: "subtitle", media: "coverArt"}},
       })],

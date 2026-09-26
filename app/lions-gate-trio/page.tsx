@@ -20,6 +20,7 @@ const defaultMembers: TrioMember[] = [
 ]
 
 const defaultRecordings: TrioRecording[] = [
+  {_key: "beethoven-archduke", title: "Beethoven: Archduke Trio", subtitle: "Piano Trio in B-flat major, Op. 97 — I. Allegro moderato", youtubeUrl: "https://www.youtube.com/watch?v=iEXzFDaLKm4"},
   {_key: "ravel-ives-clarke", title: "Ravel · Ives · Clarke", subtitle: "Piano trios by Ravel, Ives, and Rebecca Clarke"},
   {_key: "schumann", title: "Complete Music of Robert Schumann", subtitle: "A selected Lions Gate Trio recording"},
   {_key: "american-trios", title: "American Trios", subtitle: "Music by Helps, Moe, Diesendruck, and Thomas"},
@@ -96,7 +97,7 @@ export default async function LionsGateTrioPage() {
 
 function HeroImage({image}: {image?: SanityImage}) {
   const src = image?.asset ? urlFor(image as SanityImageSource).width(1800).height(1000).fit("crop").url() : null
-  return <div className={styles.heroImage}>{src ? <Image src={src} alt={image?.alt || "Lions Gate Trio"} fill priority sizes="100vw" /> : <div className={styles.heroPlaceholder} aria-hidden="true" />}</div>
+  return <div className={styles.heroImage}>{src ? <Image src={src} alt={image?.alt || "Lions Gate Trio"} fill priority sizes="100vw" /> : <Image src="/images/lions-gate-trio.webp" alt="Lions Gate Trio" fill priority sizes="100vw" />}</div>
 }
 
 function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
@@ -121,7 +122,35 @@ function RecordingCard({recording}: {recording: TrioRecording}) {
     <h3>{recording.title}</h3>
     {recording.subtitle && <p>{recording.subtitle}</p>}
   </>
-  return recording.url ? <ExternalLink href={recording.url} className={styles.recordingCard}>{content}</ExternalLink> : <article className={styles.recordingCard}>{content}</article>
+  return <article className={styles.recordingCard}>
+    {recording.url ? <ExternalLink href={recording.url}>{content}</ExternalLink> : content}
+    <YoutubeEmbed url={recording.youtubeUrl} title={recording.title} />
+  </article>
+}
+
+function YoutubeEmbed({url, title}: {url?: string; title: string}) {
+  const embedUrl = youtubeEmbedUrl(url)
+  if (!embedUrl) return null
+
+  return <div className={styles.videoFrame}>
+    <iframe src={embedUrl} title={`${title} by Lions Gate Trio`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+  </div>
+}
+
+function youtubeEmbedUrl(url?: string): string | null {
+  if (!url) return null
+  try {
+    const parsedUrl = new URL(url)
+    const hostname = parsedUrl.hostname.replace(/^www\./, "")
+    const videoId = hostname === "youtu.be"
+      ? parsedUrl.pathname.slice(1).split("/")[0]
+      : hostname === "youtube.com"
+        ? parsedUrl.searchParams.get("v") || parsedUrl.pathname.split("/").filter(Boolean).at(-1)
+        : null
+    return videoId && /^[\w-]{11}$/.test(videoId) ? `https://www.youtube-nocookie.com/embed/${videoId}` : null
+  } catch {
+    return null
+  }
 }
 
 function EventCard({event}: {event: TrioEvent}) {
