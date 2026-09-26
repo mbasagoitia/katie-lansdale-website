@@ -1,5 +1,5 @@
 .page { max-width: 1120px; margin: 70px auto 100px; color: #5c3a21; }
-.intro { max-width: 800px; margin: 0 0 80px; text-align: left; }
+.intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 800px; margin: 0 0 80px; text-align: left; }
 .kind, .preview p { margin: 0; color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
 .intro h1, .section h2, .albumFeature h3, .singleTile h3, .listItem h3 { font-family: var(--font-cormorant), serif; font-weight: 400; }
 .intro h1 { margin: 0; color: #c6915f; font-size: 2.8rem; font-weight: 300; letter-spacing: 2px; line-height: 1; }

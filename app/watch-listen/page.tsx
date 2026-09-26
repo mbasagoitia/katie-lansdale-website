@@ -2,6 +2,7 @@ import type {Metadata} from "next"
 import Image from "next/image"
 import type {SanityImageSource} from "@sanity/image-url"
 import AddToCartButton from "@/components/music/AddToCartButton"
+import CartPanel from "@/components/music/CartPanel"
 import {RichTextContent} from "@/components/cms/PageContent"
 import {getPageById} from "@/sanity/data/pages"
 import {getProducts} from "@/sanity/data/products"
@@ -26,6 +27,7 @@ export default async function WatchListen() {
   return <div className={styles.page}>
     <header className={styles.intro}>
       <h1>{page?.title || "Watch / Listen"}</h1>
+      <CartPanel />
     </header>
 
     {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
