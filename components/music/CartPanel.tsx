@@ -22,6 +22,8 @@ export default function CartPanel() {
     writeCart(cart.filter((item) => item.id !== id))
   }
 
+  if (cart.length === 0) return null
+
   return <>
     <button type="button" className={styles.trigger} onClick={() => setIsOpen(true)} aria-label={`Open cart with ${cart.length} ${cart.length === 1 ? "item" : "items"}`} aria-expanded={isOpen}>
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 7H6.3" /><circle cx="10" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></svg>
