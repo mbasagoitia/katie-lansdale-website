@@ -178,6 +178,18 @@ export default defineType({
     }),
 
     defineField({
+      name: "trioNews",
+      title: "News",
+      description: "Share a current Lions Gate Trio announcement. This appears above the selected recordings.",
+      type: "array",
+      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      of: [defineArrayMember({
+        type: "block",
+        styles: [{title: "Normal", value: "normal"}],
+      })],
+    }),
+
+    defineField({
       name: "trioRecordings",
       title: "Selected Recordings",
       description: "Show a small, curated selection. For the complete discography, link to the Lions Gate Trio site.",

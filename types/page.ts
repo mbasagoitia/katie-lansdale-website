@@ -63,6 +63,7 @@ export type CmsPage = {
   trioQuote?: string
   trioQuoteAttribution?: string
   trioHighlight?: TrioHighlight
+  trioNews?: TypedObject[]
   trioRecordings?: TrioRecording[]
   trioEvents?: TrioEvent[]
   trioWebsiteUrl?: string

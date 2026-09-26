@@ -18,6 +18,7 @@ export const pageByIdQuery = groq`
     trioQuote,
     trioQuoteAttribution,
     trioHighlight{title, description, image{alt, asset->{_id, url, metadata {dimensions}}}, linkLabel, linkUrl},
+    trioNews,
     trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, url, youtubeUrl},
     trioEvents[]{_key, date, title, venue, location, url},
     trioWebsiteUrl,

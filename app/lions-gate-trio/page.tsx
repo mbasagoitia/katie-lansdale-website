@@ -4,6 +4,7 @@ import type {SanityImageSource} from "@sanity/image-url"
 import {getPageById} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
+import {RichTextContent} from "@/components/cms/PageContent"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -64,6 +65,8 @@ export default async function LionsGateTrioPage() {
 
     <Highlight highlight={page?.trioHighlight} />
 
+    <NewsSection news={page?.trioNews} />
+
     <section className={styles.recordings}>
       <div className={styles.sectionHeading}>
         <div>
@@ -117,24 +120,31 @@ function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
 
 function RecordingCard({recording}: {recording: TrioRecording}) {
   const src = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : null
-  const content = <>
-    <div className={styles.albumArt}>{src ? <Image src={src} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>
+  const embedUrl = youtubeEmbedUrl(recording.youtubeUrl)
+  const details = <>
     <h3>{recording.title}</h3>
     {recording.subtitle && <p>{recording.subtitle}</p>}
   </>
   return <article className={styles.recordingCard}>
-    {recording.url ? <ExternalLink href={recording.url}>{content}</ExternalLink> : content}
-    <YoutubeEmbed url={recording.youtubeUrl} title={recording.title} />
+    {embedUrl ? <YoutubeEmbed embedUrl={embedUrl} title={recording.title} /> : <div className={styles.albumArt}>{src ? <Image src={src} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
+    {recording.url ? <ExternalLink href={recording.url}>{details}</ExternalLink> : details}
   </article>
 }
 
-function YoutubeEmbed({url, title}: {url?: string; title: string}) {
-  const embedUrl = youtubeEmbedUrl(url)
-  if (!embedUrl) return null
-
+function YoutubeEmbed({embedUrl, title}: {embedUrl: string; title: string}) {
   return <div className={styles.videoFrame}>
     <iframe src={embedUrl} title={`${title} by Lions Gate Trio`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
   </div>
+}
+
+function NewsSection({news}: {news?: CmsPage["trioNews"]}) {
+  return <section className={styles.news}>
+    <p className={styles.sectionLabel}>News</p>
+    <h2>Latest from the Lions Gate Trio</h2>
+    <div className={styles.newsContent}>
+      {news?.length ? <RichTextContent content={news} /> : <p>The Lions Gate Trio will be releasing the album <strong>Lumiéres</strong> on September 18, 2026. It will be available on Spotify, Apple Music, Amazon Music, and through <a href="http://www.editionshortus.com/" target="_blank" rel="noreferrer">Editions Hortus</a>. <strong>Lumiéres</strong> features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. Singles will be released every Friday from August 21 - September 11.</p>}
+    </div>
+  </section>
 }
 
 function youtubeEmbedUrl(url?: string): string | null {
