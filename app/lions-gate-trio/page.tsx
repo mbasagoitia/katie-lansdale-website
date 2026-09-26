@@ -121,10 +121,10 @@ function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
 
 function RecordingCard({recording}: {recording: TrioRecording}) {
   const coverArtUrl = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : recording.coverArtUrl
-  const details = <>
+  const details = <div className={styles.recordingDetails}>
     <h3>{recording.title}</h3>
     {recording.subtitle && <p>{recording.subtitle}</p>}
-  </>
+  </div>
   return <article className={styles.recordingCard}>
     {recording.audioUrl && coverArtUrl ? <RecordingPlayer audioUrl={recording.audioUrl} coverArtUrl={coverArtUrl} coverArtAlt={recording.coverArt?.alt || `Cover art for ${recording.title}`} title={recording.title} /> : <div className={styles.albumArt}>{coverArtUrl ? <Image src={coverArtUrl} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
     {recording.url ? <ExternalLink href={recording.url}>{details}</ExternalLink> : details}
