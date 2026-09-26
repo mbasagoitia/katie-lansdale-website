@@ -25,20 +25,18 @@ export default async function WatchListen() {
 
   return <div className={styles.page}>
     <header className={styles.intro}>
-      <p className={styles.eyebrow}>Katie Lansdale</p>
       <h1>{page?.title || "Watch / Listen"}</h1>
-      <p>{page?.excerpt || "Explore recordings currently available for purchase."}</p>
     </header>
 
     {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
 
     <section className={styles.section}>
-      <SectionHeading title="Albums" description="Featured releases" />
+      <SectionHeading title="Albums" />
       {albums.length ? <div className={styles.albumFeatures}>{albums.map((product) => <AlbumFeature key={product._id} product={product} />)}</div> : <p className={styles.empty}>Albums will appear here when they are available for purchase.</p>}
     </section>
 
     <section className={styles.section}>
-      <SectionHeading title="Singles" description="Individual recordings" />
+      <SectionHeading title="Singles" />
       {singles.length === 0 ? <p className={styles.empty}>Singles will appear here when they are available for purchase.</p> : <>
         {singlesWithArtwork.length > 0 && <div className={styles.singleTiles}>{singlesWithArtwork.map((product) => <SingleTile key={product._id} product={product} />)}</div>}
         {singlesWithoutArtwork.length > 0 && <div className={styles.singleList}>{singlesWithoutArtwork.map((product) => <SingleListItem key={product._id} product={product} />)}</div>}
@@ -47,9 +45,9 @@ export default async function WatchListen() {
   </div>
 }
 
-function SectionHeading({title, description}: {title: string; description: string}) {
+function SectionHeading({title}: {title: string}) {
   return <div className={styles.sectionHeading}>
-    <div><p className={styles.sectionLabel}>{description}</p><h2>{title}</h2></div>
+    <h2>{title}</h2>
   </div>
 }
 
