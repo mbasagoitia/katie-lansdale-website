@@ -78,9 +78,11 @@ function SingleTile({product}: {product: Product}) {
   return <article className={styles.singleTile}>
     <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 280px" />
     <div className={styles.tileContent}>
-      <p className={styles.kind}>Single</p>
-      <h3>{product.title}</h3>
-      <p className={styles.meta}>{releaseMeta(product)}</p>
+      <div className={styles.tileDetails}>
+        <p className={styles.kind}>Single</p>
+        <h3>{product.title}</h3>
+        <p className={styles.meta}>{releaseMeta(product)}</p>
+      </div>
       {previewRecording ? <Preview recording={previewRecording} label="Play preview" compact /> : <p className={styles.noPreview}>Preview coming soon</p>}
       <PurchaseAction product={product} compact />
     </div>

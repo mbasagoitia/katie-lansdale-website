@@ -33,10 +33,13 @@
 .purchaseAction span { color: #7b583d; font-family: var(--font-inter), sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
 .singleTiles { display: grid; gap: 20px; }
 .singleTile { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 3fr); overflow: hidden; background: rgba(255, 253, 249, .7); border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 12px 27px rgba(92, 58, 33, .08); }
-.tileContent { padding: 21px; }
+.tileContent { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "details purchase" "preview preview"; align-items: center; column-gap: 28px; padding: 19px 24px; }
+.tileDetails { grid-area: details; }
 .singleTile h3, .listItem h3 { margin: 7px 0 6px; color: #5c3a21; font-size: clamp(1.65rem, 2.3vw, 2.15rem); line-height: 1; }
+.tileContent .previewCompact, .tileContent .noPreview { grid-area: preview; margin-top: 13px; }
 .previewCompact { margin-top: 16px; }
 .previewCompact .audio { height: 37px; }
+.tileContent .purchaseActionCompact { grid-area: purchase; margin-top: 0; padding-top: 0; border-top: 0; }
 .purchaseActionCompact { margin-top: 18px; padding-top: 14px; }
 .purchaseActionCompact strong { font-size: 1.45rem; }
 .singleList { margin-top: 27px; border-top: 1px solid rgba(166, 103, 49, .25); }
@@ -55,6 +58,8 @@
   .albumFeature { grid-template-columns: 1fr; }
   .albumFeature .cover, .singleTile .cover { aspect-ratio: 1; min-height: auto; }
   .singleTile { grid-template-columns: 1fr; }
+  .tileContent { grid-template-columns: 1fr; grid-template-areas: "details" "preview" "purchase"; row-gap: 0; }
+  .tileContent .purchaseActionCompact { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(166, 103, 49, .25); }
   .listItem { grid-template-columns: 1fr; gap: 18px; }
   .listItem .purchaseAction { grid-column: auto; }
 }
