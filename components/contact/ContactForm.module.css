@@ -1,0 +1,15 @@
+.form { display: grid; gap: 23px; }
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 23px; }
+.form label { display: grid; gap: 8px; color: #795333; font-size: .86rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.form label span { color: #9d5e28; }
+.form input, .form textarea { width: 100%; box-sizing: border-box; border: 1px solid #decab6; border-radius: 0; background: #fffdf9; color: #5c3a21; font: inherit; font-size: 1rem; font-weight: 400; letter-spacing: 0; line-height: 1.5; text-transform: none; }
+.form input { height: 46px; padding: 9px 12px; }
+.form textarea { min-height: 160px; padding: 12px; resize: vertical; }
+.form input:focus, .form textarea:focus { outline: 2px solid #c6915f; outline-offset: 2px; }
+.form button { justify-self: start; border: 1px solid #7b4220; border-radius: 0; padding: 13px 21px; background: #7b4220; color: #fffaf5; cursor: pointer; font: inherit; font-size: .86rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: background-color .2s ease; }
+.form button:hover:not(:disabled), .form button:focus-visible { background: #9d5e28; }
+.form button:disabled { cursor: wait; opacity: .65; }
+.honeypot { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0 0 0 0); white-space: nowrap; }
+.status { min-height: 1.5em; margin: -9px 0 0; color: #4a6a42; font-size: .95rem; font-weight: 600; }
+.error { color: #9b3f32; }
+@media (max-width: 600px) { .fieldRow { grid-template-columns: 1fr; } }
