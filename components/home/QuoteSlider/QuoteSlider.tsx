@@ -17,11 +17,14 @@ const quotes = [
   },
 ];
 
-export default function QuoteSlider() {
+type Quote = {quote: string; attribution?: string};
+
+export default function QuoteSlider({quotes: cmsQuotes}: {quotes?: Quote[]}) {
+  const displayQuotes = cmsQuotes?.length ? cmsQuotes : quotes;
   return (
     <aside className={styles.quotePanel}>
       <div className={styles.quoteBox}>
-        {quotes.map((q, i) => (
+        {displayQuotes.map((q, i) => (
           <figure key={q.quote + i}>
             <div
               className={`${styles.quoteDecoration} ${styles.quoteTop}`}

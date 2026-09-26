@@ -6,6 +6,7 @@ import Banner from "@/components/ui/banner/banner";
 import Navigation from "@/components/ui/navigation/navigation";
 import Footer from "@/components/ui/footer/footer";
 import PageTransition, { TransitionOverlay } from "@/components/ui/page-transition/PageTransition";
+import { getSiteSettings } from "@/sanity/data/pages";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -18,11 +19,12 @@ export const metadata: Metadata = {
   description: "Official website for Katie Lansdale, violinist.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
   return (
     <html
       lang="en"
@@ -33,9 +35,9 @@ export default function RootLayout({
         <PageTransition>
           <div className={styles.pageWrapper}>
             <main className={styles.contentCard}>
-              <Navigation />
+              <Navigation siteTitle={settings?.siteTitle} tagline={settings?.tagline} />
               <TransitionOverlay>{children}</TransitionOverlay>
-              <Footer />
+              <Footer copyright={settings?.copyright} />
             </main>
           </div>
         </PageTransition>

@@ -1,9 +1,16 @@
-import { defineField, defineType } from "sanity";
+import {CogIcon} from "@sanity/icons";
+import {defineField, defineType} from "sanity";
 
 export default defineType({
   name: "siteSettings",
   title: "Site Settings",
   type: "document",
+  icon: CogIcon,
+  initialValue: {
+    siteTitle: "Katie Lansdale",
+    tagline: "Violinist",
+    copyright: "© 2026 Katie Lansdale. All rights reserved.",
+  },
 
   fields: [
     defineField({

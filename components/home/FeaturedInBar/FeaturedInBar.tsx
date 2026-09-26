@@ -1,7 +1,16 @@
 import Image from "next/image";
 import styles from "./FeaturedInBar.module.css";
 
-export default function FeaturedInBar() {
+type FeaturedItem = {name: string; src: string; url?: string; className?: string};
+
+const defaultItems: FeaturedItem[] = [
+  {name: "Strings Magazine", src: "/images/logos/strings-logo-black.png", className: styles.strings},
+  {name: "American String Teachers Association", src: "/images/logos/asta-logo-black.png", className: styles.asta},
+  {name: "Suzuki Association of the Americas", src: "/images/logos/saa-logo-black.png", className: styles.suzuki},
+];
+
+export default function FeaturedInBar({items}: {items?: FeaturedItem[]}) {
+  const displayItems = items?.length ? items : defaultItems;
   return (
     <section className={styles.wrapper}>
       <div className={styles.heading}>
@@ -10,48 +19,9 @@ export default function FeaturedInBar() {
         <div className={styles.line} />
       </div>
       <div className={styles.logos}>
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${styles.logo} ${styles.strings}`}
-          aria-label="Strings Magazine"
-        >
-          <Image
-            src="/images/logos/strings-logo-black.png"
-            alt="Strings Magazine"
-            width={260}
-            height={85}
-          />
-        </a>
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${styles.logo} ${styles.asta}`}
-          aria-label="American String Teachers Association"
-        >
-          <Image
-            src="/images/logos/asta-logo-black.png"
-            alt="American String Teachers Association"
-            width={260}
-            height={85}
-          />
-        </a>
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${styles.logo} ${styles.suzuki}`}
-          aria-label="Suzuki Association of the Americas"
-        >
-          <Image
-            src="/images/logos/saa-logo-black.png"
-            alt="Suzuki Association of the Americas"
-            width={290}
-            height={90}
-          />
-        </a>
+        {displayItems.map((item) => <a key={item.name} href={item.url || undefined} target={item.url ? "_blank" : undefined} rel={item.url ? "noopener noreferrer" : undefined} className={`${styles.logo} ${item.className || ""}`} aria-label={item.name}>
+          <Image src={item.src} alt={item.name} width={290} height={90} />
+        </a>)}
       </div>
     </section>
   );

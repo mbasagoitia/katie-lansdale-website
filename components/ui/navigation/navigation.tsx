@@ -5,7 +5,7 @@ import Link from "@/components/ui/page-transition/TransitionLink";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import styles from "./navigation.module.css";
 
-export default function Navigation() {
+export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Violinist"}: {siteTitle?: string; tagline?: string}) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const closeMenu = () => {
@@ -16,8 +16,8 @@ export default function Navigation() {
         <nav className={styles.nav}>
             <div className={styles.navInner}>
                 <div className={styles.logo}>
-                    <h1>Katie Lansdale</h1>
-                    <span>VIOLINIST</span>
+                    <h1>{siteTitle}</h1>
+                    <span>{tagline.toUpperCase()}</span>
                 </div>
                 <button
                     className={styles.menuButton}

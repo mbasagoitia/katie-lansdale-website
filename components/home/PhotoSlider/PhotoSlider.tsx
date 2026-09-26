@@ -4,34 +4,29 @@ import Image from "next/image";
 import styles from "./PhotoSlider.module.css";
 
 const photos = [
-  "/images/headshots/headshot-1-cream.jpeg",
-  "/images/headshots/headshot-2-cream.png",
+  {src: "/images/headshots/headshot-1-cream.jpeg", alt: "Katie Lansdale playing violin"},
+  {src: "/images/headshots/headshot-2-cream.png", alt: "Katie Lansdale"},
 ];
 
-export default function PhotoSlider() {
+type Photo = {src: string; alt?: string};
+
+export default function PhotoSlider({photos: cmsPhotos}: {photos?: Photo[]}) {
+  const displayPhotos = cmsPhotos?.length ? cmsPhotos : photos;
   return (
     <div className={styles.photoSlider}>
       <div className={styles.photoViewport}>
-        {photos.map((src, i) => (
+        {displayPhotos.map((photo, i) => (
           <Image
-            key={src}
+            key={photo.src}
             className={styles.photo}
-            src={src}
-            alt="Katie Lansdale"
+            src={photo.src}
+            alt={photo.alt || "Katie Lansdale"}
             width={1000}
             height={1200}
             priority={i === 0}
           />
         ))}
       </div>
-      {/* <Image
-        className={styles.border}
-        src="/images/background-images/rock-photo-border.png"
-        alt=""
-        fill
-        priority
-        sizes="(min-width: 1100px) 50vw, 100vw"
-      /> */}
     </div>
   );
 }

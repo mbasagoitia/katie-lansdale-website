@@ -1,11 +1,32 @@
-import type { StructureResolver } from "sanity/structure";
+import {CogIcon, DocumentIcon} from "@sanity/icons";
+import type {StructureResolver} from "sanity/structure";
+import {sitePages} from "./sitePages";
+
+const singletonTypes = ["page", "siteSettings"];
+
+function pageItem(S: Parameters<StructureResolver>[0], page: (typeof sitePages)[number]) {
+  return S.listItem()
+    .id(page.id)
+    .title(page.title)
+    .icon(DocumentIcon)
+    .child(S.document().schemaType("page").documentId(page.id).title(page.title));
+}
 
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title("Content")
+    .title("Website Content")
     .items([
-
-      S.documentTypeListItem("composer"),
+      S.listItem()
+        .title("Global Settings")
+        .icon(CogIcon)
+        .child(S.document().schemaType("siteSettings").documentId("site-settings").title("Global Settings")),
+      S.divider(),
+      S.listItem()
+        .title("Website Pages")
+        .icon(DocumentIcon)
+        .child(S.list().title("Website Pages").items(sitePages.map((page) => pageItem(S, page)))),
+      S.divider(),
+      S.documentTypeListItem("composer").title("Composers"),
 
     S.listItem()
       .title("Works")
@@ -49,4 +70,6 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("album"),
       S.divider(),
       S.documentTypeListItem("product"),
+      S.divider(),
+      ...S.documentTypeListItems().filter((item) => !singletonTypes.includes(item.getId() || "") && !["composer", "work", "recording", "album", "product"].includes(item.getId() || "")),
     ]);

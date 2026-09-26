@@ -5,6 +5,10 @@ import styles from "./page.module.css"
 import {getProducts} from "@/sanity/data/products"
 import {urlFor} from "@/sanity/lib/image"
 import type {Product} from "@/types/product"
+import {RichTextContent} from "@/components/cms/PageContent"
+import {getPageById} from "@/sanity/data/pages"
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Watch / Listen | Katie Lansdale",
@@ -12,16 +16,18 @@ export const metadata: Metadata = {
 }
 
 export default async function WatchListen() {
-  const products = await getProducts()
+  const [products, page] = await Promise.all([getProducts(), getPageById("page-watch-listen")])
   const albums = products.filter((product) => product.productKind === "album")
   const singles = products.filter((product) => product.productKind !== "album")
 
   return <div className={styles.page}>
     <header className={styles.intro}>
       <p className={styles.eyebrow}>Katie Lansdale</p>
-      <h1>Watch / Listen</h1>
-      <p>Explore recordings currently available for purchase.</p>
+      <h1>{page?.title || "Watch / Listen"}</h1>
+      <p>{page?.excerpt || "Explore recordings currently available for purchase."}</p>
     </header>
+
+    {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
 
     <ReleaseSection title="Albums" products={albums} emptyMessage="Albums will appear here when they are available for purchase." />
     <ReleaseSection title="Singles" products={singles} emptyMessage="Singles will appear here when they are available for purchase." />
