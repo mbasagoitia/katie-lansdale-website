@@ -2,6 +2,7 @@ import type {SanityClient} from "sanity"
 import type {AlbumDraft, ComposerDraft, RecordingDraft, SaleDraft, WorkDraft} from "../types"
 
 const ref = (id: string) => ({_type: "reference" as const, _ref: id})
+const keyedRef = (id: string) => ({...ref(id), _key: crypto.randomUUID()})
 
 export async function searchComposers(client: SanityClient, term: string) {
   return client.fetch<{_id: string; name: string; sortName?: string}[]>(
@@ -70,19 +71,29 @@ export async function createRecording(client: SanityClient, workId: string, draf
 }
 
 export async function createAlbum(client: SanityClient, draft: AlbumDraft, recordingIds: string[]) {
-  return client.create({_type: "album", ...draft, recordings: recordingIds.map(ref)})
+  return client.create({_type: "album", ...draft, recordings: recordingIds.map(keyedRef)})
 }
 
 export async function createRecordingProduct(client: SanityClient, draft: SaleDraft, recordingIds: string[]) {
-  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "recording", availableForPurchase: true, recordings: recordingIds.map(ref)})
+  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "recording", availableForPurchase: true, recordings: recordingIds.map(keyedRef)})
 }
 
 export async function createAlbumProduct(client: SanityClient, draft: SaleDraft, albumId: string, recordingIds: string[]) {
-  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "album", availableForPurchase: true, album: ref(albumId), recordings: recordingIds.map(ref)})
+  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "album", availableForPurchase: true, album: ref(albumId), recordings: recordingIds.map(keyedRef)})
 }
 
 export async function createWorkProduct(client: SanityClient, draft: SaleDraft, workId: string, recordingIds: string[]) {
-  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "work", availableForPurchase: true, work: ref(workId), recordings: recordingIds.map(ref)})
+  return client.create({_type: "product", ...draft, type: draft.deliveryTypes[0], slug: {_type: "slug", current: toSlug(draft.title)}, productKind: "work", availableForPurchase: true, work: ref(workId), recordings: recordingIds.map(keyedRef)})
+}
+
+export async function listProductsForManagement(client: SanityClient) {
+  return client.fetch<{_id: string; title: string; productKind: string; availableForPurchase?: boolean}[]>(
+    `*[_type == "product"] | order(title asc){_id, title, productKind, availableForPurchase}`,
+  )
+}
+
+export async function deleteProduct(client: SanityClient, productId: string) {
+  return client.delete(productId)
 }
 
 function toSlug(title: string) {
