@@ -33,7 +33,7 @@ export default defineConfig({
   plugins: [
     addMusicTool(),
 
-    structureTool({ structure }),
+    structureTool({ structure, title: "Edit site" }),
 
     visionTool({
       defaultApiVersion: apiVersion,

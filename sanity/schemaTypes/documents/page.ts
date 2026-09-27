@@ -10,7 +10,7 @@ export default defineType({
   type: "document",
   icon: DocumentIcon,
   initialValue: ({documentId}) => ({
-    title: getSitePageById(documentId)?.title || "Untitled page",
+    title: getSitePageById(documentId?.replace(/^drafts\./, ""))?.title || "Untitled page",
   }),
 
   fields: [

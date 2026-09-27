@@ -97,6 +97,12 @@ export async function deleteProduct(client: SanityClient, productId: string) {
 }
 
 export async function deleteRecording(client: SanityClient, recordingId: string) {
+  const dependencies = await client.fetch<{albums: {title: string}[]; products: {title: string}[]}>(
+    `{ "albums": *[_type == "album" && references($recordingId)]{title}, "products": *[_type == "product" && references($recordingId)]{title} }`,
+    {recordingId},
+  )
+  const usedBy = [...dependencies.albums.map((album) => `album “${album.title}”`), ...dependencies.products.map((product) => `product “${product.title}”`)]
+  if (usedBy.length) throw new Error(`This recording is still used by ${usedBy.join(", ")}. Delete or edit that ${usedBy.length === 1 ? "item" : "content"} first, then delete the recording.`)
   return client.delete(recordingId)
 }
 

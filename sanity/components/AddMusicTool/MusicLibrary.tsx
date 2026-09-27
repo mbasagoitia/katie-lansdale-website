@@ -27,8 +27,8 @@ export default function MusicLibrary({onBack}: {onBack: () => void}) {
     try {
       await deleteRecording(client, item._id)
       setItems((current) => current.filter((recording) => recording._id !== item._id))
-    } catch {
-      setError("The recording could not be deleted. Please try again.")
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "The recording could not be deleted. Please try again.")
     } finally {
       setDeletingId(null)
     }
