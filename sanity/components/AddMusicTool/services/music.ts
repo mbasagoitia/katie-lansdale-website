@@ -96,6 +96,18 @@ export async function deleteProduct(client: SanityClient, productId: string) {
   return client.delete(productId)
 }
 
+export async function deleteRecording(client: SanityClient, recordingId: string) {
+  return client.delete(recordingId)
+}
+
+export type SaleCandidate = {_id: string; _type: "recording" | "album"; title: string; artist?: string; yearReleased?: number; recordingIds: string[]}
+
+export async function listSaleCandidates(client: SanityClient) {
+  return client.fetch<SaleCandidate[]>(
+    `*[_type in ["recording", "album"]] | order(title asc){_id, _type, title, artist, yearReleased, "recordingIds": select(_type == "album" => recordings[]._ref, [_id])}`,
+  )
+}
+
 function toSlug(title: string) {
   return title.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
 }

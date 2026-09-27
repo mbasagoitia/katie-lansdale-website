@@ -35,6 +35,7 @@ export interface Product {
     title: string;
     subtitle?: string;
     catalogNumber?: string;
+    arrangedBy?: string;
     composer?: {
       name?: string;
     };

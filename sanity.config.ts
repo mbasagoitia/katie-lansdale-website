@@ -14,6 +14,7 @@ import { schema } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
 
 import { addMusicTool } from "./sanity/tools/addMusicTool";
+import {DeleteMusicDocumentAction} from "./sanity/documentActions";
 
 export default defineConfig({
   basePath: "/studio",
@@ -23,13 +24,19 @@ export default defineConfig({
 
   schema,
 
+  document: {
+    actions: (previousActions, context) => ["composer", "work", "recording", "album", "product"].includes(context.schemaType)
+      ? previousActions.map((action) => action.action === "delete" ? DeleteMusicDocumentAction : action)
+      : previousActions,
+  },
+
   plugins: [
+    addMusicTool(),
+
     structureTool({ structure }),
 
     visionTool({
       defaultApiVersion: apiVersion,
     }),
-
-    addMusicTool(),
   ],
 });

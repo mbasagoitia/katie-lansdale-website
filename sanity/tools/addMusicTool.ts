@@ -1,4 +1,5 @@
 import { definePlugin } from "sanity";
+import {BasketIcon} from "@sanity/icons";
 import AddMusicTool from "../components/AddMusicTool/AddMusicTool";
 
 export const addMusicTool = definePlugin(() => ({
@@ -6,8 +7,9 @@ export const addMusicTool = definePlugin(() => ({
 
   tools: [
     {
-      name: "add-music",
-      title: "Add Music",
+      name: "music-store",
+      title: "Music Store",
+      icon: BasketIcon,
       component: AddMusicTool,
     },
   ],

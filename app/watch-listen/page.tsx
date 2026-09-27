@@ -142,7 +142,8 @@ function releaseMeta(product: Product): string {
   const artist = product.album?.artist || product.recordings[0]?.artist || "Katie Lansdale"
   const year = product.album?.yearReleased || product.recordings[0]?.yearReleased
   const composer = product.work?.composer?.name
-  return [artist, year, composer].filter(Boolean).join(" · ")
+  const arranger = product.work?.arrangedBy ? `Arr. ${product.work.arrangedBy}` : undefined
+  return [artist, year, composer, arranger].filter(Boolean).join(" · ")
 }
 
 function publicPreviewUrl(mediaType: "audio" | "video", path: string): string | null {

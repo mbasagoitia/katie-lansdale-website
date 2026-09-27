@@ -38,6 +38,13 @@ export default defineType({
     }),
 
     defineField({
+      name: "arrangedBy",
+      title: "Arranged By",
+      description: "Optional arranger credit, displayed alongside the work when it is for sale.",
+      type: "string",
+    }),
+
+    defineField({
       name: "yearComposed",
       title: "Year Composed",
       type: "number",

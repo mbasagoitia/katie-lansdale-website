@@ -12,6 +12,7 @@ export type Work = {
   _id: string
   title: string
   catalogNumber?: string
+  arrangedBy?: string
   composer?: Composer
   movements?: Movement[]
 }
@@ -24,6 +25,7 @@ export type WorkDraft = {
   catalogNumber?: string
   yearComposed?: number
   instrumentation?: string
+  arrangedBy?: string
   composerId: string
   movements: Movement[]
 }
