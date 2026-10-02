@@ -1,7 +1,7 @@
 import type {Metadata} from "next"
 import Image from "next/image"
 import type {SanityImageSource} from "@sanity/image-url"
-import {getPageById} from "@/sanity/data/pages"
+import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
 import {RichTextContent} from "@/components/cms/PageContent"
@@ -12,9 +12,8 @@ import styles from "./page.module.css"
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: "Lions Gate Trio | Katie Lansdale",
-  description: "Violinist Katie Lansdale and the Lions Gate Trio.",
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("page-lions-gate-trio")
 }
 
 const defaultMembers: TrioMember[] = [
@@ -59,10 +58,10 @@ export default async function LionsGateTrioPage() {
       <p>{page?.trioStatement || "For over 35 years, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe."}</p>
     </section>
 
-    <blockquote className={styles.quote}>
-      <p>“{page?.trioQuote || "These three stunning musicians are wonderful soloists, and as a team, unbeatable."}”</p>
-      <footer>— {page?.trioQuoteAttribution || "Berliner Morgenpost"}</footer>
-    </blockquote>
+    {page?.trioQuote && <blockquote className={styles.quote}>
+      <p>“{page.trioQuote}”</p>
+      {page.trioQuoteAttribution && <footer>— {page.trioQuoteAttribution}</footer>}
+    </blockquote>}
 
     <Highlight highlight={page?.trioHighlight} />
 

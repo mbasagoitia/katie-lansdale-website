@@ -7,6 +7,8 @@ import styles from "./navigation.module.css";
 
 export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Violinist"}: {siteTitle?: string; tagline?: string}) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const displayTitle = siteTitle || "Katie Lansdale";
+    const displayTagline = tagline || "Violinist";
 
     const closeMenu = () => {
         setMenuOpen(false);
@@ -16,8 +18,8 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
         <nav className={styles.nav}>
             <div className={styles.navInner}>
                 <div className={styles.logo}>
-                    <h1>{siteTitle}</h1>
-                    <span>{tagline.toUpperCase()}</span>
+                    <h1>{displayTitle}</h1>
+                    <span>{displayTagline.toUpperCase()}</span>
                 </div>
                 <button
                     className={styles.menuButton}

@@ -1,7 +1,6 @@
-import { groq } from "next-sanity";
+import { defineQuery, groq } from "next-sanity";
 
-export const allProductsQuery = groq`
-*[_type == "product" && availableForPurchase == true] | order(productKind asc, title asc) {
+const productProjection = groq`
   _id,
   title,
   slug,
@@ -25,7 +24,8 @@ export const allProductsQuery = groq`
     subtitle,
     catalogNumber,
     arrangedBy,
-    composer->{name}
+    composer->{name},
+    movements[]{_key, number, title}
   },
 
   recordings[]->{
@@ -34,10 +34,31 @@ export const allProductsQuery = groq`
     artist,
     yearReleased,
     duration,
+    movementNumber,
     mediaType,
     previewAudio,
     previewVideo,
-    coverArt
+    coverArt,
+    work->{
+      _id,
+      title,
+      subtitle,
+      catalogNumber,
+      arrangedBy,
+      composer->{name},
+      movements[]{_key, number, title}
+    }
   }
-}
 `;
+
+export const allProductsQuery = defineQuery(groq`
+*[_type == "product" && availableForPurchase == true] | order(productKind asc, title asc) {
+  ${productProjection}
+}
+`);
+
+export const productBySlugQuery = defineQuery(groq`
+*[_type == "product" && availableForPurchase == true && slug.current == $slug][0] {
+  ${productProjection}
+}
+`);

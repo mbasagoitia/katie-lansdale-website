@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrate:site-pages": "node --env-file=.env.local migration/scripts/seed-site-pages.mjs",
+    "migrate:home-gallery": "node --env-file=.env.local migration/scripts/seed-site-pages.mjs --refresh-home-gallery",
+    "validate:site-pages": "node --env-file=.env.local migration/scripts/validate-site-pages.mjs",
+    "migrate:cms-defaults": "node --env-file=.env.local migration/scripts/apply-cms-defaults.mjs",
+    "migrate:page-excerpts": "node --env-file=.env.local migration/scripts/apply-page-excerpts.mjs",
+    "migrate:page-seo": "node --env-file=.env.local migration/scripts/apply-page-seo.mjs",
+    "migrate:contact-page": "node --env-file=.env.local migration/scripts/apply-contact-page-defaults.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useState} from "react"
 import {Button, Card, Flex, Stack, Text} from "@sanity/ui"
 import {useClient} from "sanity"
-import {usePaneRouter} from "sanity/structure"
+import {IntentLink} from "sanity/router"
 import {apiVersion} from "../../env"
 import {deleteRecording, listMusicLibrary} from "./services/music"
 import type {MusicLibraryItem} from "./types"
@@ -10,7 +10,6 @@ type Filter = "all" | "listed" | "unlisted"
 
 export default function MusicLibrary({onBack}: {onBack: () => void}) {
   const client = useClient({apiVersion})
-  const {navigateIntent} = usePaneRouter()
   const [items, setItems] = useState<MusicLibraryItem[]>([])
   const [filter, setFilter] = useState<Filter>("all")
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -46,7 +45,7 @@ export default function MusicLibrary({onBack}: {onBack: () => void}) {
     {!error && !items.length && <Text muted>No uploads have been saved yet.</Text>}
     {groups.map((composer) => <Stack key={composer.name} space={3}><Text size={2} weight="semibold">{composer.name}</Text>{composer.works.map((work) => <Card key={work.id} padding={4} tone="transparent"><Stack space={3}>
       <Text size={2} weight="semibold">{work.title}</Text>
-      {work.recordings.map((item) => <Flex key={item._id} justify="space-between" gap={3} align="center"><Stack space={2}><Text>{item.title}</Text><Text size={1} muted>{[item.artist, item.yearReleased, item.isListed ? "Listed for sale" : "Upload only"].filter(Boolean).join(" — ")}</Text>{item.productTitles.length > 0 && <Text size={1} muted>{`For sale as: ${item.productTitles.join(", ")}`}</Text>}</Stack><Flex gap={2}><Button text="Edit recording" mode="ghost" onClick={() => navigateIntent("edit", {id: item._id, type: "recording"})} /><Button text="Delete recording" tone="critical" mode="ghost" loading={deletingId === item._id} disabled={Boolean(deletingId)} onClick={() => void removeRecording(item)} /></Flex></Flex>)}
+      {work.recordings.map((item) => <Flex key={item._id} justify="space-between" gap={3} align="center"><Stack space={2}><Text>{item.title}</Text><Text size={1} muted>{[item.artist, item.yearReleased, item.isListed ? "Listed for sale" : "Upload only"].filter(Boolean).join(" — ")}</Text>{item.productTitles.length > 0 && <Text size={1} muted>{`For sale as: ${item.productTitles.join(", ")}`}</Text>}</Stack><Flex gap={2}><Button as={IntentLink} text="Edit recording" mode="ghost" intent="edit" params={{id: item._id, type: "recording"}} /><Button text="Delete recording" tone="critical" mode="ghost" loading={deletingId === item._id} disabled={Boolean(deletingId)} onClick={() => void removeRecording(item)} /></Flex></Flex>)}
     </Stack></Card>)}</Stack>)}
   </Stack></Card>
 }

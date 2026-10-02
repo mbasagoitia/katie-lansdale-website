@@ -1,10 +1,11 @@
 import type {Metadata} from "next"
 import Image from "next/image"
+import Link from "next/link"
 import type {SanityImageSource} from "@sanity/image-url"
 import AddToCartButton from "@/components/music/AddToCartButton"
 import CartPanel from "@/components/music/CartPanel"
 import {RichTextContent} from "@/components/cms/PageContent"
-import {getPageById} from "@/sanity/data/pages"
+import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import {getProducts} from "@/sanity/data/products"
 import {urlFor} from "@/sanity/lib/image"
 import type {Product} from "@/types/product"
@@ -12,9 +13,8 @@ import styles from "./page.module.css"
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: "Watch / Listen | Katie Lansdale",
-  description: "Albums and recordings by violinist Katie Lansdale.",
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("page-watch-listen")
 }
 
 export default async function WatchListen() {
@@ -54,18 +54,20 @@ function SectionHeading({title}: {title: string}) {
 }
 
 function AlbumFeature({product}: {product: Product}) {
-  const imageUrl = coverUrl(product, 1100)
-  const previewRecording = product.recordings.find(hasPreview)
+  const imageUrl = coverUrl(product, 1100, true)
+  const albumHref = `/watch-listen/${product.slug.current}`
 
   return <article className={styles.albumFeature}>
-    <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 280px" />
+    <Link href={albumHref} className={styles.albumCoverLink} aria-label={`View ${product.title} album details`}>
+      <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 360px" fullArt />
+    </Link>
     <div className={styles.albumContent}>
       <p className={styles.kind}>Album</p>
-      <h3>{product.title}</h3>
+      <h3><Link href={albumHref}>{product.title}</Link></h3>
       <p className={styles.meta}>{releaseMeta(product)}</p>
       {product.shortDescription && <p className={styles.description}>{product.shortDescription}</p>}
       <p className={styles.trackCount}>{product.recordings.length} {product.recordings.length === 1 ? "recording" : "recordings"}</p>
-      {previewRecording ? <Preview recording={previewRecording} label={`Preview: ${previewRecording.title}`} /> : <p className={styles.noPreview}>Preview coming soon</p>}
+      <Link href={albumHref} className={styles.albumDetailsLink}>View tracks &amp; previews <span aria-hidden="true">→</span></Link>
       <PurchaseAction product={product} />
     </div>
   </article>
@@ -104,9 +106,9 @@ function SingleListItem({product}: {product: Product}) {
   </article>
 }
 
-function Cover({product, imageUrl, sizes}: {product: Product; imageUrl: string | null; sizes: string}) {
+function Cover({product, imageUrl, sizes, fullArt = false}: {product: Product; imageUrl: string | null; sizes: string; fullArt?: boolean}) {
   return <div className={styles.cover}>
-    {imageUrl ? <Image src={imageUrl} alt={`Cover art for ${product.title}`} fill sizes={sizes} className={styles.coverImage} /> : <div className={styles.coverPlaceholder} aria-hidden="true"><span>{product.productKind === "album" ? "Album" : "Single"}</span></div>}
+    {imageUrl ? <Image src={imageUrl} alt={`Cover art for ${product.title}`} fill sizes={sizes} className={`${styles.coverImage} ${fullArt ? styles.coverImageFull : ""}`} /> : <div className={styles.coverPlaceholder} aria-hidden="true"><span>{product.productKind === "album" ? "Album" : "Single"}</span></div>}
   </div>
 }
 
@@ -130,16 +132,18 @@ function Preview({recording, label, compact = false}: {recording: Product["recor
   </div>
 }
 
-function coverUrl(product: Product, width: number): string | null {
-  return product.coverArt ? urlFor(product.coverArt as SanityImageSource).width(width).height(width).fit("crop").url() : null
+function coverUrl(product: Product, width: number, preserveFullArt = false): string | null {
+  if (!product.coverArt) return null
+  const image = urlFor(product.coverArt as SanityImageSource).width(width)
+  return preserveFullArt ? image.url() : image.height(width).fit("crop").url()
 }
 
 function hasPreview(recording: Product["recordings"][number]): boolean {
-  return Boolean(recording.mediaType === "video" ? recording.previewVideo : recording.previewAudio)
+  return Boolean(recording && (recording.mediaType === "video" ? recording.previewVideo : recording.previewAudio))
 }
 
 function releaseMeta(product: Product): string {
-  const artist = product.album?.artist || product.recordings[0]?.artist || "Katie Lansdale"
+  const artist = product.album?.artist || product.recordings.at(0)?.artist || "Katie Lansdale"
   const year = product.album?.yearReleased || product.recordings[0]?.yearReleased
   const composer = product.work?.composer?.name
   const arranger = product.work?.arrangedBy ? `Arr. ${product.work.arrangedBy}` : undefined

@@ -11,6 +11,8 @@ export default defineType({
     siteTitle: "Katie Lansdale",
     tagline: "Violinist",
     copyright: "© 2026 Katie Lansdale. All rights reserved.",
+    seoTitle: "Katie Lansdale | Violinist",
+    seoDescription: "Discover violinist Katie Lansdale’s performances, recordings, teaching, and work with the Lions Gate Trio.",
   },
 
   fields: [
@@ -43,10 +45,34 @@ export default defineType({
     }),
 
     defineField({
+      name: "backgroundImage",
+      title: "Website Background Image",
+      description: "The image behind the main content card on every page. Choose a wide, textured image that remains readable around the edges.",
+      type: "image",
+      options: {hotspot: true},
+      fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
+    }),
+
+    defineField({
       name: "copyright",
       title: "Copyright Text",
       type: "string",
-    })
+    }),
+
+    defineField({
+      name: "seoTitle",
+      title: "SEO Title",
+      description: "The sitewide title shown in search results and browser tabs. It should name Katie and identify her work as a violinist.",
+      type: "string",
+    }),
+
+    defineField({
+      name: "seoDescription",
+      title: "SEO Description",
+      description: "The sitewide search-engine summary. Unlike a page Excerpt, this is written to encourage a searcher to visit the website.",
+      type: "text",
+      rows: 3,
+    }),
   ],
 
   preview: {

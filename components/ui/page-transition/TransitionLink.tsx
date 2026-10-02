@@ -2,6 +2,7 @@
 
 import Link, { LinkProps } from "next/link";
 import { MouseEvent, ReactNode } from "react";
+import {usePathname} from "next/navigation";
 import { usePageTransition } from "./PageTransition";
 
 interface TransitionLinkProps extends LinkProps {
@@ -17,6 +18,7 @@ export default function TransitionLink({
     ...props
 }: TransitionLinkProps) {
     const { startTransition } = usePageTransition();
+    const pathname = usePathname();
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
         if (
@@ -29,8 +31,12 @@ export default function TransitionLink({
             return;
         }
 
-        startTransition();
         onClick?.(event);
+        if (event.defaultPrevented || isCurrentPath(props.href, pathname)) {
+            return;
+        }
+
+        startTransition();
     };
 
     return (
@@ -42,4 +48,12 @@ export default function TransitionLink({
             {children}
         </Link>
     );
+}
+
+function isCurrentPath(href: LinkProps["href"], pathname: string): boolean {
+    const targetPath = typeof href === "string" ? href.split(/[?#]/)[0] : href.pathname;
+    if (typeof targetPath !== "string") return false;
+
+    const normalizePath = (path: string) => path === "/" ? path : path.replace(/\/$/, "");
+    return normalizePath(targetPath) === normalizePath(pathname);
 }

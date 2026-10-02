@@ -3,15 +3,26 @@ import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
 
 const isLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
+const isAboutPage = (documentId?: string) => documentId !== "page-about";
+const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
+const isHomePage = (documentId?: string) => documentId === "page-home";
+const isNotHomePage = (documentId?: string) => documentId !== "page-home";
+const isProjectsPage = (documentId?: string) => documentId === "page-projects-and-affiliations";
 
 export default defineType({
   name: "page",
   title: "Pages",
   type: "document",
   icon: DocumentIcon,
-  initialValue: ({documentId}) => ({
-    title: getSitePageById(documentId?.replace(/^drafts\./, ""))?.title || "Untitled page",
-  }),
+  initialValue: ({documentId}) => {
+    const pageId = documentId?.replace(/^drafts\./, "")
+    return {
+      title: getSitePageById(pageId)?.title || "Untitled page",
+      ...(pageId === "page-home" ? {
+        excerpt: "Official website of internationally acclaimed violinist Katie Lansdale—soloist, chamber musician, educator, and artistic leader.",
+      } : {}),
+    }
+  },
 
   fields: [
     defineField({
@@ -36,26 +47,55 @@ export default defineType({
 
     defineField({
       name: "heroImage",
-      title: "Hero Image",
+      title: "Photo",
       type: "image",
       options: {
         hotspot: true,
       },
       fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
+      hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
       name: "excerpt",
       title: "Excerpt",
-      description: "Short summary used in previews and SEO.",
+      description: "A short public-facing summary of this page. It may appear below the page title and in link previews; it is different from the SEO Description, which is written specifically for search-result snippets.",
       type: "text",
       rows: 3,
+    }),
+
+    defineField({
+      name: "seoTitle",
+      title: "SEO Title Override (optional)",
+      description: "The title shown for this specific page in browser tabs and search results. Leave blank to use the sitewide SEO Title from Global Settings.",
+      type: "string",
+    }),
+
+    defineField({
+      name: "seoDescription",
+      title: "SEO Description Override (optional)",
+      description: "A search-engine summary for this specific page. Leave blank to use the sitewide SEO Description from Global Settings.",
+      type: "text",
+      rows: 3,
+    }),
+
+    defineField({
+      name: "aboutIntroduction",
+      title: "About Introduction",
+      description: "The opening biography paragraph beside Katie's portrait on the About page.",
+      type: "array",
+      hidden: ({document}) => isAboutPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "block",
+        styles: [{title: "Normal", value: "normal"}],
+      })],
     }),
 
     defineField({
       name: "content",
       title: "Content",
       type: "array",
+      hidden: ({document}) => isHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [
         defineArrayMember({
           type: "block",
@@ -76,10 +116,32 @@ export default defineType({
     }),
 
     defineField({
+      name: "projectCards",
+      title: "Projects & Affiliations",
+      description: "Feature Katie's current ensembles, educational work, and artistic collaborations. These cards appear on the Projects & Affiliations page.",
+      type: "array",
+      hidden: ({document}) => !isProjectsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Project name", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "category", title: "Category", type: "string", description: "For example: Ensemble, Workshop, or Festival."}),
+          defineField({name: "description", title: "Description", type: "text", rows: 4, validation: (Rule) => Rule.required()}),
+          defineField({name: "imageUrl", title: "Image URL", type: "url", description: "Optional image shown on the card. You may use a full image URL or a local path beginning with /images/.", validation: (Rule) => Rule.uri({scheme: ["http", "https"], allowRelative: true})}),
+          defineField({name: "linkUrl", title: "Website or event link", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({name: "linkLabel", title: "Link label", type: "string", initialValue: "Learn more"}),
+        ],
+        preview: {select: {title: "title", subtitle: "category"}},
+      })],
+      validation: (Rule) => Rule.max(6),
+    }),
+
+    defineField({
       name: "gallery",
       title: "Photo Gallery",
       description: "Used on the homepage. Add up to two images for the fading photo display.",
       type: "array",
+      hidden: ({document}) => isNotHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "image",
         options: {hotspot: true},
@@ -93,6 +155,7 @@ export default defineType({
       title: "Quotes",
       description: "Used on the homepage quote display.",
       type: "array",
+      hidden: ({document}) => isNotHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "object",
         fields: [
@@ -109,6 +172,7 @@ export default defineType({
       title: "Featured In",
       description: "Used on the homepage to display publication or organization logos.",
       type: "array",
+      hidden: ({document}) => isNotHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "object",
         fields: [
@@ -266,18 +330,6 @@ export default defineType({
       hidden: ({document}) => isLionsGateTrioPage(document?._id),
     }),
 
-    defineField({
-      name: "seoTitle",
-      title: "SEO Title",
-      type: "string",
-    }),
-
-    defineField({
-      name: "seoDescription",
-      title: "SEO Description",
-      type: "text",
-      rows: 3,
-    }),
   ],
 
   preview: {

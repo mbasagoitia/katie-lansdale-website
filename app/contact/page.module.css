@@ -1,18 +1,17 @@
-.page { max-width: 1160px; margin: 62px auto 110px; color: #795333; }
-.intro { display: grid; grid-template-columns: minmax(280px, .85fr) minmax(0, 1.15fr); gap: 9%; align-items: start; }
-.photo { position: relative; display: grid; min-height: 520px; place-items: center; overflow: hidden; background: linear-gradient(145deg, #4a2c18, #9d5e28); color: #fff8ef; }
-.photo::before { position: absolute; width: 48%; height: 78%; border: 1px solid rgba(255, 248, 239, .7); border-radius: 48% 48% 14px 14px; content: ""; transform: rotate(17deg); }
-.photo p { position: relative; margin: 0; max-width: 180px; font-family: var(--font-cormorant), serif; font-size: 1.75rem; font-style: italic; line-height: 1.1; text-align: center; }
+.page { max-width: 1320px; margin: 62px auto 110px; color: #795333; }
+.header { max-width: 690px; margin-bottom: 42px; }
+.header h1 { margin: 0; font-family: var(--font-cormorant), serif; font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 300; letter-spacing: 2px; line-height: .98; }
+.panels { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr); gap: clamp(20px, 2.5vw, 36px); align-items: stretch; }
+.photo { position: relative; min-height: 100%; overflow: hidden; background: #e6e0d8; }
 .photoImage { object-fit: cover; }
-.eyebrow { margin: 0 0 12px; color: #c6915f; font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-.introText h1 { margin: 0; font-family: var(--font-cormorant), serif; font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 300; letter-spacing: 2px; line-height: .98; }
-.excerpt { max-width: 540px; margin: 25px 0 0; color: #c6915f; font-family: var(--font-cormorant), serif; font-size: 1.5rem; font-style: italic; font-weight: 200; line-height: 1.5; }
+.excerpt { margin: 20px 0 0; color: #c6915f; font-family: var(--font-cormorant), serif; font-size: 1.5rem; font-style: italic; font-weight: 200; line-height: 1.5; }
 .cmsContent { margin-top: 26px; font-size: 1.2rem; line-height: 1.75; }
 .cmsContent :global(p) { margin: 0 0 18px; }
-.form { margin-top: 42px; padding-top: 34px; border-top: 1px solid #decab6; }
+.formPanel { align-self: stretch; }
 
 @media (max-width: 800px) {
   .page { margin: 36px auto 75px; }
-  .intro { grid-template-columns: 1fr; gap: 42px; }
-  .photo { min-height: 360px; }
+  .header { margin-bottom: 30px; }
+  .panels { grid-template-columns: 1fr; gap: 36px; }
+  .photo { min-height: 420px; }
 }

@@ -10,23 +10,31 @@
 .section h2 { margin: 0; color: #c6915f; font-family: var(--font-inter), sans-serif; font-size: 1.5rem; font-weight: 400; letter-spacing: 3px; line-height: 1; text-transform: uppercase; }
 .empty { margin: 0; color: #7b583d; line-height: 1.55; }
 .albumFeatures { display: grid; gap: 34px; }
-.albumFeature { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 3fr); overflow: hidden; background: #fffdf9; border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 16px 34px rgba(92, 58, 33, .11); }
+.albumFeature { display: grid; grid-template-columns: clamp(330px, 30vw, 420px) minmax(0, 1fr); width: min(100%, 1320px); min-height: clamp(360px, 30vw, 420px); overflow: hidden; background: #fffdf9; border: 1px solid rgba(166, 103, 49, .25); box-shadow: 0 16px 34px rgba(92, 58, 33, .11); }
 .cover { position: relative; aspect-ratio: 1; overflow: hidden; background: #d8b184; }
-.albumFeature .cover, .singleTile .cover { aspect-ratio: auto; min-height: 100%; }
+.albumFeature .cover { width: 100%; height: 100%; min-height: auto; aspect-ratio: auto; }
+.singleTile .cover { aspect-ratio: auto; min-height: 100%; }
 .coverImage { object-fit: cover; }
+.coverImageFull { object-fit: contain; background: #f5eee6; }
+.albumCoverLink { display: block; height: 100%; background: #f5eee6; }
 .coverPlaceholder { display: grid; width: 100%; height: 100%; place-items: center; background: linear-gradient(135deg, #9e5c2a, #dfbd91); color: #f8ecdf; font-family: var(--font-cormorant), serif; font-size: 2.5rem; font-style: italic; }
-.albumContent { display: flex; flex-direction: column; padding: clamp(28px, 4vw, 50px); }
-.albumFeature h3 { margin: 8px 0; color: #5c3a21; font-size: clamp(2.25rem, 4vw, 3.5rem); line-height: .96; }
+.albumContent { display: flex; flex-direction: column; padding: clamp(28px, 3vw, 38px); }
+.albumFeature h3 { margin: 8px 0; color: #5c3a21; font-size: clamp(2.25rem, 3vw, 3rem); line-height: .98; }
+.albumFeature h3 a { color: inherit; text-decoration: none; }
+.albumFeature h3 a:hover, .albumFeature h3 a:focus-visible { color: #9d5e28; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .12em; }
 .meta, .description, .noPreview { margin: 0; line-height: 1.55; }
 .meta { color: #7b583d; font-size: .95rem; }
 .description { margin-top: 16px; }
-.trackCount { margin: 20px 0 0; color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.trackCount { margin: 16px 0 0; color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.albumDetailsLink { align-self: start; margin-top: 16px; color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.albumDetailsLink:hover, .albumDetailsLink:focus-visible { color: #9d5e28; text-decoration: underline; text-underline-offset: .28em; }
 .preview { margin-top: 17px; }
 .preview p { margin-bottom: 8px; }
 .audio, .video { display: block; width: 100%; }
 .video { aspect-ratio: 16 / 9; background: #20150d; }
 .noPreview { margin-top: 17px; color: #7b583d; font-size: .94rem; font-style: italic; }
 .purchaseAction { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 25px; padding-top: 17px; border-top: 1px solid rgba(166, 103, 49, .25); }
+.albumContent .purchaseAction { margin-top: auto; }
 .purchaseAction > div { display: grid; gap: 3px; }
 .purchaseAction strong { color: #9d5e28; font-family: var(--font-cormorant), serif; font-size: 1.7rem; font-weight: 500; line-height: 1; }
 .purchaseAction span { color: #7b583d; font-family: var(--font-inter), sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
@@ -55,7 +63,8 @@
   .intro { margin-bottom: 52px; }
   .section + .section { margin-top: 64px; }
   .albumFeature { grid-template-columns: 1fr; }
-  .albumFeature .cover, .singleTile .cover { aspect-ratio: 1; min-height: auto; }
+  .albumFeature .cover, .singleTile .cover { height: auto; aspect-ratio: 1; min-height: auto; }
+  .albumCoverLink { height: auto; }
   .singleTile { grid-template-columns: 1fr; }
   .tileContent { grid-template-columns: 1fr; grid-template-areas: "details" "preview" "purchase"; row-gap: 0; }
   .tileContent .purchaseActionCompact { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(166, 103, 49, .25); }

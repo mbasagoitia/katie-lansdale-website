@@ -1,6 +1,5 @@
-import {BasketIcon, CogIcon, DocumentIcon} from "@sanity/icons"
+import {CogIcon, DocumentIcon} from "@sanity/icons"
 import type {StructureResolver} from "sanity/structure"
-import AddMusicTool from "./components/AddMusicTool/AddMusicTool"
 import {sitePages} from "./sitePages"
 
 function pageItem(S: Parameters<StructureResolver>[0], page: (typeof sitePages)[number]) {
@@ -10,5 +9,4 @@ function pageItem(S: Parameters<StructureResolver>[0], page: (typeof sitePages)[
 export const structure: StructureResolver = (S) => S.list().title("Website Content").items([
   S.listItem().title("Global Settings").icon(CogIcon).child(S.document().schemaType("siteSettings").documentId("site-settings").title("Global Settings")),
   S.listItem().title("Website Pages").icon(DocumentIcon).child(S.list().title("Website Pages").items(sitePages.map((page) => pageItem(S, page)))),
-  S.listItem().title("Music Store").icon(BasketIcon).child(S.component(AddMusicTool).title("Music Store")),
 ])

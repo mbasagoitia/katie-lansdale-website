@@ -11,9 +11,24 @@ const quotes = [
     attribution: "Berliner Morgenpost on the Lions Gate Trio",
   },
   {
-    quote:
-      '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore rmagna aliqua."',
-    attribution: "placeholder attribution 2",
+    quote: "A stunning musician and wonderful soloist, communicating an infectious joy …a wonderful addition to the international music scene.",
+    attribution: "Berliner Morgenpost",
+  },
+  {
+    quote: "A truly brilliant performance.",
+    attribution: "Cleveland Plain Dealer",
+  },
+  {
+    quote: "A first class soloist.",
+    attribution: "Boston Globe",
+  },
+  {
+    quote: "A bold and expressive soloist.",
+    attribution: "Cleveland Plain Dealer",
+  },
+  {
+    quote: "Katie Lansdale was a first class soloist.",
+    attribution: "Boston Globe, review of the Tanglewood Festival of Contemporary Music",
   },
 ];
 

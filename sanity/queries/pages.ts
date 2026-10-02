@@ -6,6 +6,7 @@ export const pageByIdQuery = groq`
     title,
     excerpt,
     heroImage,
+    aboutIntroduction,
     content[]{
       ...,
       _type == "image" => {..., asset->{_id, url, metadata {dimensions}}}
@@ -22,14 +23,15 @@ export const pageByIdQuery = groq`
     trioNewsHeading,
     trioNewsImage{alt, asset->{_id, url, metadata {dimensions}}},
     trioNewsLink,
-    trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, url, audioUrl, youtubeUrl},
+    trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, coverArtUrl, url, audioUrl, youtubeUrl},
     trioEvents[]{_key, date, title, venue, location, url},
     trioWebsiteUrl,
+    projectCards[]{_key, title, category, description, imageUrl, linkUrl, linkLabel},
     seoTitle,
     seoDescription
   }
 `
 
 export const siteSettingsQuery = groq`
-  *[_id == "site-settings"][0]{siteTitle, tagline, copyright}
+  *[_id == "site-settings"][0]{siteTitle, tagline, copyright, seoTitle, seoDescription, backgroundImage{alt, asset->{_id, url, metadata {dimensions}}}}
 `

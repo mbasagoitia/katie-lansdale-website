@@ -1,30 +1,31 @@
 import Image from "next/image"
-import type {SanityImageSource} from "@sanity/image-url"
+import type {Metadata} from "next"
 import ContactForm from "@/components/contact/ContactForm"
 import {RichTextContent} from "@/components/cms/PageContent"
-import {getPageById} from "@/sanity/data/pages"
-import {urlFor} from "@/sanity/lib/image"
+import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import styles from "./page.module.css"
 
 export const revalidate = 60
 
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("page-contact")
+}
+
 export default async function ContactPage() {
   const page = await getPageById("page-contact")
-  const photoUrl = page?.heroImage?.asset ? urlFor(page.heroImage as SanityImageSource).width(1000).height(1200).fit("crop").url() : null
 
   return <main className={styles.page}>
-    <section className={styles.intro}>
+    <header className={styles.header}>
+      <h1 id="contact-heading">{page?.title || "Contact"}</h1>
+      <p className={styles.excerpt}>{page?.excerpt || "Use the contact form below to get in touch."}</p>
+      {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
+    </header>
+    <section className={styles.panels}>
       <div className={styles.photo}>
-        {photoUrl ? <Image src={photoUrl} alt={page?.heroImage?.alt || "Katie Lansdale"} fill sizes="(max-width: 800px) 100vw, 45vw" className={styles.photoImage} /> : <p>Photo of Katie&apos;s violin</p>}
+        <Image src="/images/art/violin-stock-soft.png" alt="Violin against a soft neutral background" fill sizes="(max-width: 800px) 100vw, 33vw" className={styles.photoImage} />
       </div>
-      <div className={styles.introText}>
-        <p className={styles.eyebrow}>Get in touch</p>
-        <h1 id="contact-heading">{page?.title || "Contact"}</h1>
-        <p className={styles.excerpt}>{page?.excerpt || "For concert engagements, collaborations, teaching, and general inquiries, please use the form below."}</p>
-        {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
-        <div className={styles.form} aria-labelledby="contact-heading">
-          <ContactForm />
-        </div>
+      <div className={styles.formPanel} aria-labelledby="contact-heading">
+        <ContactForm />
       </div>
     </section>
   </main>

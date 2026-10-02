@@ -1,16 +1,59 @@
 import Image from "next/image"
-import PageContent from "@/components/cms/PageContent"
-import {getPageById} from "@/sanity/data/pages"
+import type {Metadata} from "next"
+import type {SanityImageSource} from "@sanity/image-url"
+import {RichTextContent} from "@/components/cms/PageContent"
+import {aboutPageSeed} from "@/sanity/content/aboutPageSeed"
+import {getPageById, getPageMetadata} from "@/sanity/data/pages"
+import {urlFor} from "@/sanity/lib/image"
 import styles from "./page.module.css"
 
 export const revalidate = 60
+
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("page-about")
+}
 
 export default async function About() {
   const page = await getPageById("page-about")
 
   if (!page) return <AboutFallback />
 
-  return <PageContent page={page} fallbackTitle="About" fallbackExcerpt="Soloist. Chamber Musician. Educator. Artistic Catalyst." fallbackContent={<AboutFallback />} />
+  return <AboutPage page={page} />
+}
+
+function AboutPage({page}: {page: Awaited<ReturnType<typeof getPageById>>}) {
+  const heroImageUrl = page?.heroImage?.asset
+    ? urlFor(page.heroImage as SanityImageSource).width(900).height(1350).fit("crop").url()
+    : null
+  const title = page?.title || aboutPageSeed.title
+  const excerpt = page?.excerpt || aboutPageSeed.excerpt
+  const introduction = page?.aboutIntroduction?.length ? page.aboutIntroduction : aboutPageSeed.introduction
+  const content = page?.content?.length ? page.content : aboutPageSeed.content
+
+  return <>
+    <section className={styles.intro}>
+      <div className={styles.portraitWrapper}>
+        <Image
+          className={styles.portrait}
+          src={heroImageUrl || "/images/headshots/headshot-3.jpg"}
+          alt={page?.heroImage?.alt || "Katie Lansdale"}
+          width={4480}
+          height={6720}
+          sizes="(max-width: 1099px) 350px, 430px"
+        />
+      </div>
+      <div className={styles.introTextWrapper}>
+        <h1>{title}</h1>
+        <p>{excerpt}</p>
+        <RichTextContent content={introduction} />
+      </div>
+    </section>
+
+    <hr className={styles.divider} />
+    <div className={styles.bio}>
+      <RichTextContent content={content} />
+    </div>
+  </>
 }
 
 function AboutFallback() {

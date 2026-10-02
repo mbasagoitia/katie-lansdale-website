@@ -39,6 +39,11 @@ export interface Product {
     composer?: {
       name?: string;
     };
+    movements?: {
+      _key?: string;
+      number?: number;
+      title?: string;
+    }[];
   };
 
   recordings: {
@@ -47,9 +52,25 @@ export interface Product {
     artist?: string;
     yearReleased?: number;
     duration?: string;
+    movementNumber?: number;
     mediaType: "audio" | "video";
     previewAudio?: string;
     previewVideo?: string;
     coverArt?: unknown;
+    work?: {
+      _id: string;
+      title: string;
+      subtitle?: string;
+      catalogNumber?: string;
+      arrangedBy?: string;
+      composer?: {
+        name?: string;
+      };
+      movements?: {
+        _key?: string;
+        number?: number;
+        title?: string;
+      }[];
+    };
   }[];
 }

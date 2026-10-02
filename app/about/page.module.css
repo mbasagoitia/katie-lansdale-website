@@ -52,6 +52,11 @@
     color: #795333;
 }
 
+.divider {
+    border: 0;
+    border-top: 1px solid #c6915f;
+}
+
 .bio {
     max-width: 900px;
     margin: 60px auto;
@@ -60,6 +65,10 @@
 
 .bio section {
     margin-bottom: 70px;
+}
+
+.bio > h2:not(:first-child) {
+    margin-top: 70px;
 }
 
 .bio h2 {

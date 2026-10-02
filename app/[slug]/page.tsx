@@ -1,9 +1,16 @@
 import {notFound} from "next/navigation"
+import type {Metadata} from "next"
 import PageContent from "@/components/cms/PageContent"
-import {getPageById} from "@/sanity/data/pages"
+import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import {getSitePageBySlug} from "@/sanity/sitePages"
 
 export const revalidate = 60
+
+export async function generateMetadata({params}: {params: Promise<{slug: string}>}): Promise<Metadata> {
+  const {slug} = await params
+  const sitePage = getSitePageBySlug(slug)
+  return sitePage ? getPageMetadata(sitePage.id) : {}
+}
 
 export default async function CmsRoutePage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params

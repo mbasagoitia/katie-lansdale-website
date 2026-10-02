@@ -51,11 +51,22 @@ export type TrioEvent = {
   url?: string
 }
 
+export type ProjectCard = {
+  _key: string
+  title: string
+  category?: string
+  description?: string
+  imageUrl?: string
+  linkUrl?: string
+  linkLabel?: string
+}
+
 export type CmsPage = {
   _id: string
   title?: string
   excerpt?: string
   heroImage?: SanityImage
+  aboutIntroduction?: TypedObject[]
   content?: TypedObject[]
   gallery?: Array<SanityImage & {_key: string}>
   quotes?: PageQuote[]
@@ -72,6 +83,7 @@ export type CmsPage = {
   trioRecordings?: TrioRecording[]
   trioEvents?: TrioEvent[]
   trioWebsiteUrl?: string
+  projectCards?: ProjectCard[]
   seoTitle?: string
   seoDescription?: string
 }
@@ -80,5 +92,8 @@ export type SiteSettings = {
   siteTitle?: string
   tagline?: string
   copyright?: string
+  seoTitle?: string
+  seoDescription?: string
+  backgroundImage?: SanityImage
 }
 import type {TypedObject} from "@portabletext/types"

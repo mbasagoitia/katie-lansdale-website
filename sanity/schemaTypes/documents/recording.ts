@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import {FullAudioInput, FullVideoInput, PreviewAudioInput, PreviewVideoInput} from "../../components/RecordingMediaInput";
 
 export default defineType({
   name: "recording",
@@ -69,6 +70,7 @@ export default defineType({
       title: "Media Type",
       description: "Inferred automatically from the uploaded media file.",
       type: "string",
+      hidden: true,
       options: {
         list: [
           { title: "Audio", value: "audio" },
@@ -82,34 +84,34 @@ export default defineType({
 
     defineField({
       name: "previewAudio",
-      title: "Preview Audio Path",
-      description: "Managed automatically when a preview audio file is uploaded.",
+      title: "Preview audio",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "audio",
+      components: {input: PreviewAudioInput},
     }),
 
     defineField({
       name: "fullAudio",
-      title: "Full Audio Path",
-      description: "Managed automatically when the full audio file is uploaded.",
+      title: "Full audio",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "audio",
+      components: {input: FullAudioInput},
     }),
 
     defineField({
       name: "previewVideo",
-      title: "Preview Video Path",
-      description: "Managed automatically when a preview video file is uploaded.",
+      title: "Preview video",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "video",
+      components: {input: PreviewVideoInput},
     }),
 
     defineField({
       name: "fullVideo",
-      title: "Full Video Path",
-      description: "Managed automatically when the full video file is uploaded.",
+      title: "Full video",
       type: "string",
       hidden: ({ parent }) => parent?.mediaType !== "video",
+      components: {input: FullVideoInput},
     }),
   ],
 
