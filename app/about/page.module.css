@@ -131,3 +131,12 @@
     }
 
 }
+
+@media (max-width: 1099px) {
+    /* The shared mobile transition removes outer page margins. Restore the
+       breathing room after the About-page divider without reintroducing a
+       gap above the page content. */
+    .bio {
+        padding-top: 50px;
+    }
+}
