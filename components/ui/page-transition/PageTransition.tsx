@@ -68,9 +68,15 @@ export function TransitionOverlay({
 }) {
     const context = useContext(TransitionContext);
     const transitionState = context?.transitionState || "idle";
+    const pathname = usePathname();
+    const preserveHomeSpacing = pathname === "/";
 
     return (
-        <div className={styles.transitionContainer}>
+        <div
+            className={`${styles.transitionContainer} ${
+                preserveHomeSpacing ? styles.preserveHomeSpacing : ""
+            }`}
+        >
             {children}
             <div
                 className={`${styles.pageTransition} ${

@@ -60,7 +60,7 @@
 .members p { margin: 0 0 7px; color: #9d5e28; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; }
 .members h2 { margin: 0; font-family: var(--font-cormorant), serif; font-size: 1.8rem; font-weight: 500; }
 
-.about { display: grid; grid-template-columns: minmax(230px, .7fr) minmax(0, 1.3fr); gap: 90px; padding: 130px 10%; }
+.about { display: grid; grid-template-columns: minmax(230px, .7fr) minmax(0, 1.3fr); gap: 90px; padding: 130px 0; }
 .about h2, .sectionHeading h2, .highlight h2 { font-size: clamp(2.3rem, 4vw, 3.4rem); }
 .about > p { margin: 27px 0 0; font-size: 1.2rem; line-height: 1.85; }
 
@@ -74,11 +74,11 @@
 .highlightContent { align-self: center; padding: 65px 13%; }
 .highlightContent > p:not(.sectionLabel) { margin: 24px 0 30px; font-size: 1.1rem; line-height: 1.7; }
 
-.news { max-width: 900px; margin: 0 auto 125px; padding: 55px 7%; background: #fbf6ef; border-left: 3px solid #a86c34; }
-.newsWithImage { display: grid; grid-template-columns: minmax(180px, 360px) 1fr; max-width: 1040px; padding: 0; border-left: 0; }
+.news { max-width: none; margin: 0 0 125px; padding: 55px 7%; background: #fbf6ef; border-left: 3px solid #a86c34; }
+.newsWithImage { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr); padding: 0; border-left: 0; }
 .newsImage { position: relative; min-height: 100%; background: #e8d5c1; }
 .newsImage :global(img) { object-fit: cover; }
-.newsText { padding: 55px 14%; }
+.newsText { padding: 55px 10%; }
 .news:not(.newsWithImage) .newsText { padding: 0; }
 .news h2 { margin: 0; font-family: var(--font-cormorant), serif; font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 400; line-height: 1; }
 .newsContent { margin-top: 24px; font-size: 1.2rem; line-height: 1.75; }
