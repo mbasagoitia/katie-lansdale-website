@@ -66,7 +66,9 @@
     min-height: 320px;
     margin: 0;
     padding: 26px 22px;
-    background: #faf5ee;
+    /* Match the site card once the portrait and quote become separate panels.
+       The warmer contrast remains part of the desktop split composition. */
+    background: #f7eee6;
   }
 
 }
