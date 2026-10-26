@@ -173,13 +173,13 @@
 
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
     .quotePanel {
         margin-top: 0;
     }
 
     .quoteBox {
-        min-height: 268px;
+        min-height: clamp(280px, 42vw, 360px);
     }
 
     .quoteContent {

@@ -22,7 +22,7 @@ export default function PhotoSlider({photos: cmsPhotos}: {photos?: Photo[]}) {
               src={photo.src}
               alt={photo.alt || "Katie Lansdale"}
               fill
-              sizes="(max-width: 900px) 100vw, 35vw"
+              sizes="(max-width: 1099px) 100vw, 35vw"
               priority={i === 0}
             />
           </div>

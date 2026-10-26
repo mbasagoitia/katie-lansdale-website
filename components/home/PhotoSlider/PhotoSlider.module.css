@@ -96,12 +96,12 @@
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
     .photoSlider {
         position: relative;
         inset: auto;
         order: 1;
-        height: min(110vw, 460px);
+        height: clamp(430px, 85vw, 720px);
     }
 
     .photoFrame {
@@ -116,7 +116,7 @@
 
     .left .photo,
     .right .photo {
-        object-position: center 35%;
+        object-position: center 28%;
     }
 
     .photoViewport::after {
