@@ -1,0 +1,16 @@
+.page { max-width: 1240px; margin: 32px auto 110px; color: #5c3a21; }
+.header { max-width: 760px; margin-bottom: 54px; }
+.header h1 { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-size: clamp(2.6rem, 4vw, 3.35rem); font-weight: 400; letter-spacing: .3px; line-height: .98; }
+.reviewList { border-top: 1px solid #dfcdbc; }
+.review { display: grid; grid-template-columns: 66px minmax(0, 1fr); column-gap: 28px; margin: 0; padding: 44px 0 48px; border-bottom: 1px solid #dfcdbc; }
+.number { padding-top: 8px; color: #b47a47; font-family: var(--font-inter), sans-serif; font-size: .76rem; font-weight: 700; letter-spacing: .14em; }
+.review blockquote { grid-column: 2; max-width: 820px; margin: 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: clamp(1.35rem, 2.3vw, 1.5rem); font-style: italic; font-weight: 300; line-height: 1.45; text-wrap: balance; }
+.review figcaption { grid-column: 2; margin-top: 17px; color: #a86c34; font-family: var(--font-cormorant), serif; font-size: clamp(1.18rem, 2vw, 1.3rem); font-style: italic; font-weight: 400; line-height: 1.4; }
+
+@media (max-width: 700px) {
+  .page { margin: 30px auto 80px; }
+  .header { margin-bottom: 42px; }
+  .review { grid-template-columns: 1fr; gap: 13px; padding: 34px 0 38px; }
+  .number, .review blockquote, .review figcaption { grid-column: 1; }
+  .number { padding-top: 0; }
+}

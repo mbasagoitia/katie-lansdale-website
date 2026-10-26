@@ -5,6 +5,7 @@ import {RichTextContent} from "@/components/cms/PageContent"
 import {aboutPageSeed} from "@/sanity/content/aboutPageSeed"
 import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
+import {warmImagePlaceholder} from "@/lib/image-placeholder"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -40,6 +41,9 @@ function AboutPage({page}: {page: Awaited<ReturnType<typeof getPageById>>}) {
           width={4480}
           height={6720}
           sizes="(max-width: 1099px) 350px, 430px"
+          placeholder="blur"
+          blurDataURL={warmImagePlaceholder}
+          unoptimized
         />
       </div>
       <div className={styles.introTextWrapper}>
@@ -60,7 +64,7 @@ function AboutFallback() {
   return <>
     <section className={styles.intro}>
       <div className={styles.portraitWrapper}>
-        <Image className={styles.portrait} src="/images/headshots/headshot-3.jpg" alt="Katie Lansdale" width={4480} height={6720} />
+        <Image className={styles.portrait} src="/images/headshots/headshot-3.jpg" alt="Katie Lansdale" width={4480} height={6720} placeholder="blur" blurDataURL={warmImagePlaceholder} unoptimized />
       </div>
       <div className={styles.introTextWrapper}>
         <h1>About</h1>
@@ -69,10 +73,10 @@ function AboutFallback() {
       </div>
     </section>
 
-    <hr style={{borderTop: "1px solid #c6915f"}} />
+    <hr style={{borderTop: "1px solid #a86c34"}} />
     <div className={styles.bio}>
       <section>
-        <h2>Performer</h2>
+        <h2>Solo Performer</h2>
         <p>Lansdale&apos;s concerto appearances have included with the National Symphony, the Cleveland Chamber Symphony, the Austin Mozart Orchestra, the Schroeder Classical Orchestra, the NY Spectrum Orchestra, the Baltimore Symphony, the Piedmont Valley Orchestra, and the New York Repertory Orchestra. Lansdale performs on renowned concert series, including at the Phillips Collection, the Caramoor Series, Carnegie Hall&apos;s Weill Hall and Lincoln Center&apos;s Rose Room.</p>
         <p>Particularly widely acclaimed for performances of solo Bach, Lansdale has performed the complete cycle over a dozen times in North and South America. “This is one of the best recordings of this music,” wrote the American Record Guide of her Bach CD.</p>
         <p>Following her earlier presentation on solo Bach at Juilliard&apos;s Delay Symposium, Lansdale was recently invited to return in 2026 to share another passion of hers---violin works by composers from around the world. A passionate advocate for new and undiscovered music, Lansdale has performed premieres and unjustly forgotten works throughout the Eastern seabord. She was invited to present works by composers from under-represented groups at Juilliard&apos;s 2026 Delay Symposium. Lansdale is also honored to frequently perform music frequently by today&apos;s leading compositional voices, including commissioned works by Jerod Impachchaahaaha&apos; Tate and Evan Williams.</p>
@@ -81,7 +85,7 @@ function AboutFallback() {
       <section>
         <h2>Chamber Musician</h2>
         <p>Winner of Grand Prizes at the Fischoff and Yellow Springs national chamber competitions, Lansdale has collaborated in chamber concerts with artists such as Yo Yo Ma, Donald Weilerstein, the Shanghai and Miami Quartets, and Charles Neidich.</p>
-        <p>For over 35 years Lansdale has been a member of the internationally-acclaimed Lions Gate Trio, trio in residence at the University of Hartford, recording for Centaur and Triton records and performing across Europe and the Eastern US.</p>
+        <p>For over three decades, Lansdale has been a member of the internationally-acclaimed Lions Gate Trio, trio in residence at the University of Hartford, recording for Centaur and Triton records and performing across Europe and the Eastern US.</p>
         <p>In New York, where she founded the acclaimed Locrian new music group, Lansdale&apos;s extensive chamber music concerts have ranged from Mostly Mozart at Lincoln Center with Yo Yo Ma to Merkin Hall with the Twentieth Centuryists. With the Festival Chamber Society, she performed regularly for a decade in Carnegie Hall&apos;s Weill Hall.</p>
       </section>
 

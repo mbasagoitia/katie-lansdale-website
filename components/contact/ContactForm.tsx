@@ -35,12 +35,15 @@ export default function ContactForm() {
   }
 
   return <form className={styles.form} onSubmit={submit}>
-    <div className={styles.fieldRow}>
-      <label>Name<span aria-hidden="true">*</span><input name="name" autoComplete="name" required maxLength={120} /></label>
-      <label>Email<span aria-hidden="true">*</span><input name="email" type="email" autoComplete="email" required maxLength={254} /></label>
+    <div className={styles.formHeading}>
+      <p>Send a note</p>
     </div>
-    <label>Subject<input name="subject" maxLength={180} /></label>
-    <label>Message<span aria-hidden="true">*</span><textarea name="message" required rows={7} maxLength={5000} /></label>
+    <div className={styles.fieldRow}>
+      <label><span className={styles.fieldLabel}>Name <b aria-hidden="true">*</b></span><input name="name" autoComplete="name" placeholder="Your name" required maxLength={120} /></label>
+      <label><span className={styles.fieldLabel}>Email <b aria-hidden="true">*</b></span><input name="email" type="email" autoComplete="email" placeholder="you@example.com" required maxLength={254} /></label>
+    </div>
+    <label><span className={styles.fieldLabel}>Subject</span><input name="subject" placeholder="Subject" maxLength={180} /></label>
+    <label><span className={styles.fieldLabel}>Message <b aria-hidden="true">*</b></span><textarea name="message" required rows={7} maxLength={5000} /></label>
     <label className={styles.honeypot} aria-hidden="true">Company<input name="company" tabIndex={-1} autoComplete="off" /></label>
     <button type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending…" : "Send message"}</button>
     <p className={`${styles.status} ${status === "error" ? styles.error : ""}`} aria-live="polite">{message}</p>

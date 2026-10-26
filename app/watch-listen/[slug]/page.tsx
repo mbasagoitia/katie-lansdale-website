@@ -108,7 +108,7 @@ function Preview({recording}: {recording: Recording}) {
 
   return <div className={styles.preview}>
     {recording.mediaType === "video"
-      ? <video controls preload="metadata" src={previewUrl}>Your browser does not support video previews.</video>
+      ? <video controls preload="metadata" poster={recording.previewPoster} src={previewUrl}>Your browser does not support video previews.</video>
       : <audio controls preload="metadata" src={previewUrl}>Your browser does not support audio previews.</audio>}
   </div>
 }

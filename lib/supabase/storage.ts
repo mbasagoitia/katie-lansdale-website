@@ -3,12 +3,6 @@ import {supabase} from "./client"
 export type RecordingMediaKind = "preview" | "full"
 export type RecordingMediaType = "audio" | "video"
 export type UploadedRecordingMedia = {mediaType: RecordingMediaType; path: string; duration?: string}
-type PreviewJob = {id: string; status: "queued" | "processing" | "completed" | "failed"; preview_path?: string | null; error?: string | null}
-
-const bucketByKind: Record<RecordingMediaKind, Record<RecordingMediaType, string>> = {
-  preview: {audio: "audio-previews", video: "video-previews"},
-  full: {audio: "audio-full", video: "video-full"},
-}
 
 export async function uploadRecordingMedia(file: File, kind: RecordingMediaKind, sanityToken?: string): Promise<UploadedRecordingMedia> {
   const mediaType = inferMediaType(file)
@@ -22,30 +16,6 @@ export async function uploadRecordingMedia(file: File, kind: RecordingMediaKind,
   return {mediaType, path: upload.data.path, duration}
 }
 
-export async function generateRecordingPreview(fullPath: string, mediaType: RecordingMediaType, sanityToken?: string): Promise<string> {
-  if (!sanityToken) throw new Error("Your Sanity session is unavailable. Reload Studio and sign in again.")
-  const response = await fetch("/api/preview-jobs", {
-    method: "POST",
-    headers: {"Content-Type": "application/json", Authorization: `Bearer ${sanityToken}`},
-    body: JSON.stringify({fullPath, mediaType}),
-  })
-  const job = await readJson<PreviewJob>(response)
-  if (!response.ok || !job.id) throw new Error(job.error || "Could not start preview generation.")
-
-  for (let attempt = 0; attempt < 150; attempt += 1) {
-    await delay(2_000)
-    const statusResponse = await fetch(`/api/preview-jobs/${job.id}`, {headers: {Authorization: `Bearer ${sanityToken}`}})
-    const status = await readJson<PreviewJob>(statusResponse)
-    if (!statusResponse.ok) {
-      if (statusResponse.status >= 500) continue
-      throw new Error(status.error || "Could not check preview generation.")
-    }
-    if (status.status === "completed" && status.preview_path) return status.preview_path
-    if (status.status === "failed") throw new Error(status.error || "Preview generation failed.")
-  }
-  throw new Error("Preview generation is taking longer than expected. You can try again shortly.")
-}
-
 async function requestSignedUpload(file: File, kind: RecordingMediaKind, sanityToken: string): Promise<{bucket: string; path: string; token: string}> {
   const response = await fetch("/api/media-upload-url", {
     method: "POST",
@@ -55,14 +25,6 @@ async function requestSignedUpload(file: File, kind: RecordingMediaKind, sanityT
   const body: {bucket?: string; path?: string; token?: string; error?: string} = await response.json()
   if (!response.ok || !body.bucket || !body.path || !body.token) throw new Error(body.error || "Could not authorize this upload.")
   return {bucket: body.bucket, path: body.path, token: body.token}
-}
-
-async function readJson<T>(response: Response): Promise<T & {error?: string}> {
-  return response.json().catch(() => ({})) as Promise<T & {error?: string}>
-}
-
-function delay(milliseconds: number): Promise<void> {
-  return new Promise((resolve) => window.setTimeout(resolve, milliseconds))
 }
 
 function inferMediaType(file: File): RecordingMediaType {

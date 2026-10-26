@@ -1,13 +1,18 @@
-.form { display: grid; gap: 23px; }
-.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 23px; }
-.form label { display: grid; gap: 8px; color: #795333; font-size: .86rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.form label span { color: #9d5e28; }
-.form input, .form textarea { width: 100%; box-sizing: border-box; border: 1px solid #decab6; border-radius: 0; background: #fffdf9; color: #5c3a21; font: inherit; font-size: 1rem; font-weight: 400; letter-spacing: 0; line-height: 1.5; text-transform: none; }
-.form input { height: 46px; padding: 9px 12px; }
-.form textarea { min-height: 160px; padding: 12px; resize: vertical; }
-.form input:focus, .form textarea:focus { outline: 2px solid #c6915f; outline-offset: 2px; }
-.form button { justify-self: start; border: 1px solid #7b4220; border-radius: 0; padding: 13px 21px; background: #7b4220; color: #fffaf5; cursor: pointer; font: inherit; font-size: .86rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: background-color .2s ease; }
-.form button:hover:not(:disabled), .form button:focus-visible { background: #9d5e28; }
+.form { display: grid; gap: 27px; }
+.formHeading { padding-bottom: 20px; border-bottom: 1px solid #e5d5c5; }
+.formHeading p { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-size: 1.75rem; line-height: 1; }
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.form label { display: grid; gap: 10px; color: #795333; font-size: .73rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.fieldLabel { display: flex; align-items: baseline; gap: 4px; }
+.fieldLabel b { color: #9d5e28; }
+.form input, .form textarea { width: 100%; box-sizing: border-box; border: 1px solid #ddc9b6; border-radius: 5px; background: rgba(255, 253, 249, .72); color: #5c3a21; font: inherit; font-size: 1rem; font-weight: 400; letter-spacing: 0; line-height: 1.5; text-transform: none; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+.form input::placeholder, .form textarea::placeholder { color: #a9927c; }
+.form input { height: 52px; padding: 11px 14px; }
+.form textarea { min-height: 174px; padding: 14px; resize: vertical; }
+.form input:hover, .form textarea:hover { border-color: #c8a586; }
+.form input:focus, .form textarea:focus { outline: 0; border-color: #a86c34; background: #fffdf9; box-shadow: 0 0 0 3px rgba(168, 108, 52, .13); }
+.form button { justify-self: start; border: 1px solid #7b4220; border-radius: 4px; padding: 15px 23px; background: #7b4220; box-shadow: 0 6px 13px rgba(92, 58, 33, .15); color: #fffaf5; cursor: pointer; font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.form button:hover:not(:disabled), .form button:focus-visible { background: #9d5e28; box-shadow: 0 9px 16px rgba(92, 58, 33, .2); transform: translateY(-1px); }
 .form button:disabled { cursor: wait; opacity: .65; }
 .honeypot { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0 0 0 0); white-space: nowrap; }
 .status { min-height: 1.5em; margin: -9px 0 0; color: #4a6a42; font-size: .95rem; font-weight: 600; }

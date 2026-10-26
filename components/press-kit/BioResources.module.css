@@ -1,0 +1,17 @@
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.card { display: flex; flex-direction: column; min-height: 190px; padding: 30px 32px; background: #fbf6ef; border: 1px solid #dfcdbc; }
+.card h3, .modal h2 { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-size: clamp(1.8rem, 2.6vw, 2.15rem); font-weight: 400; line-height: 1; }
+.actions { display: flex; flex-wrap: wrap; gap: 18px 24px; margin-top: auto; }
+.actions button, .actions a, .modalDownload { padding: 0; color: #7b4220; background: transparent; border: 0; font-family: var(--font-inter), sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .06em; line-height: 1.4; text-align: left; text-decoration: underline; text-decoration-color: #a86c34; text-decoration-thickness: 1px; text-underline-offset: 6px; text-transform: uppercase; cursor: pointer; }
+.actions a, .modalDownload { text-decoration: underline; }
+.actions button:hover, .actions a:hover, .modalDownload:hover { color: #a86c34; }
+.backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 28px; background: rgb(45 29 18 / .62); }
+.modal { width: min(780px, 100%); max-height: min(780px, calc(100vh - 56px)); padding: 32px; overflow-y: auto; color: #68472f; background: #fffaf4; border: 1px solid #dfcdbc; box-shadow: 0 22px 60px rgb(37 23 14 / .28); }
+.modalHeader { display: flex; align-items: start; justify-content: space-between; gap: 24px; padding-bottom: 26px; border-bottom: 1px solid #dfcdbc; }
+.closeButton { display: grid; flex: 0 0 auto; place-items: center; width: 38px; height: 38px; padding: 0; color: #7b583d; background: transparent; border: 1px solid #c9aa8a; border-radius: 50%; font-size: 1.8rem; font-weight: 300; line-height: 1; cursor: pointer; }
+.closeButton:hover { color: #fffaf4; background: #7b583d; }
+.modalBody { margin-top: 28px; }
+.modalBody p { margin: 0 0 20px; font-size: 1rem; line-height: 1.72; }
+.modalBody p:last-child { margin-bottom: 0; }
+.modalDownload { display: inline-block; margin-top: 30px; }
+@media (max-width: 760px) { .cards { grid-template-columns: 1fr; } .card { min-height: 165px; padding: 28px; } .backdrop { padding: 16px; } .modal { max-height: calc(100vh - 32px); padding: 26px 22px; } }

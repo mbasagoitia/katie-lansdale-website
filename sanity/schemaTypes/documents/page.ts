@@ -8,6 +8,9 @@ const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
 const isHomePage = (documentId?: string) => documentId === "page-home";
 const isNotHomePage = (documentId?: string) => documentId !== "page-home";
 const isProjectsPage = (documentId?: string) => documentId === "page-projects-and-affiliations";
+const isDonationsPage = (documentId?: string) => documentId === "page-donations";
+const isPublicationsPage = (documentId?: string) => documentId === "page-publications";
+const isPhotosPressKitPage = (documentId?: string) => documentId === "page-photos-press-kit";
 
 export default defineType({
   name: "page",
@@ -127,13 +130,133 @@ export default defineType({
           defineField({name: "title", title: "Project name", type: "string", validation: (Rule) => Rule.required()}),
           defineField({name: "category", title: "Category", type: "string", description: "For example: Ensemble, Workshop, or Festival."}),
           defineField({name: "description", title: "Description", type: "text", rows: 4, validation: (Rule) => Rule.required()}),
+          defineField({name: "details", title: "Expanded description", description: "Optional longer description shown when a visitor opens this project card.", type: "text", rows: 7}),
           defineField({name: "imageUrl", title: "Image URL", type: "url", description: "Optional image shown on the card. You may use a full image URL or a local path beginning with /images/.", validation: (Rule) => Rule.uri({scheme: ["http", "https"], allowRelative: true})}),
+          defineField({name: "imagePosition", title: "Image focal point", description: "Optional CSS position for the card crop, for example: left center, center, or right center.", type: "string"}),
           defineField({name: "linkUrl", title: "Website or event link", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
           defineField({name: "linkLabel", title: "Link label", type: "string", initialValue: "Learn more"}),
         ],
         preview: {select: {title: "title", subtitle: "category"}},
       })],
       validation: (Rule) => Rule.max(6),
+    }),
+
+    defineField({
+      name: "donationOptions",
+      title: "Ways to Donate",
+      description: "Add each organization or fund visitors can support. A QR code is generated automatically from the donation link; upload a custom code only if you prefer one.",
+      type: "array",
+      hidden: ({document}) => !isDonationsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Fund or project name", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "organization", title: "Organization", type: "string"}),
+          defineField({name: "description", title: "Description", type: "text", rows: 4}),
+          defineField({name: "donationUrl", title: "Donation link", description: "Paste the full donation-page URL. Leave blank until the fund is ready to receive gifts.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({name: "linkLabel", title: "Donation button label", type: "string", initialValue: "Donate online"}),
+          defineField({name: "qrCode", title: "Custom QR code (optional)", description: "If blank, the website automatically creates a scannable QR code from the donation link.", type: "image", options: {hotspot: false}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+        ],
+        preview: {select: {title: "title", subtitle: "organization", media: "qrCode"}},
+      })],
+      validation: (Rule) => Rule.max(4),
+    }),
+
+    defineField({
+      name: "publications",
+      title: "Published Writing",
+      description: "List articles and other published work. These entries are presented as citations, not links.",
+      type: "array",
+      hidden: ({document}) => !isPublicationsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Article title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "publication", title: "Publication", type: "string"}),
+          defineField({name: "date", title: "Issue date or year", type: "string"}),
+          defineField({name: "subtitle", title: "Subtitle", type: "string"}),
+          defineField({name: "collaborators", title: "Byline or collaborators", type: "string"}),
+          defineField({name: "description", title: "Short description (optional)", type: "text", rows: 3}),
+        ],
+        preview: {select: {title: "title", subtitle: "publication"}},
+      })],
+      validation: (Rule) => Rule.max(20),
+    }),
+
+    defineField({
+      name: "presentations",
+      title: "Presentations",
+      description: "List lectures, workshops, and conference presentations.",
+      type: "array",
+      hidden: ({document}) => !isPublicationsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Presentation title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "event", title: "Event or institution", type: "string"}),
+          defineField({name: "date", title: "Date or year", type: "string"}),
+          defineField({name: "description", title: "Notes (optional)", type: "text", rows: 3}),
+        ],
+        preview: {select: {title: "title", subtitle: "event"}},
+      })],
+      validation: (Rule) => Rule.max(20),
+    }),
+
+    defineField({
+      name: "honors",
+      title: "Honors & Awards",
+      description: "List distinctions and awards relevant to Katie’s artistic work.",
+      type: "array",
+      hidden: ({document}) => !isPublicationsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Honor or award", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "organization", title: "Presenting organization", type: "string"}),
+          defineField({name: "date", title: "Date or year", type: "string"}),
+          defineField({name: "description", title: "Description (optional)", type: "text", rows: 3}),
+        ],
+        preview: {select: {title: "title", subtitle: "organization"}},
+      })],
+      validation: (Rule) => Rule.max(12),
+    }),
+
+    defineField({
+      name: "pressKitShortBio",
+      title: "Short Bio",
+      description: "A concise biography for presenters, programs, and media listings.",
+      type: "text",
+      rows: 5,
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "pressKitLongBio",
+      title: "Long Bio",
+      description: "A full biography for concert presenters and press materials.",
+      type: "array",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "block",
+        styles: [{title: "Normal", value: "normal"}],
+      })],
+    }),
+
+    defineField({
+      name: "pressKitPhotos",
+      title: "Press Photos",
+      description: "Approved color and black-and-white press photos. Visitors can open a larger view from the website.",
+      type: "array",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "image", title: "Photo", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})], validation: (Rule) => Rule.required()}),
+          defineField({name: "label", title: "Photo label", type: "string", description: "For example: Headshot 1 — color."}),
+        ],
+        preview: {select: {title: "label", media: "image"}},
+      })],
+      validation: (Rule) => Rule.max(12),
     }),
 
     defineField({
@@ -164,7 +287,7 @@ export default defineType({
         ],
         preview: {select: {title: "quote", subtitle: "attribution"}},
       })],
-      validation: (Rule) => Rule.max(3),
+      validation: (Rule) => Rule.max(10),
     }),
 
     defineField({

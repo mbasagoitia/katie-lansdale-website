@@ -20,7 +20,7 @@ export default function FeaturedInBar({items}: {items?: FeaturedItem[]}) {
       </div>
       <div className={styles.logos}>
         {displayItems.map((item) => <a key={item.name} href={item.url || undefined} target={item.url ? "_blank" : undefined} rel={item.url ? "noopener noreferrer" : undefined} className={`${styles.logo} ${item.className || ""}`} aria-label={item.name}>
-          <Image src={item.src} alt={item.name} width={290} height={90} />
+          <Image src={item.src} alt={item.name} width={320} height={180} />
         </a>)}
       </div>
     </section>

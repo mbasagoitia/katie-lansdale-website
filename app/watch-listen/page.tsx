@@ -33,8 +33,8 @@ export default async function WatchListen() {
     {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
 
     <section className={styles.section}>
-      <SectionHeading title="Albums" />
-      {albums.length ? <div className={styles.albumFeatures}>{albums.map((product) => <AlbumFeature key={product._id} product={product} />)}</div> : <p className={styles.empty}>Albums will appear here when they are available for purchase.</p>}
+      <SectionHeading title="Album" />
+      {albums.length ? <div className={styles.albumFeatures}>{albums.map((product) => <AlbumFeature key={product._id} product={product} />)}</div> : <p className={styles.empty}>An album will appear here when it is available for purchase.</p>}
     </section>
 
     <section className={styles.section}>
@@ -81,7 +81,6 @@ function SingleTile({product}: {product: Product}) {
     <Cover product={product} imageUrl={imageUrl} sizes="(max-width: 700px) calc(100vw - 64px), 280px" />
     <div className={styles.tileContent}>
       <div className={styles.tileDetails}>
-        <p className={styles.kind}>Single</p>
         <h3>{product.title}</h3>
         <p className={styles.meta}>{releaseMeta(product)}</p>
       </div>
@@ -93,10 +92,10 @@ function SingleTile({product}: {product: Product}) {
 
 function SingleListItem({product}: {product: Product}) {
   const previewRecording = product.recordings.find(hasPreview)
+  const isVideo = previewRecording?.mediaType === "video"
 
-  return <article className={styles.listItem}>
+  return <article className={`${styles.listItem} ${isVideo ? styles.listItemVideo : ""}`}>
     <div className={styles.listDetails}>
-      <p className={styles.kind}>Single</p>
       <h3>{product.title}</h3>
       <p className={styles.meta}>{releaseMeta(product)}</p>
       {product.shortDescription && <p className={styles.description}>{product.shortDescription}</p>}
@@ -127,7 +126,7 @@ function Preview({recording, label, compact = false}: {recording: Product["recor
   return <div className={`${styles.preview} ${compact ? styles.previewCompact : ""}`}>
     <p>{label}</p>
     {recording.mediaType === "video"
-      ? <video className={styles.video} controls preload="metadata" src={url}>Your browser does not support video previews.</video>
+      ? <video className={styles.video} controls preload="metadata" poster={recording.previewPoster} src={url}>Your browser does not support video previews.</video>
       : <audio className={styles.audio} controls preload="metadata" src={url}>Your browser does not support audio previews.</audio>}
   </div>
 }
@@ -143,11 +142,18 @@ function hasPreview(recording: Product["recordings"][number]): boolean {
 }
 
 function releaseMeta(product: Product): string {
+  if (product.productKind !== "album") {
+    const composer = product.work?.composer?.name || product.recordings.at(0)?.work?.composer?.name
+    return displayComposer(composer)
+  }
+
   const artist = product.album?.artist || product.recordings.at(0)?.artist || "Katie Lansdale"
   const year = product.album?.yearReleased || product.recordings[0]?.yearReleased
-  const composer = product.work?.composer?.name
-  const arranger = product.work?.arrangedBy ? `Arr. ${product.work.arrangedBy}` : undefined
-  return [artist, year, composer, arranger].filter(Boolean).join(" · ")
+  return [artist, year].filter(Boolean).join(" · ")
+}
+
+function displayComposer(name?: string): string {
+  return name === "Johann Sebastian Bach" ? "J.S. Bach" : name || ""
 }
 
 function publicPreviewUrl(mediaType: "audio" | "video", path: string): string | null {

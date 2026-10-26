@@ -1,0 +1,12 @@
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.photoButton { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; padding: 0; border: 0; background: #dfc7ae; cursor: zoom-in; }
+.thumbnail { object-fit: cover; transition: transform .35s ease, filter .35s ease; }
+.photoButton:hover .thumbnail, .photoButton:focus-visible .thumbnail { transform: scale(1.03); filter: brightness(.88); }
+.photoButton:focus-visible { outline: 3px solid #a86c34; outline-offset: 4px; }
+.caption { position: absolute; right: 0; bottom: 0; left: 0; padding: 13px 15px; background: linear-gradient(transparent, rgba(35, 20, 11, .76)); color: #fffaf5; font-family: var(--font-inter), sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-align: left; text-transform: uppercase; }
+.lightbox { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 50px; background: rgba(29, 18, 11, .9); cursor: zoom-out; }
+.lightboxImage { position: relative; width: min(100%, 900px); height: min(82vh, 900px); cursor: default; }
+.fullImage { object-fit: contain; }
+.closeButton { position: fixed; top: 22px; right: 30px; width: 42px; height: 42px; border: 1px solid rgba(255, 250, 245, .7); background: transparent; color: #fffaf5; cursor: pointer; font-size: 2rem; line-height: 1; }
+@media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lightbox { padding: 25px; } .lightboxImage { height: min(76vh, 700px); } }
+@media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }

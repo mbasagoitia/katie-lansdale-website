@@ -1,0 +1,31 @@
+.page { max-width: 1240px; margin: 32px auto 110px; color: #5c3a21; }
+.header { max-width: none; margin-bottom: 54px; }
+.header h1 { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-size: clamp(2.6rem, 4vw, 3.35rem); font-weight: 400; letter-spacing: .3px; line-height: .98; }
+.header p { margin: 28px 0 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: clamp(1.35rem, 2.4vw, 1.65rem); font-style: italic; font-weight: 400; line-height: 1.35; }
+.section { margin-top: 80px; }
+.section h2 { margin: 0 0 26px; color: #68472f; font-family: var(--font-cormorant), serif; font-size: clamp(1.9rem, 3.2vw, 2.45rem); font-weight: 400; letter-spacing: .01em; line-height: 1; }
+.citationList { border-top: 1px solid #dfcdbc; }
+.citation { display: grid; grid-template-columns: minmax(170px, .36fr) minmax(0, 1fr); gap: 28px; padding: 31px 0 34px; border-bottom: 1px solid #dfcdbc; }
+.meta { color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .76rem; font-weight: 700; letter-spacing: .1em; line-height: 1.45; text-transform: uppercase; }
+.citation h3, .presentation h3, .honor h3 { margin: 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 400; line-height: 1.05; }
+.subtitle { margin: 8px 0 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: 1.25rem; font-style: italic; line-height: 1.28; }
+.byline, .description, .presentation p, .honor p { margin: 11px 0 0; color: #79583e; font-family: var(--font-inter), sans-serif; font-size: .98rem; line-height: 1.55; }
+.presentationList { border-top: 1px solid #dfcdbc; }
+.presentation { display: grid; grid-template-columns: minmax(170px, .36fr) minmax(0, 1fr); gap: 28px; padding: 31px 0 34px; border-bottom: 1px solid #dfcdbc; }
+.presentation .meta, .honor .meta { margin-bottom: 17px; }
+.honorGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.honor { padding: 32px; border: 1px solid #dfcdbc; background: rgba(255, 250, 245, .45); }
+
+@media (max-width: 700px) {
+  .page { margin: 30px auto 80px; }
+  .header { margin-bottom: 42px; }
+  .section { margin-top: 55px; }
+  .citation { grid-template-columns: 1fr; gap: 13px; padding: 28px 0 30px; }
+  .presentation { grid-template-columns: 1fr; gap: 13px; padding: 28px 0 30px; }
+  .honorGrid { grid-template-columns: 1fr; gap: 27px; }
+  .honor { padding: 27px 24px; }
+}
+
+@media (min-width: 701px) {
+  .header h1 { white-space: nowrap; }
+}

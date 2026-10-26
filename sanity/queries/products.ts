@@ -38,6 +38,7 @@ const productProjection = groq`
     mediaType,
     previewAudio,
     previewVideo,
+    previewPoster,
     coverArt,
     work->{
       _id,

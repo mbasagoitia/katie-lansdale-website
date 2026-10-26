@@ -26,7 +26,14 @@ export const pageByIdQuery = groq`
     trioRecordings[]{_key, title, subtitle, coverArt{alt, asset->{_id, url, metadata {dimensions}}}, coverArtUrl, url, audioUrl, youtubeUrl},
     trioEvents[]{_key, date, title, venue, location, url},
     trioWebsiteUrl,
-    projectCards[]{_key, title, category, description, imageUrl, linkUrl, linkLabel},
+    projectCards[]{_key, title, category, description, details, imageUrl, imagePosition, linkUrl, linkLabel},
+    donationOptions[]{_key, title, organization, description, donationUrl, linkLabel, qrCode{alt, asset->{_id, url, metadata {dimensions}}}},
+    publications[]{_key, title, publication, date, subtitle, collaborators, description},
+    presentations[]{_key, title, event, date, description},
+    honors[]{_key, title, organization, date, description},
+    pressKitShortBio,
+    pressKitLongBio,
+    pressKitPhotos[]{_key, label, image{alt, asset->{_id, url, metadata {dimensions}}}},
     seoTitle,
     seoDescription
   }

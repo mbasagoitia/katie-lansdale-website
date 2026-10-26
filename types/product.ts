@@ -56,6 +56,7 @@ export interface Product {
     mediaType: "audio" | "video";
     previewAudio?: string;
     previewVideo?: string;
+    previewPoster?: string;
     coverArt?: unknown;
     work?: {
       _id: string;

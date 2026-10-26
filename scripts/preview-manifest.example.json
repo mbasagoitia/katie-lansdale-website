@@ -1,0 +1,39 @@
+{
+  "outputDirectory": "./tmp/generated-previews",
+  "defaults": {
+    "durationSeconds": 30,
+    "fadeSeconds": 1
+  },
+  "items": [
+    {
+      "id": "bach-allemande-double",
+      "input": "/absolute/path/to/Bach - Allemande-double.wav",
+      "startSeconds": 0
+    },
+    {
+      "id": "bach-corrente-double",
+      "input": "/absolute/path/to/Bach - Corrente-double.wav",
+      "startSeconds": 0
+    },
+    {
+      "id": "bach-sarabande-double",
+      "input": "/absolute/path/to/Bach - Sarabande-double.wav",
+      "startSeconds": 0
+    },
+    {
+      "id": "bach-tempo-di-borea-double",
+      "input": "/absolute/path/to/Bach - Tempo di Borea-double.wav",
+      "startSeconds": 0
+    },
+    {
+      "id": "video-one",
+      "input": "/absolute/path/to/video-one.mov",
+      "startSeconds": 0
+    },
+    {
+      "id": "video-two",
+      "input": "/absolute/path/to/video-two.mov",
+      "startSeconds": 0
+    }
+  ]
+}

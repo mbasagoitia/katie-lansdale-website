@@ -17,7 +17,7 @@ export default async function ContactPage() {
   return <main className={styles.page}>
     <header className={styles.header}>
       <h1 id="contact-heading">{page?.title || "Contact"}</h1>
-      <p className={styles.excerpt}>{page?.excerpt || "Use the contact form below to get in touch."}</p>
+      <p className={styles.excerpt}>{page?.excerpt || "Get in touch for artistic engagement or discussion."}</p>
       {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
     </header>
     <section className={styles.panels}>

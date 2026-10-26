@@ -1,4 +1,4 @@
-.page { max-width: 1120px; margin: 64px auto 110px; color: #5c3a21; }
+.page { max-width: 1240px; margin: 40px auto 110px; color: #5c3a21; }
 .backLink { display: inline-block; margin-bottom: 35px; color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .07em; text-decoration: none; text-transform: uppercase; }
 .backLink:hover, .backLink:focus-visible { color: #9d5e28; text-decoration: underline; text-underline-offset: .3em; }
 .hero { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: clamp(34px, 6vw, 86px); align-items: center; }
@@ -7,7 +7,7 @@
 .cover > span { display: grid; width: 100%; height: 100%; place-items: center; color: #f8ecdf; background: linear-gradient(135deg, #9e5c2a, #dfbd91); font-family: var(--font-cormorant), serif; font-size: 3rem; font-style: italic; }
 .kind, .composer, .trackNumber { margin: 0; color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .74rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .hero h1, .sectionHeading h2, .workHeader h3, .track h4 { font-family: var(--font-cormorant), serif; font-weight: 400; }
-.hero h1 { margin: 10px 0; color: #5c3a21; font-size: clamp(2.8rem, 4vw, 4rem); line-height: .92; }
+.hero h1 { margin: 10px 0; color: #7b583d; font-size: clamp(2.8rem, 4vw, 4rem); line-height: .92; }
 .meta, .description, .workMeta, .movements, .trackInfo p, .noPreview { margin: 0; line-height: 1.55; }
 .meta { color: #7b583d; font-size: 1rem; }
 .description { max-width: 580px; margin-top: 20px; font-size: 1.08rem; }
@@ -18,8 +18,8 @@
 .purchaseAction span { color: #7b583d; font-family: var(--font-inter), sans-serif; font-size: .71rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .tracks { margin-top: 100px; }
 .sectionHeading { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid rgba(166, 103, 49, .25); }
-.sectionHeading h2 { margin: 0; color: #c6915f; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1; }
-.workGroup { padding: 35px 0 39px; border-bottom: 1px solid rgba(166, 103, 49, .25); }
+.sectionHeading h2 { margin: 0; color: #a86c34; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1; }
+.workGroup { padding: 35px 0 0; }
 .workHeader h3 { margin: 8px 0; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1; }
 .workMeta { color: #7b583d; }
 .movements { margin-top: 12px; color: #a86c34; font-size: .9rem; font-style: italic; }

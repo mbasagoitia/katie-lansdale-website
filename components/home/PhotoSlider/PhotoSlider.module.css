@@ -97,8 +97,29 @@
 }
 
 @media (max-width: 700px) {
-    .photoFrame { width: 48%; }
-    .left { mask-image: linear-gradient(to right, #000 0%, #000 58%, transparent 100%); }
-    .right { mask-image: linear-gradient(to left, #000 0%, #000 58%, transparent 100%); }
-    .photoViewport::after { background: linear-gradient(0deg, rgba(250, 245, 238, .24) 0%, transparent 20%, transparent 80%, rgba(250, 245, 238, .24) 100%); }
+    .photoSlider {
+        position: relative;
+        inset: auto;
+        order: 1;
+        height: min(110vw, 460px);
+    }
+
+    .photoFrame {
+        width: 100%;
+        mask-image: none;
+    }
+
+    .left,
+    .right {
+        inset: 0;
+    }
+
+    .left .photo,
+    .right .photo {
+        object-position: center 35%;
+    }
+
+    .photoViewport::after {
+        background: linear-gradient(0deg, rgba(250, 245, 238, .18) 0%, transparent 22%, transparent 78%, rgba(250, 245, 238, .18) 100%);
+    }
 }

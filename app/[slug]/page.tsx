@@ -18,5 +18,6 @@ export default async function CmsRoutePage({params}: {params: Promise<{slug: str
   if (!sitePage) notFound()
 
   const page = await getPageById(sitePage.id)
-  return <PageContent page={page} fallbackTitle={sitePage.title} fallbackExcerpt="This page is being prepared. Please check back soon." />
+  const fallbackExcerpt = sitePage.id === "page-news-and-events" ? "" : "This page is being prepared. Please check back soon."
+  return <PageContent page={page} fallbackTitle={sitePage.title} fallbackExcerpt={fallbackExcerpt} />
 }

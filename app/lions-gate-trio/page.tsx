@@ -34,7 +34,7 @@ export default async function LionsGateTrioPage() {
   const members = page?.trioMembers?.length ? page.trioMembers : defaultMembers
   const recordings = page?.trioRecordings?.length ? page.trioRecordings : defaultRecordings
 
-  return <main className={styles.page}>
+  return <main className={styles.page} data-quiet-background>
     <header className={styles.hero}>
       <HeroImage image={page?.heroImage} />
       <div className={styles.heroContent}>
@@ -55,7 +55,7 @@ export default async function LionsGateTrioPage() {
         <p className={styles.sectionLabel}>The Trio</p>
         <h2>A shared musical life</h2>
       </div>
-      <p>{page?.trioStatement || "For over 35 years, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe."}</p>
+      <p>{page?.trioStatement || "For over three decades, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe."}</p>
     </section>
 
     {page?.trioQuote && <blockquote className={styles.quote}>
@@ -132,8 +132,8 @@ function RecordingCard({recording}: {recording: TrioRecording}) {
 
 function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: LionsGateNewsItem | null}) {
   const defaultNews: LionsGateNewsItem = {
-    heading: "Recently released: Lumiéres",
-    body: "Lumiéres features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
+    heading: "Recently released: Lumières",
+    body: "Lumières features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
     linkUrl: "https://www.editionshortus.com/",
   }
   const news = sourceNews || defaultNews

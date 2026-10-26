@@ -1,17 +1,20 @@
-.page { max-width: 1320px; margin: 62px auto 110px; color: #795333; }
-.header { max-width: 690px; margin-bottom: 42px; }
-.header h1 { margin: 0; font-family: var(--font-cormorant), serif; font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 300; letter-spacing: 2px; line-height: .98; }
-.panels { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr); gap: clamp(20px, 2.5vw, 36px); align-items: stretch; }
+.page { max-width: 1240px; margin: 40px auto 110px; color: #795333; }
+.header { max-width: 760px; margin-bottom: 42px; }
+.header h1 { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 300; letter-spacing: 2px; line-height: .98; }
+.panels { display: grid; grid-template-columns: minmax(250px, 1fr) minmax(0, 2fr); overflow: hidden; align-items: stretch; background: rgba(255, 252, 248, .76); border: 1px solid #dfcdbc; border-radius: 10px; box-shadow: 0 20px 48px rgba(92, 58, 33, .08); }
 .photo { position: relative; min-height: 100%; overflow: hidden; background: #e6e0d8; }
+.photo::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, transparent 62%, rgba(255, 250, 243, .34)); pointer-events: none; }
 .photoImage { object-fit: cover; }
-.excerpt { margin: 20px 0 0; color: #c6915f; font-family: var(--font-cormorant), serif; font-size: 1.5rem; font-style: italic; font-weight: 200; line-height: 1.5; }
+.excerpt { margin: 20px 0 0; color: #a86c34; font-family: var(--font-cormorant), serif; font-size: 1.5rem; font-style: italic; font-weight: 200; line-height: 1.5; }
 .cmsContent { margin-top: 26px; font-size: 1.2rem; line-height: 1.75; }
 .cmsContent :global(p) { margin: 0 0 18px; }
-.formPanel { align-self: stretch; }
+.formPanel { align-self: stretch; padding: clamp(30px, 4.4vw, 58px); }
 
 @media (max-width: 800px) {
   .page { margin: 36px auto 75px; }
   .header { margin-bottom: 30px; }
-  .panels { grid-template-columns: 1fr; gap: 36px; }
+  .panels { grid-template-columns: 1fr; border-radius: 7px; }
   .photo { min-height: 420px; }
+  .photo::after { background: linear-gradient(180deg, transparent 58%, rgba(255, 250, 243, .24)); }
+  .formPanel { padding: 30px 24px 36px; }
 }

@@ -1,7 +1,7 @@
 import {useRef, useState} from "react"
 import type {ChangeEvent} from "react"
 import {Button, Card, Flex, Grid, Stack, Text, TextInput} from "@sanity/ui"
-import {generateRecordingPreview, uploadRecordingMedia} from "@/lib/supabase/storage"
+import {uploadRecordingMedia} from "@/lib/supabase/storage"
 import type {AlbumDraft, ComposerDraft, Movement, RecordingDraft, SaleDraft} from "./types"
 
 export function Choice({title, description, onClick}: {title: string; description?: string; onClick: () => void}) { return <Card as="button" type="button" padding={4} radius={2} shadow={1} tone="primary" onClick={onClick} style={{textAlign: "left", cursor: "pointer"}}><Stack space={description ? 3 : 1}><Text size={3} weight="semibold">{title}</Text>{description && <Text size={2}>{description}</Text>}</Stack></Card> }
@@ -15,8 +15,6 @@ export function MediaFields({draft, onChange, sanityToken, onBusyChange}: {draft
   const previewInput = useRef<HTMLInputElement>(null)
   const fullInput = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState<"preview" | "full" | null>(null)
-  const [generating, setGenerating] = useState(false)
-  const [generatedPreview, setGeneratedPreview] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const upload = async (kind: "preview" | "full", event: ChangeEvent<HTMLInputElement>) => {
     const input = event.currentTarget
@@ -30,28 +28,14 @@ export function MediaFields({draft, onChange, sanityToken, onBusyChange}: {draft
       if (hasExistingMedia && draft.mediaType !== selectedType) throw new Error("Preview and full files must both be audio or both be video.")
       const result = await uploadRecordingMedia(file, kind, sanityToken)
       const pathField = kind === "preview" ? result.mediaType === "audio" ? "previewAudio" : "previewVideo" : result.mediaType === "audio" ? "fullAudio" : "fullVideo"
-      if (kind === "full") setGeneratedPreview(false)
       onChange({...draft, mediaType: result.mediaType, [pathField]: result.path, duration: result.duration ?? draft.duration})
     } catch (uploadError) { setError(uploadError instanceof Error ? uploadError.message : "The file could not be uploaded.") }
     finally { setUploading(null); onBusyChange?.(false); input.value = "" }
   }
-  const generatePreview = async () => {
-    const fullPath = draft.mediaType === "video" ? draft.fullVideo : draft.fullAudio
-    if (!fullPath) return
-    setGenerating(true); onBusyChange?.(true); setError(null)
-    try {
-      const previewPath = await generateRecordingPreview(fullPath, draft.mediaType, sanityToken)
-      const previewField = draft.mediaType === "video" ? "previewVideo" : "previewAudio"
-      onChange({...draft, [previewField]: previewPath})
-      setGeneratedPreview(true)
-    } catch (generationError) { setError(generationError instanceof Error ? generationError.message : "Preview generation failed.") }
-    finally { setGenerating(false); onBusyChange?.(false) }
-  }
-  const mediaLabel = draft.mediaType === "video" ? "video" : draft.mediaType === "audio" ? "audio" : "media"
   const previewPath = draft.mediaType === "video" ? draft.previewVideo : draft.previewAudio
   const fullPath = draft.mediaType === "video" ? draft.fullVideo : draft.fullAudio
-  const busy = Boolean(uploading) || generating
-  return <Stack space={3}><Text>Upload audio or video file. File type and duration are detected automatically.</Text><input ref={previewInput} type="file" accept="audio/*,video/*" onChange={(event) => void upload("preview", event)} style={{display: "none"}} /><input ref={fullInput} type="file" accept="audio/*,video/*" onChange={(event) => void upload("full", event)} style={{display: "none"}} /><Flex gap={3} wrap="wrap"><Button text={fullPath ? "Replace audio or video file" : "Upload audio or video file"} loading={uploading === "full"} disabled={busy} onClick={() => fullInput.current?.click()} />{fullPath && <><Button text={previewPath ? "Replace custom preview" : "Upload custom preview"} loading={uploading === "preview"} disabled={busy} onClick={() => previewInput.current?.click()} /><Button text={generatedPreview ? "Preview generated" : "Generate 30-second preview"} tone="primary" disabled={busy || generatedPreview} loading={generating} onClick={() => void generatePreview()} /></>}</Flex>{!fullPath && <Text size={1} muted>Upload a full recording to add or generate a preview.</Text>}{generating && <Text size={1} muted>Generating your 30-second preview. This can take a moment.</Text>}{previewPath && <Text size={1} muted>Preview ready.</Text>}{fullPath && <Text size={1} muted>Full recording uploaded.</Text>}{draft.duration && <Text size={1} muted>Duration detected: {draft.duration}</Text>}{error && <Text size={1} style={{color: "var(--card-critical-fg-color)"}}>{error}</Text>}</Stack>
+  const busy = Boolean(uploading)
+  return <Stack space={3}><Text>Upload audio or video file. File type and duration are detected automatically.</Text><input ref={previewInput} type="file" accept="audio/*,video/*" onChange={(event) => void upload("preview", event)} style={{display: "none"}} /><input ref={fullInput} type="file" accept="audio/*,video/*" onChange={(event) => void upload("full", event)} style={{display: "none"}} /><Flex gap={3} wrap="wrap"><Button text={fullPath ? "Replace audio or video file" : "Upload audio or video file"} loading={uploading === "full"} disabled={busy} onClick={() => fullInput.current?.click()} />{fullPath && <Button text={previewPath ? "Replace custom preview" : "Upload custom preview"} loading={uploading === "preview"} disabled={busy} onClick={() => previewInput.current?.click()} />}</Flex>{!fullPath && <Text size={1} muted>Upload a full recording before adding a custom preview.</Text>}{previewPath && <Text size={1} muted>Preview ready.</Text>}{fullPath && <Text size={1} muted>Full recording uploaded.</Text>}{draft.duration && <Text size={1} muted>Duration detected: {draft.duration}</Text>}{error && <Text size={1} style={{color: "var(--card-critical-fg-color)"}}>{error}</Text>}</Stack>
 }
 
 export function CoverArtField({label = "Cover art (optional)", onSelected, selected, disabled = false}: {label?: string; onSelected: (file: File) => void; selected: boolean; disabled?: boolean}) { const fileInput = useRef<HTMLInputElement>(null); const [previewUrl, setPreviewUrl] = useState<string | null>(null); const select = (event: ChangeEvent<HTMLInputElement>) => { const file = event.currentTarget.files?.[0]; if (file) { setPreviewUrl(URL.createObjectURL(file)); onSelected(file) } }; return <Stack space={2}><Text size={1} weight="medium">{label}</Text><input ref={fileInput} type="file" accept="image/*" onChange={select} style={{display: "none"}} /><Button text={`Choose ${label.replace(" (optional)", "").toLocaleLowerCase()}`} disabled={disabled} onClick={() => fileInput.current?.click()} />{previewUrl ? <img src={previewUrl} alt="Selected cover art preview" style={{width: 72, height: 72, objectFit: "cover", borderRadius: 2}} /> : selected && <Text size={1} muted>Cover art is ready.</Text>}</Stack> }

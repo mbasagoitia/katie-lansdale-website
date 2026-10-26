@@ -56,9 +56,53 @@ export type ProjectCard = {
   title: string
   category?: string
   description?: string
+  details?: string
   imageUrl?: string
+  imagePosition?: string
   linkUrl?: string
   linkLabel?: string
+}
+
+export type DonationOption = {
+  _key: string
+  title: string
+  organization?: string
+  description?: string
+  donationUrl?: string
+  linkLabel?: string
+  qrCode?: SanityImage
+}
+
+export type PublicationEntry = {
+  _key: string
+  title: string
+  publication?: string
+  date?: string
+  subtitle?: string
+  collaborators?: string
+  description?: string
+}
+
+export type PresentationEntry = {
+  _key: string
+  title: string
+  event?: string
+  date?: string
+  description?: string
+}
+
+export type HonorEntry = {
+  _key: string
+  title: string
+  organization?: string
+  date?: string
+  description?: string
+}
+
+export type PressPhoto = {
+  _key: string
+  image?: SanityImage
+  label?: string
 }
 
 export type CmsPage = {
@@ -84,6 +128,13 @@ export type CmsPage = {
   trioEvents?: TrioEvent[]
   trioWebsiteUrl?: string
   projectCards?: ProjectCard[]
+  donationOptions?: DonationOption[]
+  publications?: PublicationEntry[]
+  presentations?: PresentationEntry[]
+  honors?: HonorEntry[]
+  pressKitShortBio?: string
+  pressKitLongBio?: TypedObject[]
+  pressKitPhotos?: PressPhoto[]
   seoTitle?: string
   seoDescription?: string
 }

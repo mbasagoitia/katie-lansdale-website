@@ -101,6 +101,8 @@
     transition: color .25s ease,.25s ease;
 }
 
+.mediaLabel { border: 0; background: transparent; cursor: pointer; font: inherit; text-align: left; }
+
 .topLink:hover {
     color: #a86541;
 }
@@ -111,7 +113,8 @@
     padding: 0 0 .75rem 1.25rem;
 }
 
-.submenu a {
+.submenu a,
+.submenuItem {
     display: block;
     padding: .45rem 0;
     color: rgba(92, 58, 33, 0.75);
@@ -281,7 +284,8 @@
         z-index: 31;
     }
 
-    .submenu a {
+    .submenu a,
+    .submenuItem {
         display: block;
         position: relative;
         z-index: 32;
@@ -303,8 +307,7 @@
 
     }
 
-    .hasSubmenu:hover .submenu,
-    .hasSubmenu:focus-within .submenu {
+    .hasSubmenu.submenuOpen .submenu {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;

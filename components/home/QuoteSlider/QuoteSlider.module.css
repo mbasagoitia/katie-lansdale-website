@@ -173,6 +173,31 @@
 
 }
 
+@media (max-width: 700px) {
+    .quotePanel {
+        margin-top: 0;
+    }
+
+    .quoteBox {
+        min-height: 268px;
+    }
+
+    .quoteContent {
+        top: 34px;
+        bottom: 34px;
+    }
+
+    .quoteBox blockquote {
+        max-width: 360px;
+        font-size: clamp(1.35rem, 5.8vw, 1.55rem);
+        line-height: 1.28;
+    }
+
+    .quotePanel figcaption {
+        font-size: 1.1rem;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     .quoteContent {

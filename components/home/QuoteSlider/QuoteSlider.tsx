@@ -2,33 +2,16 @@ import styles from "./QuoteSlider.module.css";
 
 const quotes = [
   {
-    quote: '"This is one of the best recordings of this music."',
-    attribution: "American Record Guide on her Bach CD",
-  },
-  {
-    quote:
-      '“These three stunning musicians are wonderful soloists, and as a team, unbeatable. They communicate joy in music-making not only in technical brilliance but in an unbelievable playful lightness, and their joy is infectious…a wonderful addition to the international music scene.”',
-    attribution: "Berliner Morgenpost on the Lions Gate Trio",
-  },
-  {
     quote: "A stunning musician and wonderful soloist, communicating an infectious joy …a wonderful addition to the international music scene.",
     attribution: "Berliner Morgenpost",
   },
   {
-    quote: "A truly brilliant performance.",
-    attribution: "Cleveland Plain Dealer",
-  },
-  {
-    quote: "A first class soloist.",
+    quote: "A first-class soloist.",
     attribution: "Boston Globe",
   },
   {
-    quote: "A bold and expressive soloist.",
-    attribution: "Cleveland Plain Dealer",
-  },
-  {
-    quote: "Katie Lansdale was a first class soloist.",
-    attribution: "Boston Globe, review of the Tanglewood Festival of Contemporary Music",
+    quote: "It was a remarkable evening—one in which the music seemed as it must have when played the very first time, perhaps from still-damp manuscript paper. It was that revealing. It was that good.",
+    attribution: "Raleigh-Durham Spectator, review of Lansdale's performance of the solo Bach violin works",
   },
 ];
 
@@ -48,7 +31,7 @@ export default function QuoteSlider({quotes: cmsQuotes}: {quotes?: Quote[]}) {
             </div>
 
             <div className={styles.quoteContent}>
-              <blockquote>{q.quote}</blockquote>
+              <blockquote>“{q.quote}”</blockquote>
               <figcaption>— {q.attribution}</figcaption>
             </div>
 

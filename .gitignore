@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local media-preview generation
+/preview-manifest.json
+/tmp/generated-previews/

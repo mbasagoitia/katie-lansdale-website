@@ -8,11 +8,19 @@ import {urlFor} from "@/sanity/lib/image"
 
 export const revalidate = 60
 
+const homepageQuoteKeys = new Set([
+  "berliner-morgenpost-soloist",
+  "boston-globe-first-class",
+  "raleigh-durham-spectator-bach",
+])
+
 export default async function Home() {
   const page = await getPageById("page-home")
   const gallery = page?.gallery?.flatMap((image) => image.asset ? [{src: urlFor(image as SanityImageSource).width(1100).url(), alt: image.alt}] : [])
-  const quotes = page?.quotes?.map((quote) => ({quote: quote.quote, attribution: quote.attribution}))
-  const featuredIn = page?.featuredIn?.flatMap((item) => item.image?.asset ? [{name: item.name, url: item.url, src: urlFor(item.image as SanityImageSource).width(290).height(90).fit("max").url()}] : [])
+  const quotes = page?.quotes
+    ?.filter((quote) => homepageQuoteKeys.has(quote._key))
+    .map((quote) => ({quote: quote.quote, attribution: quote.attribution}))
+  const featuredIn = page?.featuredIn?.flatMap((item) => item.image?.asset ? [{name: item.name, url: item.url, src: urlFor(item.image as SanityImageSource).width(640).fit("max").url()}] : [])
 
   return <section className={styles.hero}>
     <div className={styles.visualStage}>

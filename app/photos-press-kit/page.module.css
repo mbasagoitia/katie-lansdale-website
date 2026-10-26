@@ -1,0 +1,26 @@
+.page { max-width: 1240px; margin: 32px auto 110px; color: #5c3a21; }
+.header { max-width: 760px; margin-bottom: 54px; padding-bottom: 36px; border-bottom: 1px solid #dfcdbc; }
+.header h1, .sectionHeader h2, .bioSection > h2, .reviews h2, .resources h2 { margin: 0; color: #7b583d; font-family: var(--font-cormorant), serif; font-weight: 400; line-height: .98; }
+.header h1 { font-size: clamp(2.6rem, 4vw, 3.35rem); font-weight: 400; letter-spacing: .3px; }
+.header > p { max-width: 670px; margin: 15px 0 0; color: #8e5d38; font-family: var(--font-cormorant), serif; font-size: clamp(1.18rem, 1.9vw, 1.4rem); font-style: italic; line-height: 1.42; }
+.photoSection, .bioSection { margin-top: 84px; }
+.photoSection { margin-top: 0; }
+.sectionHeader { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid #dfcdbc; }
+.sectionHeader h2, .bioSection > h2, .reviews h2, .resources h2 { font-size: clamp(1.9rem, 2.8vw, 2.35rem); }
+.sectionHeader p { max-width: 540px; margin: 17px 0 0; color: #79583e; font-size: 1rem; line-height: 1.55; }
+.bioSection > h2 { margin-bottom: 28px; }
+.label { margin: 0; color: #a86c34; font-family: var(--font-inter), sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.reviews { margin-top: 84px; padding-top: 28px; border-top: 1px solid #dfcdbc; }
+.reviewIntro { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.reviewIntro h2 { margin-top: 13px; }
+.reviewGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 34px; }
+.reviewGrid figure { display: flex; flex-direction: column; justify-content: space-between; min-height: 230px; margin: 0; padding: 29px 28px; background: #fbf6ef; border-left: 3px solid #a86c34; }
+.reviewGrid blockquote { margin: 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: 1.35rem; font-style: italic; line-height: 1.36; }
+.reviewGrid figcaption { margin-top: 24px; color: #96633a; font-family: var(--font-cormorant), serif; font-size: 1.04rem; font-style: italic; line-height: 1.35; }
+.allReviewsLink { display: inline-block; margin-top: 28px; color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; }
+.resources { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 50px; align-items: end; margin-top: 84px; padding-top: 28px; border-top: 1px solid #dfcdbc; }
+.resources h2 { margin-top: 20px; }
+.resources > div:first-child > p:last-child { max-width: 590px; margin: 20px 0 0; color: #68472f; font-size: 1.04rem; line-height: 1.65; }
+.resourceLinks { display: grid; gap: 15px; min-width: 205px; }
+.resourceLinks a { color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; }
+@media (max-width: 760px) { .page { margin: 30px auto 75px; } .header { margin-bottom: 42px; padding-bottom: 30px; } .photoSection, .bioSection, .reviews { margin-top: 58px; } .sectionHeader, .reviewIntro, .resources { display: block; } .sectionHeader p { margin-top: 18px; } .reviewGrid { grid-template-columns: 1fr; gap: 16px; margin-top: 26px; } .reviewGrid figure { min-height: 0; } .resources { margin-top: 58px; padding-top: 28px; } .resourceLinks { margin-top: 28px; } }

@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { FocusEvent, useState } from "react";
 import Link from "@/components/ui/page-transition/TransitionLink";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import styles from "./navigation.module.css";
 
 export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Violinist"}: {siteTitle?: string; tagline?: string}) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [mediaOpen, setMediaOpen] = useState(false);
     const displayTitle = siteTitle || "Katie Lansdale";
     const displayTagline = tagline || "Violinist";
 
     const closeMenu = () => {
         setMenuOpen(false);
+        setMediaOpen(false);
+    };
+
+    const closeMediaOnBlur = (event: FocusEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setMediaOpen(false);
     };
 
     return (
@@ -61,14 +67,22 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             Lions Gate Trio
                         </Link>
                     </div>
-                    <div className={`${styles.navGroup} ${styles.hasSubmenu}`}>
-                        <Link
-                            href="/media"
-                            className={styles.topLink}
-                            onClick={closeMenu}
+                    <div
+                        className={`${styles.navGroup} ${styles.hasSubmenu} ${mediaOpen ? styles.submenuOpen : ""}`}
+                        onMouseEnter={() => setMediaOpen(true)}
+                        onMouseLeave={() => setMediaOpen(false)}
+                        onFocusCapture={() => setMediaOpen(true)}
+                        onBlurCapture={closeMediaOnBlur}
+                    >
+                        <button
+                            className={`${styles.topLink} ${styles.mediaLabel}`}
+                            type="button"
+                            aria-haspopup="true"
+                            aria-expanded={mediaOpen}
+                            onClick={() => setMediaOpen((open) => !open)}
                         >
                             Media
-                        </Link>
+                        </button>
                         <div className={styles.submenu}>
                             <div className={styles.submenuInner}>
                                 <Link href="/watch-listen" onClick={closeMenu}>
@@ -81,7 +95,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                                     Reviews
                                 </Link>
                                 <Link href="/publications" onClick={closeMenu}>
-                                    Publications
+                                    Publications &amp; Presentations
                                 </Link>
                             </div>
                         </div>

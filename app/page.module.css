@@ -52,8 +52,23 @@
 
 
 @media (max-width: 700px) {
-  .visualStage { min-height: 590px; }
-  .quoteWrapper { width: min(80%, 520px); padding-inline: 18px; }
+  .visualStage {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .quoteWrapper {
+    position: relative;
+    inset: auto;
+    order: 2;
+    width: 100%;
+    min-height: 320px;
+    margin: 0;
+    padding: 26px 22px;
+    background: #faf5ee;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

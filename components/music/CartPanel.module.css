@@ -1,4 +1,4 @@
-.trigger { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #c6915f; padding: 9px 12px; background: transparent; color: #795333; cursor: pointer; font: inherit; font-size: .76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.trigger { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #a86c34; padding: 9px 12px; background: transparent; color: #795333; cursor: pointer; font: inherit; font-size: .76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .trigger:hover, .trigger:focus-visible { border-color: #7b4220; color: #7b4220; }
 .trigger svg { width: 20px; height: 20px; }
 .trigger b { display: grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; background: #7b4220; color: #fffaf5; font-size: .7rem; }

@@ -107,6 +107,15 @@ export default defineType({
     }),
 
     defineField({
+      name: "previewPoster",
+      title: "Preview poster image",
+      description: "Optional image shown before a video preview starts. Use a full image URL or a local path beginning with /images/.",
+      type: "string",
+      hidden: ({ parent }) => parent?.mediaType !== "video",
+      validation: (Rule) => Rule.custom((value) => !value || value.startsWith("/images/") || /^https?:\/\//.test(value) || "Use a full URL or a local path beginning with /images/."),
+    }),
+
+    defineField({
       name: "fullVideo",
       title: "Full video",
       type: "string",

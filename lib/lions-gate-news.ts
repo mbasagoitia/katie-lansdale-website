@@ -21,10 +21,10 @@ export async function getLionsGateNews(): Promise<LionsGateNewsItem | null> {
     const linkUrl = section.match(/<a href="([^"]*editionshortus[^\"]*)"/i)?.[1]
     if (!sourceText) return null
 
-    if (/Lumi[eé]res/i.test(sourceText)) {
+    if (/Lumi[eéè]res/i.test(sourceText)) {
       return {
-        heading: "Recently released: Lumiéres",
-        body: "Lumiéres features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
+        heading: "Recently released: Lumières",
+        body: "Lumières features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
         ...(imageUrl?.startsWith(SQUARESPACE_IMAGE_ORIGIN) ? {imageUrl} : {}),
         ...(linkUrl ? {linkUrl} : {}),
       }

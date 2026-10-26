@@ -1,6 +1,6 @@
 .page {
-  max-width: 900px;
-  margin: 56px auto 100px;
+  max-width: 1240px;
+  margin: 40px auto 110px;
   color: #5c3a21;
 }
 
@@ -22,7 +22,7 @@
 
 .header h1 {
   margin: 0;
-  color: #c6915f;
+  color: #7b583d;
   font-family: var(--font-cormorant), serif;
   font-size: clamp(2.8rem, 5vw, 4rem);
   font-weight: 400;
@@ -32,7 +32,7 @@
 .excerpt {
   max-width: 760px;
   margin: 22px 0 0;
-  color: #7b583d;
+  color: #a86c34;
   font-family: var(--font-cormorant), serif;
   font-size: 1.5rem;
   font-style: italic;
@@ -47,7 +47,7 @@
 .content h2,
 .content h3 {
   margin: 58px 0 16px;
-  color: #c6915f;
+  color: #a86c34;
   font-family: var(--font-cormorant), serif;
   font-weight: 400;
   line-height: 1.1;
@@ -69,7 +69,7 @@
 
 .content a {
   color: #9d5e28;
-  text-decoration-color: #c6915f;
+  text-decoration-color: #a86c34;
 }
 
 .contentImage {

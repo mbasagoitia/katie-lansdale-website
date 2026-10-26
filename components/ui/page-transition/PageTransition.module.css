@@ -29,3 +29,16 @@
     pointer-events: none;
     transition: opacity 0.8s ease-out;
 }
+
+@media (max-width: 575px) {
+    .transitionContainer {
+        margin-top: 0;
+    }
+
+    /* Individual pages use a generous desktop entrance margin. On phones the
+       navigation already provides the needed breathing room, so let each page
+       begin directly beneath it. */
+    .transitionContainer > :not(.pageTransition) {
+        margin-top: 0 !important;
+    }
+}
