@@ -101,7 +101,7 @@
         position: relative;
         inset: auto;
         order: 1;
-        height: clamp(430px, 85vw, 720px);
+        height: clamp(460px, 95vw, 820px);
     }
 
     .photoFrame {
