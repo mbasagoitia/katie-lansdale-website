@@ -51,7 +51,7 @@
 
 
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .visualStage {
     display: flex;
     flex-direction: column;
