@@ -65,6 +65,15 @@ export default function NewsAndEventsPage() {
       <h1>February <span>2027</span></h1>
     </header>
 
+    <section className={styles.news} aria-labelledby="new-cd-release">
+      <div className={styles.newsImage} aria-label="Placeholder image"><span>Placeholder<br />Image</span></div>
+      <div className={styles.newsDetails}>
+        <p className={styles.newsLabel}>News</p>
+        <h2 id="new-cd-release">New CD Release</h2>
+        <p>A new CD, [CD name] is now available.</p>
+      </div>
+    </section>
+
     <section className={styles.eventList} aria-label="Selected events for February 2027">
       {events.map((event) => <EventCard key={event.title} event={event} />)}
     </section>
