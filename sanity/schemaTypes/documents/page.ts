@@ -312,7 +312,23 @@ export default defineType({
       type: "array",
       hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
-      validation: (Rule) => Rule.required().length(3).unique(),
+      validation: (Rule) => Rule.custom((value, context) => {
+        const pageId = context.document?._id?.replace(/^drafts\./, "")
+
+        // This field is shared by every page document, but only the Photos &
+        // Press Kit page uses it. Hidden fields still run validation in Studio.
+        if (!isPhotosPressKitPage(pageId)) return true
+
+        if (!Array.isArray(value) || value.length !== 3) {
+          return "Choose exactly three reviews."
+        }
+
+        const reviewIds = value
+          .map((review) => typeof review === "object" && review ? (review as {_ref?: string})._ref : undefined)
+          .filter((id): id is string => Boolean(id))
+
+        return new Set(reviewIds).size === reviewIds.length || "Choose three different reviews."
+      }),
     }),
 
     defineField({
