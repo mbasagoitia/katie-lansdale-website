@@ -1,4 +1,5 @@
 import {NextResponse} from "next/server"
+import {client} from "@/sanity/lib/client"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -28,12 +29,13 @@ export async function POST(request: Request) {
   const from = process.env.CONTACT_FROM_EMAIL
   if (!apiKey || !from) return NextResponse.json({message: "Contact delivery is not configured yet. Please try again soon."}, {status: 503})
 
+  const recipient = await contactRecipient()
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json"},
     body: JSON.stringify({
       from,
-      to: [process.env.CONTACT_RECIPIENT_EMAIL || TEST_RECIPIENT],
+      to: [recipient],
       reply_to: email,
       subject: subject ? `Katie Lansdale website: ${subject}` : "Katie Lansdale website contact form",
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
@@ -42,6 +44,11 @@ export async function POST(request: Request) {
 
   if (!response.ok) return NextResponse.json({message: "We could not send your message. Please try again later."}, {status: 502})
   return NextResponse.json({ok: true})
+}
+
+async function contactRecipient(): Promise<string> {
+  const cmsRecipient = await client.withConfig({useCdn: false}).fetch<string | null>(`*[_id == "page-contact"][0].contactRecipientEmail`).catch(() => null)
+  return cmsRecipient && isEmail(cmsRecipient) ? cmsRecipient : process.env.CONTACT_RECIPIENT_EMAIL || TEST_RECIPIENT
 }
 
 function text(value: unknown, maxLength: number): string {

@@ -72,7 +72,9 @@ export type ProjectCard = {
   title: string
   category?: string
   description?: string
+  image?: SanityImage
   details?: string
+  contentAction?: "details" | "link" | "none"
   imageUrl?: string
   imagePosition?: string
   linkUrl?: string
@@ -169,6 +171,8 @@ export type CmsPage = {
   trioCtaLinkLabel?: string
   projectCards?: ProjectCard[]
   donationOptions?: DonationOption[]
+  contactImage?: SanityImage
+  contactFormHeading?: string
   publications?: PublicationEntry[]
   presentations?: PresentationEntry[]
   honors?: HonorEntry[]

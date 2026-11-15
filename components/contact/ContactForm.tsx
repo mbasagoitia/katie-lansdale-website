@@ -5,7 +5,7 @@ import styles from "./ContactForm.module.css"
 
 type FormStatus = "idle" | "sending" | "success" | "error"
 
-export default function ContactForm() {
+export default function ContactForm({heading = "Send a note"}: {heading?: string}) {
   const [status, setStatus] = useState<FormStatus>("idle")
   const [message, setMessage] = useState("")
 
@@ -36,7 +36,7 @@ export default function ContactForm() {
 
   return <form className={styles.form} onSubmit={submit}>
     <div className={styles.formHeading}>
-      <p>Send a note</p>
+      <p>{heading || "Send a note"}</p>
     </div>
     <div className={styles.fieldRow}>
       <label><span className={styles.fieldLabel}>Name <b aria-hidden="true">*</b></span><input name="name" autoComplete="name" placeholder="Your name" required maxLength={120} /></label>

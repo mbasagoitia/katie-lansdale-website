@@ -3,6 +3,8 @@ import type {Metadata} from "next"
 import ContactForm from "@/components/contact/ContactForm"
 import {RichTextContent} from "@/components/cms/PageContent"
 import {getPageById, getPageMetadata} from "@/sanity/data/pages"
+import {urlFor} from "@/sanity/lib/image"
+import type {SanityImageSource} from "@sanity/image-url"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -13,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const page = await getPageById("page-contact")
+  const contactImageUrl = page?.contactImage?.asset ? urlFor(page.contactImage as SanityImageSource).width(1000).height(1300).fit("crop").url() : "/images/art/violin-stock-soft.png"
 
   return <main className={styles.page}>
     <header className={styles.header}>
@@ -22,10 +25,10 @@ export default async function ContactPage() {
     </header>
     <section className={styles.panels}>
       <div className={styles.photo}>
-        <Image src="/images/art/violin-stock-soft.png" alt="Violin against a soft neutral background" fill sizes="(max-width: 800px) 100vw, 33vw" className={styles.photoImage} />
+        <Image src={contactImageUrl} alt={page?.contactImage?.alt || "Violin against a soft neutral background"} fill sizes="(max-width: 800px) 100vw, 33vw" className={styles.photoImage} />
       </div>
       <div className={styles.formPanel} aria-labelledby="contact-heading">
-        <ContactForm />
+        <ContactForm heading={page?.contactFormHeading} />
       </div>
     </section>
   </main>

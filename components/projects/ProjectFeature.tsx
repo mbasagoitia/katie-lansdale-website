@@ -4,11 +4,16 @@ import Image from "next/image"
 import {useEffect, useState} from "react"
 import type {ProjectCard} from "@/types/page"
 import {warmImagePlaceholder} from "@/lib/image-placeholder"
+import {urlFor} from "@/sanity/lib/image"
+import type {SanityImageSource} from "@sanity/image-url"
 import styles from "./ProjectFeature.module.css"
 
 export default function ProjectFeature({card}: {card: ProjectCard}) {
   const [isOpen, setIsOpen] = useState(false)
-  const hasDetails = Boolean(card.details)
+  const action = card.contentAction || (card.linkUrl ? "link" : card.details ? "details" : "none")
+  const hasDetails = action === "details" && Boolean(card.details)
+  const hasLink = action === "link" && Boolean(card.linkUrl)
+  const imageUrl = card.image?.asset ? urlFor(card.image as SanityImageSource).width(1200).url() : card.imageUrl
 
   useEffect(() => {
     if (!isOpen) return
@@ -21,20 +26,20 @@ export default function ProjectFeature({card}: {card: ProjectCard}) {
 
   const content = <>
     <div className={styles.imageWrap}>
-      {card.imageUrl
-        ? <Image src={card.imageUrl} alt="" fill sizes="(max-width: 760px) 100vw, 50vw" className={`${styles.image} ${card._key === "promisek-solo-strings-workshops" ? styles.imageZoomed : ""}`} style={{objectPosition: card.imagePosition}} placeholder="blur" blurDataURL={warmImagePlaceholder} unoptimized />
+      {imageUrl
+        ? <Image src={imageUrl} alt={card.image?.alt || ""} fill sizes="(max-width: 760px) 100vw, 50vw" className={`${styles.image} ${card._key === "promisek-solo-strings-workshops" ? styles.imageZoomed : ""}`} style={{objectPosition: card.imagePosition}} placeholder="blur" blurDataURL={warmImagePlaceholder} unoptimized={!card.image?.asset} />
         : <div className={styles.imageFallback} aria-hidden="true"><span>Photo<br />coming soon</span></div>}
     </div>
     <div className={styles.content}>
       {card.category && <p className={styles.category}>{card.category}</p>}
       <h2>{card.title}</h2>
       {card.description && <p className={styles.description}>{card.description}</p>}
-      {(card.linkUrl || hasDetails) && <span className={styles.linkLabel}>{card.linkLabel || "Learn more"} <span aria-hidden="true">{card.linkUrl ? "↗" : "→"}</span></span>}
+      {(hasLink || hasDetails) && <span className={styles.linkLabel}>{card.linkLabel || "Learn more"} <span aria-hidden="true">{hasLink ? "↗" : "→"}</span></span>}
     </div>
   </>
 
   return <>
-    {card.linkUrl
+    {hasLink
       ? <a className={styles.card} href={card.linkUrl} target="_blank" rel="noreferrer">{content}</a>
       : hasDetails
         ? <button className={styles.card} type="button" onClick={() => setIsOpen(true)} aria-haspopup="dialog">{content}</button>
