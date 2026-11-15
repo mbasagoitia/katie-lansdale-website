@@ -4,7 +4,7 @@ import Link from "next/link"
 import {notFound} from "next/navigation"
 import type {SanityImageSource} from "@sanity/image-url"
 import AddToCartButton from "@/components/music/AddToCartButton"
-import {getProductBySlug} from "@/sanity/data/products"
+import {getProductBySlug, getProducts} from "@/sanity/data/products"
 import {urlFor} from "@/sanity/lib/image"
 import type {Product} from "@/types/product"
 import styles from "./page.module.css"
@@ -28,13 +28,16 @@ export async function generateMetadata({params}: PageProps): Promise<Metadata> {
 
 export default async function AlbumPage({params}: PageProps) {
   const {slug} = await params
-  const product = await getProductBySlug(slug)
+  const [product, products] = await Promise.all([getProductBySlug(slug), getProducts()])
   if (!product || product.productKind !== "album") notFound()
 
   const coverArtUrl = product.coverArt
     ? urlFor(product.coverArt as SanityImageSource).width(1200).url()
     : null
   const workGroups = groupRecordingsByWork(product.recordings)
+  const trackProducts = new Map(products
+    .filter((candidate) => candidate.productKind === "recording" && candidate.recordings.length === 1)
+    .map((candidate) => [candidate.recordings[0]._id, candidate]))
 
   return <main className={styles.page}>
     <Link href="/watch-listen" className={styles.backLink}>← Back to Watch / Listen</Link>
@@ -75,7 +78,10 @@ export default async function AlbumPage({params}: PageProps) {
                 <p>{[recording.artist, recording.yearReleased, recording.duration].filter(Boolean).join(" · ")}</p>
               </div>
             </div>
-            <Preview recording={recording} />
+            <div className={styles.trackPurchase}>
+              <Preview recording={recording} />
+              {trackProducts.get(recording._id) && <PurchaseAction product={trackProducts.get(recording._id)!} compact />}
+            </div>
           </li>)}
         </ol>
       </article>)}
@@ -113,8 +119,8 @@ function Preview({recording}: {recording: Recording}) {
   </div>
 }
 
-function PurchaseAction({product}: {product: Product}) {
-  return <div className={styles.purchaseAction}>
+function PurchaseAction({product, compact = false}: {product: Product; compact?: boolean}) {
+  return <div className={`${styles.purchaseAction} ${compact ? styles.purchaseActionCompact : ""}`}>
     <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel(product)}</span></div>
     <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} />
   </div>

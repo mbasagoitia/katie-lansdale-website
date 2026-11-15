@@ -30,6 +30,10 @@
 .trackInfo p:not(.trackNumber) { color: #7b583d; font-size: .9rem; }
 .preview audio, .preview video { display: block; width: 100%; }
 .preview video { aspect-ratio: 16 / 9; background: #20150d; }
+.trackPurchase { display: grid; gap: 14px; }
+.trackPurchase .preview { min-width: 0; }
+.purchaseActionCompact { max-width: none; margin-top: 0; padding-top: 14px; }
+.purchaseActionCompact strong { font-size: 1.45rem; }
 .noPreview { color: #7b583d; font-size: .9rem; font-style: italic; }
 
 @media (max-width: 760px) {

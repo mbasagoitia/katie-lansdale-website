@@ -148,6 +148,7 @@ export const sitePageSeeds: SitePageSeed[] = [
           title: "Music for 1,000 Children",
           category: "Community engagement",
           description: "A student-led outreach initiative founded by Lansdale that brings live music into schools and communities.",
+          imageUrl: "/images/projects-affiliations/music-1000-children.jpg",
           details: "Founded by Katie Lansdale in 2001, Music for 1,000 Children began with a simple challenge: Lansdale asked her studio to perform for 1,000 children, while promising to play for another 1,000 herself. Her students joined forces with the Hartt student chapter of the American String Teachers’ Association to invite musicians and ensembles across North America to take part. The response was enthusiastic, ultimately bringing live musical performances to more than 13,000 children from Quebec to Texas. Today, Lansdale continues this spirit of community engagement with her students, creating opportunities for young audiences to encounter music in meaningful, welcoming settings.",
           linkLabel: "Read the story",
         },
