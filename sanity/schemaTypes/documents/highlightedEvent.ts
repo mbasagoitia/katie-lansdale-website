@@ -24,7 +24,7 @@ export default defineType({
     defineField({
       name: "endDate",
       title: "Event end date",
-      description: "Optional. Keep multi-day events to one month or less. When automatic expiration is used, this listing remains visible through 10 PM Eastern on this date.",
+      description: "Optional. Keep multi-day events to one month or less. By default, the listing automatically expires at 10 PM Eastern on this date; if no end date is supplied, it expires at 10 PM Eastern on the start date.",
       type: "date",
       validation: (Rule) => Rule.min(Rule.valueOfField("startDate")).custom((value, context) => {
         const startDate = (context.parent as {startDate?: string} | undefined)?.startDate
@@ -45,13 +45,13 @@ export default defineType({
     defineField({name: "linkUrl", title: "Link", description: "Optional full URL. When set, the title links there.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
     defineField({
       name: "expirationMode",
-      title: "Automatic expiration",
+      title: "Expiration",
       type: "string",
       initialValue: "eventEnd",
       options: {
         layout: "radio",
         list: [
-          {title: "At 10 PM Eastern on the event end date", value: "eventEnd"},
+          {title: "Default: 10 PM Eastern on the end date (or start date)", value: "eventEnd"},
           {title: "At a specific date and time", value: "custom"},
           {title: "Never automatically remove", value: "never"},
         ],

@@ -1,16 +1,23 @@
 import {client} from "@/sanity/lib/client"
-import {highlightedEventsQuery, newsItemsQuery} from "@/sanity/queries/newsAndEvents"
+import {highlightedEventsQuery, newsEventsOrderQuery, newsItemsQuery} from "@/sanity/queries/newsAndEvents"
 import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 
 export async function getNewsAndEvents(now = new Date()): Promise<{news: NewsItem[]; events: HighlightedEvent[]}> {
-  const [allNews, allEvents] = await Promise.all([
+  const [allNews, allEvents, order] = await Promise.all([
     client.withConfig({useCdn: false}).fetch<NewsItem[]>(newsItemsQuery),
     client.withConfig({useCdn: false}).fetch<HighlightedEvent[]>(highlightedEventsQuery),
+    client.withConfig({useCdn: false}).fetch<{newsIds?: string[]; eventIds?: string[]} | null>(newsEventsOrderQuery),
   ])
   return {
-    news: allNews.filter((item) => !item.expiresAt || new Date(item.expiresAt) > now),
-    events: allEvents.filter((item) => eventExpiry(item) > now),
+    news: applyDisplayOrder(allNews.filter((item) => !item.expiresAt || new Date(item.expiresAt) > now), order?.newsIds),
+    events: applyDisplayOrder(allEvents.filter((item) => eventExpiry(item) > now), order?.eventIds),
   }
+}
+
+function applyDisplayOrder<T extends {_id: string}>(items: T[], orderedIds?: string[]): T[] {
+  if (!orderedIds?.length) return items
+  const rank = new Map(orderedIds.map((id, index) => [id, index]))
+  return items.slice().sort((a, b) => (rank.get(a._id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b._id) ?? Number.MAX_SAFE_INTEGER))
 }
 
 function eventExpiry(event: HighlightedEvent): Date {

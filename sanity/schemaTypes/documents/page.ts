@@ -5,13 +5,15 @@ import {getSitePageById} from "../../sitePages";
 const isNotLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
 const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
 const hasPrimaryImage = (documentId?: string) => documentId === "page-about" || documentId === "page-lions-gate-trio";
-const isHomePage = (documentId?: string) => documentId === "page-home";
 const isNotHomePage = (documentId?: string) => documentId !== "page-home";
 const isWatchListenPage = (documentId?: string) => documentId === "page-watch-listen";
 const isProjectsPage = (documentId?: string) => documentId === "page-projects-and-affiliations";
 const isDonationsPage = (documentId?: string) => documentId === "page-donations";
 const isPublicationsPage = (documentId?: string) => documentId === "page-publications";
 const isPhotosPressKitPage = (documentId?: string) => documentId === "page-photos-press-kit";
+const isNewsEventsPage = (documentId?: string) => documentId === "page-news-and-events";
+const supportsExcerpt = (documentId?: string) => ["page-about", "page-contact", "page-donations", "page-lions-gate-trio", "page-photos-press-kit"].includes(documentId || "");
+const supportsContent = (documentId?: string) => ["page-about", "page-contact", "page-watch-listen"].includes(documentId || "");
 
 export default defineType({
   name: "page",
@@ -68,6 +70,7 @@ export default defineType({
       description: "On the About page, this is the tagline shown before the first biography paragraph. On other pages, it can be used as a short public-facing summary. It is separate from the SEO Description.",
       type: "text",
       rows: 3,
+      hidden: ({document}) => !supportsExcerpt(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
@@ -86,7 +89,7 @@ export default defineType({
       name: "content",
       title: "Content",
       type: "array",
-      hidden: ({document}) => isHomePage(document?._id?.replace(/^drafts\./, "")),
+      hidden: ({document}) => !supportsContent(document?._id?.replace(/^drafts\./, "")),
       of: [
         defineArrayMember({
           type: "block",
@@ -297,6 +300,26 @@ export default defineType({
       type: "array",
       hidden: ({document}) => document?._id?.replace(/^drafts\./, "") !== "page-reviews",
       of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
+      validation: (Rule) => Rule.unique(),
+    }),
+
+    defineField({
+      name: "newsItems",
+      title: "News display order",
+      description: "Choose news items from the News list and drag them into their website order. Items not listed here still appear automatically after the ordered items.",
+      type: "array",
+      hidden: ({document}) => !isNewsEventsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({type: "reference", to: [{type: "newsItem"}]})],
+      validation: (Rule) => Rule.unique(),
+    }),
+
+    defineField({
+      name: "highlightedEvents",
+      title: "Highlighted events display order",
+      description: "Choose highlighted events from the Highlighted Events list and drag them into their preferred order within each month. Months remain chronological, and newly added events appear automatically.",
+      type: "array",
+      hidden: ({document}) => !isNewsEventsPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({type: "reference", to: [{type: "highlightedEvent"}]})],
       validation: (Rule) => Rule.unique(),
     }),
 

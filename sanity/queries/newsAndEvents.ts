@@ -13,3 +13,10 @@ export const highlightedEventsQuery = defineQuery(groq`
     _id, title, startDate, startTime, endDate, dateDisplay, startsAt, description, location, linkUrl, expirationMode, expiresAt, ${imageProjection}
   }
 `)
+
+export const newsEventsOrderQuery = defineQuery(groq`
+  *[_id == "page-news-and-events"][0]{
+    "newsIds": newsItems[]._ref,
+    "eventIds": highlightedEvents[]._ref
+  }
+`)

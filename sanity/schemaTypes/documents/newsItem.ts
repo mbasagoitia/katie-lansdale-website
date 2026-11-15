@@ -12,7 +12,7 @@ export default defineType({
     defineField({name: "description", title: "Description", type: "text", rows: 5, validation: (Rule) => Rule.required()}),
     defineField({name: "image", title: "Photo", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
     defineField({name: "linkUrl", title: "Link", description: "Optional full URL. When set, the title links there.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-    defineField({name: "expiresAt", title: "Keep on website through", description: "Optional. Set a date and time to automatically remove this news story from the website.", type: "datetime"}),
+    defineField({name: "expiresAt", title: "Expires date and time (optional)", description: "Leave blank to keep the story listed indefinitely. When supplied, it is automatically removed from the website at this date and time.", type: "datetime"}),
   ],
   preview: {select: {title: "title", subtitle: "publishedAt", media: "image"}},
 })

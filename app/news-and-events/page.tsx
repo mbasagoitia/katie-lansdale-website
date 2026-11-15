@@ -2,21 +2,22 @@ import type {Metadata} from "next"
 import Image from "next/image"
 import type {SanityImageSource} from "@sanity/image-url"
 import {getNewsAndEvents} from "@/sanity/data/newsAndEvents"
+import {getPageMetadata} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 import styles from "./page.module.css"
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: "News & Events | Katie Lansdale",
-  description: "Upcoming performances, events, and news from violinist Katie Lansdale.",
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("page-news-and-events")
 }
 
 export default async function NewsAndEventsPage() {
   const {news, events} = await getNewsAndEvents()
   const eventMonths = groupEventsByMonth(events)
-  const topMonth = eventMonths[0]?.label || (news[0] ? monthLabel(news[0].publishedAt) : monthLabel(new Date().toISOString()))
+  const nextEvent = events.slice().sort((a, b) => eventStartDate(a).localeCompare(eventStartDate(b)))[0]
+  const topMonth = nextEvent ? monthLabel(eventStartDate(nextEvent)) : (news[0] ? monthLabel(news[0].publishedAt) : monthLabel(new Date().toISOString()))
 
   return <main className={styles.page} data-quiet-background>
     <header className={styles.header}><h1>{topMonth}</h1></header>
@@ -34,7 +35,7 @@ export default async function NewsAndEventsPage() {
       </div>)}
     </section>}
 
-    {!news.length && !events.length && <p className={styles.empty}>Check back soon for upcoming events and performances.</p>}
+    {!news.length && !events.length && <p className={styles.empty}>Check back later for upcoming news and events.</p>}
   </main>
 }
 
@@ -79,7 +80,7 @@ function groupEventsByMonth(events: HighlightedEvent[]) {
     group.events.push(event)
     groups.set(key, group)
   }
-  return [...groups.values()]
+  return [...groups.values()].sort((a, b) => a.key.localeCompare(b.key))
 }
 
 function monthKey(value: string) {
@@ -91,7 +92,7 @@ function monthLabel(value: string) {
 }
 
 function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(value)).replace(", ", " · ")
+  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(value)).replace(", ", " · ")
 }
 
 function eventStartDate(event: HighlightedEvent) {
