@@ -137,7 +137,7 @@ function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: Lion
     linkUrl: "https://www.editionshortus.com/",
   }
   const news = sourceNews || defaultNews
-  const imageUrl = page?.trioNewsImage?.asset ? urlFor(page.trioNewsImage as SanityImageSource).width(900).height(700).fit("crop").url() : news.imageUrl
+  const imageUrl = page?.trioNewsImage?.asset ? urlFor(page.trioNewsImage as SanityImageSource).width(1000).height(1000).fit("max").url() : news.imageUrl
   const heading = page?.trioNewsHeading || news.heading
   const linkUrl = page?.trioNewsLink || news.linkUrl
 
