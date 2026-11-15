@@ -12,7 +12,7 @@ const client = createClient({
 
 const [home, trio, pressKit] = await Promise.all([
   client.fetch(`*[_id == "page-home"][0]{quotes[]{_key, quote, attribution}}`),
-  client.fetch(`*[_id == "page-lions-gate-trio"][0]{trioNewsItems, trioNewsHeading, trioNews, trioNewsImage, trioNewsLink, trioRecordings, trioAboutLabel, trioAboutHeading, trioHighlightLabel, trioNewsLabel, trioListenLabel, trioListenHeading, trioListenLinkLabel, trioEventsLabel, trioEventsHeading, trioEventsLinkLabel, trioCtaText, trioCtaLinkLabel}`),
+  client.fetch(`*[_id == "page-lions-gate-trio"][0]{trioNewsItems, trioNewsHeading, trioNews, trioNewsImage, trioNewsLink, trioAboutLabel, trioAboutHeading, trioNewsLabel, trioListenLabel, trioListenHeading, trioListenLinkLabel, trioEventsLabel, trioEventsHeading, trioEventsLinkLabel, trioCtaText, trioCtaLinkLabel}`),
   client.fetch(`*[_id == "page-photos-press-kit"][0]{selectedReviews, pressKitContactLabel, pressKitContactHeading, pressKitContactLinkLabel, pressKitContactDescription}`),
 ])
 
@@ -46,12 +46,6 @@ const migratedNews = trio?.trioNewsItems?.length ? trio.trioNewsItems : [{
   linkLabel: "Learn more",
 }]
 
-const recordings = (trio?.trioRecordings || []).map((recording) => {
-  if (recording.composer || recording.albumName || !recording.subtitle) return recording
-  const [composer, ...albumParts] = recording.subtitle.split(" · ")
-  return {...recording, composer, ...(albumParts.length ? {albumName: albumParts.join(" · ")} : {})}
-})
-
 await client.transaction()
   .patch("page-reviews", (patch) => patch.set({reviews: reviewOrder}))
   .patch("page-photos-press-kit", (patch) => patch.set({
@@ -63,10 +57,8 @@ await client.transaction()
   }))
   .patch("page-lions-gate-trio", (patch) => patch.set({
     trioNewsItems: migratedNews,
-    trioRecordings: recordings,
     trioAboutLabel: trio?.trioAboutLabel || "The Trio",
     trioAboutHeading: trio?.trioAboutHeading || "A shared musical life",
-    trioHighlightLabel: trio?.trioHighlightLabel || "Current highlight",
     trioNewsLabel: trio?.trioNewsLabel || "News",
     trioListenLabel: trio?.trioListenLabel || "Listen",
     trioListenHeading: trio?.trioListenHeading || "Selected recordings",

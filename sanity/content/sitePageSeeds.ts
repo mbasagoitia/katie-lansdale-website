@@ -20,9 +20,7 @@ export type SitePageSeed = {
   featuredIn?: Array<{_key: string; name: string; image: LocalImageSeed; url?: string}>
   trioMembers?: Array<{_key: string; name: string; instrument: string}>
   trioStatement?: string
-  trioQuote?: string
-  trioQuoteAttribution?: string
-  trioRecordings?: Array<{_key: string; title: string; subtitle?: string; coverArtUrl?: string; audioUrl?: string}>
+  trioRecordings?: Array<{_key: string; title: string; composer?: string; albumName?: string}>
   trioWebsiteUrl?: string
   projectCards?: Array<{_key: string; title: string; category?: string; description: string; imageUrl?: string; imagePosition?: string; linkUrl?: string; linkLabel?: string}>
   donationOptions?: Array<{_key: string; title: string; organization?: string; description?: string; donationUrl?: string; linkLabel?: string}>
@@ -95,9 +93,9 @@ export const sitePageSeeds: SitePageSeed[] = [
     ],
     trioStatement: "For over three decades, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe.",
     trioRecordings: [
-      {_key: "ravel-finale", title: "Piano Trio in A minor — IV. Finale: Animé", subtitle: "Maurice Ravel · Ravel, Ives & Clarke: Piano Trios", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1785280687262-S648O08QEVEHDEX4FZ1Q/Ravel_Ives_Clarke.jpg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84b1aa8165f5ac7e90a42a/1785181515342/04+IV.+Finale_+Anime.m4a"},
-      {_key: "theater-of-the-ear", title: "Theater of the Ear — III. On That Day", subtitle: "Tamar Diesendruck · Theater of the Ear", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517688123612-UTR5O3AJ8EKWG4X0264H/Theater_of_the_Ear.jpg", audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/Music/a7/d4/4d/mzm.pfbzifep.aac.p.m4a"},
-      {_key: "schumann-mit-innigem-ausdruck", title: "Piano Trio No. 2 — II. Mit innigem Ausdruck", subtitle: "Robert Schumann · Complete Music of Robert Schumann", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517078901961-S48A1QYF5LL5J38PXMHO/Schumann.jpeg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84afefe4966b15dd8961a7/1785181515368/1-10+Piano+Trio+No.+2+in+F+major%2C+Op.+80+-+II.+Mit+innigem+Ausdruck.m4a"},
+      {_key: "ravel-finale", title: "Piano Trio in A minor — IV. Finale: Animé", composer: "Maurice Ravel", albumName: "Ravel, Ives & Clarke: Piano Trios"},
+      {_key: "theater-of-the-ear", title: "Theater of the Ear — III. On That Day", composer: "Tamar Diesendruck", albumName: "Theater of the Ear"},
+      {_key: "schumann-mit-innigem-ausdruck", title: "Piano Trio No. 2 — II. Mit innigem Ausdruck", composer: "Robert Schumann", albumName: "Complete Music of Robert Schumann"},
     ],
     trioWebsiteUrl: "https://lionsgatetrio.org/",
   },

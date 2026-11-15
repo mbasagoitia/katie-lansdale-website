@@ -20,17 +20,11 @@ const defaultMembers: TrioMember[] = [
   {_key: "florence", name: "Florence Millet", instrument: "Piano"},
 ]
 
-const defaultRecordings: TrioRecording[] = [
-  { _key: "ravel-finale", title: "Piano Trio in A minor — IV. Finale: Animé", subtitle: "Maurice Ravel · Ravel, Ives & Clarke: Piano Trios", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1785280687262-S648O08QEVEHDEX4FZ1Q/Ravel_Ives_Clarke.jpg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84b1aa8165f5ac7e90a42a/1785181515342/04+IV.+Finale_+Anime.m4a" },
-  { _key: "theater-of-the-ear", title: "Theater of the Ear — III. On That Day", subtitle: "Tamar Diesendruck · Theater of the Ear", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517688123612-UTR5O3AJ8EKWG4X0264H/Theater_of_the_Ear.jpg", audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/Music/a7/d4/4d/mzm.pfbzifep.aac.p.m4a" },
-  { _key: "schumann-mit-innigem-ausdruck", title: "Piano Trio No. 2 — II. Mit innigem Ausdruck", subtitle: "Robert Schumann · Complete Music of Robert Schumann", coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517078901961-S48A1QYF5LL5J38PXMHO/Schumann.jpeg", audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84afefe4966b15dd8961a7/1785181515368/1-10+Piano+Trio+No.+2+in+F+major%2C+Op.+80+-+II.+Mit+innigem+Ausdruck.m4a" },
-]
-
 export default async function LionsGateTrioPage() {
   const [page, calendarEvents] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents()])
   const websiteUrl = page?.trioWebsiteUrl || "https://lionsgatetrio.org/"
   const members = page?.trioMembers?.length ? page.trioMembers : defaultMembers
-  const recordings = page?.trioRecordings?.length ? page.trioRecordings : defaultRecordings
+  const recordings = page?.trioRecordings || []
   const events = [...(page?.trioEvents || []), ...calendarEvents].sort((a, b) => a.date.localeCompare(b.date))
 
   return <main className={styles.page} data-quiet-background>
@@ -57,13 +51,6 @@ export default async function LionsGateTrioPage() {
       <p>{page?.trioStatement || "For over three decades, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe."}</p>
     </section>
 
-    {page?.trioQuote && <blockquote className={styles.quote}>
-      <p>“{page.trioQuote}”</p>
-      {page.trioQuoteAttribution && <footer>— {page.trioQuoteAttribution}</footer>}
-    </blockquote>}
-
-    <Highlight highlight={page?.trioHighlight} label={page?.trioHighlightLabel} />
-
     <NewsSection page={page} />
 
     <section className={styles.recordings}>
@@ -74,9 +61,7 @@ export default async function LionsGateTrioPage() {
         </div>
         <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/listen`}>{page?.trioListenLinkLabel || "Full discography"}</ExternalLink>
       </div>
-      <div className={styles.recordingGrid}>
-        {recordings.map((recording) => <RecordingCard key={recording._key} recording={recording} />)}
-      </div>
+      {recordings.length ? <div className={styles.recordingGrid}>{recordings.map((recording) => <RecordingCard key={recording._key} recording={recording} />)}</div> : <p className={styles.empty}>Recordings will be available soon.</p>}
     </section>
 
     <section className={styles.events}>
@@ -102,32 +87,17 @@ function HeroImage({image}: {image?: SanityImage}) {
   return <div className={styles.heroImage}>{src ? <Image src={src} alt={image?.alt || "Lions Gate Trio"} fill priority sizes="100vw" /> : <Image src="/images/lions-gate-trio.webp" alt="Lions Gate Trio" fill priority sizes="100vw" />}</div>
 }
 
-function Highlight({highlight, label}: {highlight?: CmsPage["trioHighlight"]; label?: string}) {
-  if (!highlight?.title && !highlight?.description) return null
-  const src = highlight.image?.asset ? urlFor(highlight.image as SanityImageSource).width(1000).height(700).fit("crop").url() : null
-
-  return <section className={styles.highlight}>
-    {src && <div className={styles.highlightImage}><Image src={src} alt={highlight.image?.alt || "Lions Gate Trio current highlight"} fill sizes="(max-width: 800px) 100vw, 42vw" /></div>}
-    <div className={styles.highlightContent}>
-      <p className={styles.sectionLabel}>{label || "Current highlight"}</p>
-      {highlight.title && <h2>{highlight.title}</h2>}
-      {highlight.description && <p>{highlight.description}</p>}
-      {highlight.linkUrl && <ExternalLink href={highlight.linkUrl}>{highlight.linkLabel || "Learn more"}</ExternalLink>}
-    </div>
-  </section>
-}
-
 function RecordingCard({recording}: {recording: TrioRecording}) {
-  const coverArtUrl = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : recording.coverArtUrl
-  const audioUrl = recording.audioFile?.asset?.url || recording.audioUrl
-  const detailsLabel = [recording.composer, recording.albumName].filter(Boolean).join(" · ") || recording.subtitle
+  const coverArtUrl = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : null
+  const audioUrl = recording.audioFile?.asset?.url
+  const detailsLabel = [recording.composer, recording.albumName].filter(Boolean).join(" · ")
   const details = <div className={styles.recordingDetails}>
     <h3>{recording.title}</h3>
     {detailsLabel && <p>{detailsLabel}</p>}
   </div>
   return <article className={styles.recordingCard}>
     {audioUrl && coverArtUrl ? <RecordingPlayer audioUrl={audioUrl} coverArtUrl={coverArtUrl} coverArtAlt={recording.coverArt?.alt || `Cover art for ${recording.title}`} title={recording.title} /> : <div className={styles.albumArt}>{coverArtUrl ? <Image src={coverArtUrl} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
-    {recording.url ? <ExternalLink href={recording.url}>{details}</ExternalLink> : details}
+    {details}
   </article>
 }
 

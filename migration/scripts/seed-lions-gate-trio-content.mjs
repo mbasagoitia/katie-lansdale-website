@@ -25,7 +25,6 @@ const trioDefaults = {
   trioAboutLabel: "The Trio",
   trioAboutHeading: "A shared musical life",
   trioStatement: "For over three decades, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe.",
-  trioHighlightLabel: "Current highlight",
   trioNewsLabel: "News",
   trioListenLabel: "Listen",
   trioListenHeading: "Selected recordings",
@@ -44,24 +43,18 @@ const defaultRecordings = [
     title: "Piano Trio in A minor — IV. Finale: Animé",
     composer: "Maurice Ravel",
     albumName: "Ravel, Ives & Clarke: Piano Trios",
-    coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1785280687262-S648O08QEVEHDEX4FZ1Q/Ravel_Ives_Clarke.jpg",
-    audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84b1aa8165f5ac7e90a42a/1785181515342/04+IV.+Finale_+Anime.m4a",
   },
   {
     _key: "theater-of-the-ear",
     title: "Theater of the Ear — III. On That Day",
     composer: "Tamar Diesendruck",
     albumName: "Theater of the Ear",
-    coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517688123612-UTR5O3AJ8EKWG4X0264H/Theater_of_the_Ear.jpg",
-    audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/Music/a7/d4/4d/mzm.pfbzifep.aac.p.m4a",
   },
   {
     _key: "schumann-mit-innigem-ausdruck",
     title: "Piano Trio No. 2 — II. Mit innigem Ausdruck",
     composer: "Robert Schumann",
     albumName: "Complete Music of Robert Schumann",
-    coverArtUrl: "https://images.squarespace-cdn.com/content/v1/5a6cacc2cf81e018e2e33569/1517078901961-S48A1QYF5LL5J38PXMHO/Schumann.jpeg",
-    audioUrl: "https://static1.squarespace.com/static/5a6cacc2cf81e018e2e33569/t/5a84afefe4966b15dd8961a7/1785181515368/1-10+Piano+Trio+No.+2+in+F+major%2C+Op.+80+-+II.+Mit+innigem+Ausdruck.m4a",
   },
 ]
 
@@ -74,7 +67,7 @@ async function uploadImage(relativePath, alt) {
 
 const [about, trio, trioDraft] = await Promise.all([
   client.fetch(`*[_id == "page-about"][0]{aboutTagline, excerpt}`),
-  client.fetch(`*[_id == "page-lions-gate-trio"][0]{title, excerpt, heroImage, trioMembers, trioAboutLabel, trioAboutHeading, trioStatement, trioHighlightLabel, trioNewsLabel, trioNewsItems, trioNewsImage, trioNewsHeading, trioNews, trioNewsLink, trioRecordings, trioListenLabel, trioListenHeading, trioListenLinkLabel, trioEventsLabel, trioEventsHeading, trioEventsLinkLabel, trioWebsiteUrl, trioCtaText, trioCtaLinkLabel}`),
+  client.fetch(`*[_id == "page-lions-gate-trio"][0]{title, excerpt, heroImage, trioMembers, trioAboutLabel, trioAboutHeading, trioStatement, trioNewsLabel, trioNewsItems, trioNewsImage, trioNewsHeading, trioNews, trioNewsLink, trioRecordings, trioListenLabel, trioListenHeading, trioListenLinkLabel, trioEventsLabel, trioEventsHeading, trioEventsLinkLabel, trioWebsiteUrl, trioCtaText, trioCtaLinkLabel}`),
   client.withConfig({perspective: "raw"}).fetch(`*[_id == "drafts.page-lions-gate-trio"][0]{_id}`),
 ])
 
@@ -97,11 +90,7 @@ const defaultNews = [{
 }]
 
 const existingRecordings = Array.isArray(trio.trioRecordings) && trio.trioRecordings.length === 3
-  ? trio.trioRecordings.map((recording) => {
-    if (recording.composer || recording.albumName || !recording.subtitle) return recording
-    const [composer, ...albumName] = recording.subtitle.split(" · ")
-    return {...recording, composer, ...(albumName.length ? {albumName: albumName.join(" · ")} : {})}
-  })
+  ? trio.trioRecordings.map(({_key, title, composer, albumName, coverArt, audioFile}) => ({_key, title, composer, albumName, coverArt, audioFile}))
   : defaultRecordings
 
 const tagline = about?.aboutTagline || about?.excerpt || "Soloist. Chamber Musician. Educator. Artistic Catalyst."
@@ -113,7 +102,6 @@ const trioContent = {
   trioAboutLabel: trio.trioAboutLabel || trioDefaults.trioAboutLabel,
   trioAboutHeading: trio.trioAboutHeading || trioDefaults.trioAboutHeading,
   trioStatement: trio.trioStatement || trioDefaults.trioStatement,
-  trioHighlightLabel: trio.trioHighlightLabel || trioDefaults.trioHighlightLabel,
   trioNewsLabel: trio.trioNewsLabel || trioDefaults.trioNewsLabel,
   trioRecordings: existingRecordings,
   trioNewsItems: Array.isArray(trio.trioNewsItems) && trio.trioNewsItems.length ? trio.trioNewsItems : defaultNews,

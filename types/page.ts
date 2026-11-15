@@ -23,14 +23,6 @@ export type TrioMember = {
   instrument: string
 }
 
-export type TrioHighlight = {
-  title?: string
-  description?: string
-  image?: SanityImage
-  linkLabel?: string
-  linkUrl?: string
-}
-
 export type TrioNewsItem = {
   _key: string
   title: string
@@ -45,13 +37,8 @@ export type TrioRecording = {
   title: string
   composer?: string
   albumName?: string
-  subtitle?: string
   coverArt?: SanityImage
-  coverArtUrl?: string
-  url?: string
-  audioUrl?: string
   audioFile?: {asset?: {url?: string}}
-  youtubeUrl?: string
 }
 
 export type TrioEvent = {
@@ -149,10 +136,6 @@ export type CmsPage = {
   trioAboutLabel?: string
   trioAboutHeading?: string
   trioStatement?: string
-  trioQuote?: string
-  trioQuoteAttribution?: string
-  trioHighlight?: TrioHighlight
-  trioHighlightLabel?: string
   trioNewsLabel?: string
   trioNewsItems?: TrioNewsItem[]
   trioNews?: TypedObject[]

@@ -28,7 +28,7 @@ const client = createClient({
 })
 
 const ids = sitePageSeeds.map((page) => page.id)
-const existingPages = isDryRun ? [] : await client.fetch("*[_id in $ids || _id in $draftIds]{_id, title, aboutTagline, excerpt, content, aboutIntroduction, heroImage, gallery, quotes, featuredIn, trioMembers, trioStatement, trioQuote, trioRecordings, projectCards}", {
+const existingPages = isDryRun ? [] : await client.fetch("*[_id in $ids || _id in $draftIds]{_id, title, aboutTagline, excerpt, content, aboutIntroduction, heroImage, gallery, quotes, featuredIn, trioMembers, trioStatement, trioRecordings, projectCards}", {
   ids,
   draftIds: ids.map((id) => `drafts.${id}`),
 })
@@ -37,7 +37,7 @@ const assetCache = new Map()
 
 function hasEditorialContent(page) {
   if (!page) return false
-  return ["aboutTagline", "excerpt", "content", "aboutIntroduction", "heroImage", "gallery", "quotes", "featuredIn", "trioMembers", "trioStatement", "trioQuote", "trioRecordings"].some((field) => {
+  return ["aboutTagline", "excerpt", "content", "aboutIntroduction", "heroImage", "gallery", "quotes", "featuredIn", "trioMembers", "trioStatement", "trioRecordings"].some((field) => {
     const value = page[field]
     return Array.isArray(value) ? value.length > 0 : Boolean(value)
   })
@@ -57,7 +57,7 @@ async function imageReference(image) {
 
 async function documentForSeed(seed) {
   const document = {_id: seed.id, _type: "page", title: seed.title}
-  for (const field of ["aboutTagline", "excerpt", "seoTitle", "seoDescription", "content", "aboutIntroduction", "quotes", "trioMembers", "trioStatement", "trioQuote", "trioQuoteAttribution", "trioRecordings", "trioWebsiteUrl", "projectCards"]) {
+  for (const field of ["aboutTagline", "excerpt", "seoTitle", "seoDescription", "content", "aboutIntroduction", "quotes", "trioMembers", "trioStatement", "trioRecordings", "trioWebsiteUrl", "projectCards"]) {
     if (seed[field] !== undefined) document[field] = seed[field]
   }
   if (seed.heroImage) document.heroImage = await imageReference(seed.heroImage)

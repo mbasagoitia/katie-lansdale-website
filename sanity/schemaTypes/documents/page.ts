@@ -520,44 +520,6 @@ export default defineType({
     }),
 
     defineField({
-      name: "trioQuote",
-      title: "Featured Quote",
-      type: "text",
-      rows: 4,
-      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
-    }),
-
-    defineField({
-      name: "trioQuoteAttribution",
-      title: "Quote Attribution",
-      type: "string",
-      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
-    }),
-
-    defineField({
-      name: "trioHighlight",
-      title: "Current Highlight",
-      description: "Feature one current release, project, or announcement.",
-      type: "object",
-      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
-      fields: [
-        defineField({name: "title", title: "Title", type: "string"}),
-        defineField({name: "description", title: "Description", type: "text", rows: 4}),
-        defineField({name: "image", title: "Image", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
-        defineField({name: "linkLabel", title: "Link Label", type: "string"}),
-        defineField({name: "linkUrl", title: "Link URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-      ],
-    }),
-
-    defineField({
-      name: "trioHighlightLabel",
-      title: "Current highlight label",
-      type: "string",
-      initialValue: "Current highlight",
-      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
-    }),
-
-    defineField({
       name: "trioNewsLabel",
       title: "News section label",
       type: "string",
@@ -587,7 +549,7 @@ export default defineType({
     defineField({
       name: "trioRecordings",
       title: "Selected Recordings",
-      description: "Show a small, curated selection. For the complete discography, link to the Lions Gate Trio site.",
+      description: "Show a curated selection of Lions Gate Trio recordings",
       type: "array",
       hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
@@ -596,12 +558,8 @@ export default defineType({
           defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
           defineField({name: "composer", title: "Composer", type: "string"}),
           defineField({name: "albumName", title: "Album name", type: "string"}),
-          defineField({name: "subtitle", title: "Legacy subtitle", type: "string", hidden: ({value}) => value === undefined, deprecated: {reason: "Use Composer and Album name for new recordings."}}),
           defineField({name: "coverArt", title: "Cover Art", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
           defineField({name: "audioFile", title: "Audio file", description: "Upload an audio recording to play from this card.", type: "file", options: {accept: "audio/*"}}),
-          defineField({name: "url", title: "Listen or Learn More URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-          defineField({name: "audioUrl", title: "Audio Recording URL (optional)", description: "Use this only for an externally hosted audio recording. Upload an Audio file for new recordings.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-          defineField({name: "youtubeUrl", title: "YouTube Video URL (Legacy)", description: "Use Audio Recording URL for new selected recordings.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]}), hidden: ({value}) => value === undefined, deprecated: {reason: "Selected recordings now use cover art and audio players."}}),
         ],
         preview: {select: {title: "title", subtitle: "composer", media: "coverArt"}},
       })],
