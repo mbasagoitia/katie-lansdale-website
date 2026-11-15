@@ -33,7 +33,6 @@ export default async function WatchListen() {
     {page?.content?.length ? <div className={styles.cmsContent}><RichTextContent content={page.content} /></div> : null}
 
     <section className={styles.section}>
-      <SectionHeading title="Album" />
       {albums.length ? <div className={styles.albumFeatures}>{albums.map((product) => <AlbumFeature key={product._id} product={product} />)}</div> : <p className={styles.empty}>An album will appear here when it is available for purchase.</p>}
     </section>
 

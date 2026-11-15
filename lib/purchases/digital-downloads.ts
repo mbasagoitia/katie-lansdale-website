@@ -7,15 +7,22 @@ const DOWNLOAD_LINK_TTL_SECONDS = 60 * 60 * 24 * 7
 
 export type DigitalDownload = {
   productTitle: string
-  recordingTitle: string
-  url: string
+  recordings: Array<{
+    title: string
+    url: string
+  }>
 }
 
 /** Creates short-lived links only for the digital recordings included in paid products. */
 export async function createDigitalDownloads(products: Product[]): Promise<DigitalDownload[]> {
-  const downloads = await Promise.all(products.flatMap((product) => {
-    if (!isDigital(product)) return []
-    return product.recordings.map(async (recording) => {
+  const deliveredRecordingIds = new Set<string>()
+  const downloads: DigitalDownload[] = []
+
+  for (const product of products) {
+    if (!isDigital(product)) continue
+    const recordings = await Promise.all(product.recordings.map(async (recording) => {
+      if (deliveredRecordingIds.has(recording._id)) return null
+      deliveredRecordingIds.add(recording._id)
       const path = recording.mediaType === "video" ? recording.fullVideo : recording.fullAudio
       if (!path) return null
       const bucket = recording.mediaType === "video" ? "video-full" : "audio-full"
@@ -24,10 +31,13 @@ export async function createDigitalDownloads(products: Product[]): Promise<Digit
         console.error("Unable to create a digital download link", {productId: product._id, recordingId: recording._id, error: error?.message})
         return null
       }
-      return {productTitle: product.title, recordingTitle: recording.title, url: data.signedUrl}
-    })
-  }))
-  return downloads.filter((download): download is DigitalDownload => Boolean(download))
+      return {title: recording.title, url: data.signedUrl}
+    }))
+    const availableRecordings = recordings.filter((recording): recording is {title: string; url: string} => Boolean(recording))
+    if (availableRecordings.length) downloads.push({productTitle: product.title, recordings: availableRecordings})
+  }
+
+  return downloads
 }
 
 function isDigital(product: Product): boolean {

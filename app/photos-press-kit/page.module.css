@@ -18,9 +18,9 @@
 .reviewGrid blockquote { margin: 0; color: #68472f; font-family: var(--font-cormorant), serif; font-size: 1.35rem; font-style: italic; line-height: 1.36; }
 .reviewGrid figcaption { margin-top: 24px; color: #96633a; font-family: var(--font-cormorant), serif; font-size: 1.04rem; font-style: italic; line-height: 1.35; }
 .allReviewsLink { display: inline-block; margin-top: 28px; color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; }
-.resources { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 50px; align-items: end; margin-top: 84px; padding-top: 28px; border-top: 1px solid #dfcdbc; }
-.resources h2 { margin-top: 20px; }
-.resources > div:first-child > p:last-child { max-width: 590px; margin: 20px 0 0; color: #68472f; font-size: 1.04rem; line-height: 1.65; }
-.resourceLinks { display: grid; gap: 15px; min-width: 205px; }
-.resourceLinks a { color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; }
-@media (max-width: 760px) { .page { margin: 30px auto 75px; } .header { margin-bottom: 42px; padding-bottom: 30px; } .photoSection, .bioSection, .reviews { margin-top: 58px; } .sectionHeader, .reviewIntro, .resources { display: block; } .sectionHeader p { margin-top: 18px; } .reviewGrid { grid-template-columns: 1fr; gap: 16px; margin-top: 26px; } .reviewGrid figure { min-height: 0; } .resources { margin-top: 58px; padding-top: 28px; } .resourceLinks { margin-top: 28px; } }
+.resources { margin-top: 84px; padding-top: 28px; border-top: 1px solid #dfcdbc; }
+.resourceHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 28px; margin-top: 20px; }
+.resources h2 { margin: 0; }
+.resourceHeading a { color: #7b4220; font-family: var(--font-inter), sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; white-space: nowrap; }
+.resourceCopy { max-width: 590px; margin: 20px 0 0; color: #68472f; font-size: 1.04rem; line-height: 1.65; }
+@media (max-width: 760px) { .page { margin: 30px auto 75px; } .header { margin-bottom: 42px; padding-bottom: 30px; } .photoSection, .bioSection, .reviews { margin-top: 58px; } .sectionHeader, .reviewIntro { display: block; } .sectionHeader p { margin-top: 18px; } .reviewGrid { grid-template-columns: 1fr; gap: 16px; margin-top: 26px; } .reviewGrid figure { min-height: 0; } .resources { margin-top: 58px; padding-top: 28px; } .resourceHeading { align-items: flex-start; flex-direction: column; gap: 18px; } }

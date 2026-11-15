@@ -38,6 +38,9 @@ export default async function AlbumPage({params}: PageProps) {
   const trackProducts = new Map(products
     .filter((candidate) => candidate.productKind === "recording" && candidate.recordings.length === 1)
     .map((candidate) => [candidate.recordings[0]._id, candidate]))
+  const workProducts = new Map(products
+    .filter((candidate) => candidate.productKind === "work" && candidate.work?._id)
+    .map((candidate) => [candidate.work!._id, candidate]))
 
   return <main className={styles.page}>
     <Link href="/watch-listen" className={styles.backLink}>← Back to Watch / Listen</Link>
@@ -68,6 +71,7 @@ export default async function AlbumPage({params}: PageProps) {
           <h3>{work?.title || "Recording"}</h3>
           {work && <p className={styles.workMeta}>{[work.subtitle, work.catalogNumber, work.arrangedBy ? `Arr. ${work.arrangedBy}` : undefined].filter(Boolean).join(" · ")}</p>}
           {work?.movements?.length ? <p className={styles.movements}>{work.movements.map((movement) => `${movement.number ? `${movement.number}. ` : ""}${movement.title || "Untitled movement"}`).join(" · ")}</p> : null}
+          {work?._id && workProducts.get(work._id) && <PurchaseAction product={workProducts.get(work._id)!} compact buttonLabel="Add complete piece" />}
         </header>
         <ol className={styles.recordings}>
           {recordings.map((recording, index) => <li className={styles.track} key={recording._id}>
@@ -119,10 +123,10 @@ function Preview({recording}: {recording: Recording}) {
   </div>
 }
 
-function PurchaseAction({product, compact = false}: {product: Product; compact?: boolean}) {
+function PurchaseAction({product, compact = false, buttonLabel}: {product: Product; compact?: boolean; buttonLabel?: string}) {
   return <div className={`${styles.purchaseAction} ${compact ? styles.purchaseActionCompact : ""}`}>
     <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel()}</span></div>
-    <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} />
+    <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} label={buttonLabel} />
   </div>
 }
 

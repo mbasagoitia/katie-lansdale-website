@@ -64,14 +64,12 @@ export default async function PhotosPressKitPage() {
     </section>
 
     <section className={styles.resources} aria-label="Press kit contact information">
-      <div>
-        <p className={styles.label}>For presenters & media</p>
+      <p className={styles.label}>For presenters & media</p>
+      <div className={styles.resourceHeading}>
         <h2>Get in touch</h2>
-        <p>For booking, interview requests, additional materials, or permission to use press images, please get in touch.</p>
-      </div>
-      <div className={styles.resourceLinks}>
         <Link href="/contact">Contact <span aria-hidden="true">→</span></Link>
       </div>
+      <p className={styles.resourceCopy}>For booking, interview requests, additional materials, or permission to use press images, please get in touch.</p>
     </section>
   </main>
 }

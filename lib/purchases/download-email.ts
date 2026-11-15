@@ -28,12 +28,12 @@ export async function sendDownloadEmail({to, downloads}: {to?: string | null; do
 }
 
 function textBody(downloads: DigitalDownload[]) {
-  return `Thank you for your purchase. Your download links are available for seven days:\n\n${downloads.map((download) => `${download.productTitle} — ${download.recordingTitle}\n${download.url}`).join("\n\n")}\n\nKatie Lansdale`
+  return `Thank you for your purchase. Your download links are available for seven days:\n\n${downloads.map((download) => `${download.productTitle}\n${download.recordings.map((recording) => `${recording.title}\n${recording.url}`).join("\n\n")}`).join("\n\n")}\n\nKatie Lansdale`
 }
 
 function htmlBody(downloads: DigitalDownload[]) {
-  const links = downloads.map((download) => `<li><strong>${escapeHtml(download.productTitle)}</strong> — ${escapeHtml(download.recordingTitle)}<br><a href="${escapeAttribute(download.url)}">Download</a></li>`).join("")
-  return `<p>Thank you for your purchase. Your download links are available for seven days:</p><ul>${links}</ul><p>Katie Lansdale</p>`
+  const groups = downloads.map((download) => `<h2>${escapeHtml(download.productTitle)}</h2><ul>${download.recordings.map((recording) => `<li><strong>${escapeHtml(recording.title)}</strong><br><a href="${escapeAttribute(recording.url)}">Download</a></li>`).join("")}</ul>`).join("")
+  return `<p>Thank you for your purchase. Your download links are available for seven days:</p>${groups}<p>Katie Lansdale</p>`
 }
 
 function escapeHtml(value: string) {

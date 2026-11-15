@@ -107,7 +107,7 @@ export default defineType({
       name: "work",
       title: "Work",
       description:
-        "Optional reference to the work associated with this product.",
+        "For a complete-piece product, select the work whose recordings this product includes.",
       type: "reference",
       to: [{ type: "work" }],
       hidden: ({ parent }) =>

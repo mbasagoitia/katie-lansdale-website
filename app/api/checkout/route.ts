@@ -19,6 +19,7 @@ export async function POST(request: Request) {
 
   const products = await getProductsByIds(productIds)
   if (products.length !== productIds.length) return NextResponse.json({message: "One or more cart items are no longer available. Please refresh your cart and try again."}, {status: 400})
+  if (hasOverlappingRecordings(products)) return NextResponse.json({message: "Your cart includes items with overlapping tracks. Please choose either the album, complete piece, or individual track for those recordings."}, {status: 400})
 
   const origin = request.headers.get("origin")
   if (!origin || !isHttpUrl(origin)) return NextResponse.json({message: "We could not determine the checkout return address."}, {status: 400})
@@ -58,4 +59,15 @@ function isHttpUrl(value: string): boolean {
   } catch {
     return false
   }
+}
+
+function hasOverlappingRecordings(products: Awaited<ReturnType<typeof getProductsByIds>>): boolean {
+  const includedRecordings = new Set<string>()
+  for (const product of products) {
+    for (const recording of product.recordings) {
+      if (includedRecordings.has(recording._id)) return true
+      includedRecordings.add(recording._id)
+    }
+  }
+  return false
 }
