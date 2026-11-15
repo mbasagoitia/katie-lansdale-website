@@ -31,14 +31,26 @@ export type TrioHighlight = {
   linkUrl?: string
 }
 
+export type TrioNewsItem = {
+  _key: string
+  title: string
+  description?: string
+  image?: SanityImage
+  linkUrl?: string
+  linkLabel?: string
+}
+
 export type TrioRecording = {
   _key: string
   title: string
+  composer?: string
+  albumName?: string
   subtitle?: string
   coverArt?: SanityImage
   coverArtUrl?: string
   url?: string
   audioUrl?: string
+  audioFile?: {asset?: {url?: string}}
   youtubeUrl?: string
 }
 
@@ -48,6 +60,10 @@ export type TrioEvent = {
   title: string
   venue?: string
   location?: string
+  description?: string
+  image?: SanityImage
+  imageUrl?: string
+  imageAlt?: string
   url?: string
 }
 
@@ -105,6 +121,12 @@ export type PressPhoto = {
   label?: string
 }
 
+export type CmsReview = {
+  _id: string
+  quote: string
+  attribution: string
+}
+
 export type ProductReference = {
   _key: string
   _ref: string
@@ -121,10 +143,15 @@ export type CmsPage = {
   quotes?: PageQuote[]
   featuredIn?: FeaturedInItem[]
   trioMembers?: TrioMember[]
+  trioAboutLabel?: string
+  trioAboutHeading?: string
   trioStatement?: string
   trioQuote?: string
   trioQuoteAttribution?: string
   trioHighlight?: TrioHighlight
+  trioHighlightLabel?: string
+  trioNewsLabel?: string
+  trioNewsItems?: TrioNewsItem[]
   trioNews?: TypedObject[]
   trioNewsHeading?: string
   trioNewsImage?: SanityImage
@@ -132,6 +159,14 @@ export type CmsPage = {
   trioRecordings?: TrioRecording[]
   trioEvents?: TrioEvent[]
   trioWebsiteUrl?: string
+  trioListenLabel?: string
+  trioListenHeading?: string
+  trioListenLinkLabel?: string
+  trioEventsLabel?: string
+  trioEventsHeading?: string
+  trioEventsLinkLabel?: string
+  trioCtaText?: string
+  trioCtaLinkLabel?: string
   projectCards?: ProjectCard[]
   donationOptions?: DonationOption[]
   publications?: PublicationEntry[]
@@ -140,6 +175,12 @@ export type CmsPage = {
   pressKitShortBio?: string
   pressKitLongBio?: TypedObject[]
   pressKitPhotos?: PressPhoto[]
+  reviews?: CmsReview[]
+  selectedReviews?: CmsReview[]
+  pressKitContactLabel?: string
+  pressKitContactHeading?: string
+  pressKitContactLinkLabel?: string
+  pressKitContactDescription?: string
   watchListenAlbums?: ProductReference[]
   watchListenSingles?: ProductReference[]
   seoTitle?: string

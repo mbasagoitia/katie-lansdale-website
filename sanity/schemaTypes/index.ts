@@ -7,6 +7,7 @@ import page from "./documents/page";
 import siteSettings from "./documents/siteSettings";
 import newsItem from "./documents/newsItem";
 import highlightedEvent from "./documents/highlightedEvent";
+import review from "./documents/review";
 
 import { type SchemaTypeDefinition } from 'sanity'
 
@@ -19,6 +20,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     product,
     newsItem,
     highlightedEvent,
+    review,
     page,
     siteSettings
   ],

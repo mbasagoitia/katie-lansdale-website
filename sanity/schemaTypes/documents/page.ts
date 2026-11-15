@@ -2,8 +2,9 @@ import {DocumentIcon} from "@sanity/icons";
 import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
 
-const isLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
+const isNotLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
 const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
+const hasPrimaryImage = (documentId?: string) => documentId === "page-about" || documentId === "page-lions-gate-trio";
 const isHomePage = (documentId?: string) => documentId === "page-home";
 const isNotHomePage = (documentId?: string) => documentId !== "page-home";
 const isWatchListenPage = (documentId?: string) => documentId === "page-watch-listen";
@@ -51,14 +52,14 @@ export default defineType({
 
     defineField({
       name: "heroImage",
-      title: "About portrait",
-      description: "Upload a portrait for the About page. Replace it by uploading another image, or use the Remove control to return to the default portrait.",
+      title: "Primary image",
+      description: "Upload the portrait for About or the hero image for Lions Gate Trio. Replace it by uploading another image, or use the Remove control to return to the default image.",
       type: "image",
       options: {
         hotspot: true,
       },
       fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
-      hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
+      hidden: ({document}) => !hasPrimaryImage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
@@ -247,6 +248,59 @@ export default defineType({
     }),
 
     defineField({
+      name: "selectedReviews",
+      title: "Selected reviews",
+      description: "Choose exactly three reviews from the Reviews list to feature on this page. Their wording is edited in Reviews, not here.",
+      type: "array",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
+      validation: (Rule) => Rule.required().length(3).unique(),
+    }),
+
+    defineField({
+      name: "pressKitContactLabel",
+      title: "Get in touch label",
+      type: "string",
+      initialValue: "For presenters & media",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "pressKitContactHeading",
+      title: "Get in touch heading",
+      type: "string",
+      initialValue: "Get in touch",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "pressKitContactLinkLabel",
+      title: "Contact link label",
+      type: "string",
+      initialValue: "Contact",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "pressKitContactDescription",
+      title: "Get in touch description",
+      type: "text",
+      rows: 4,
+      initialValue: "For booking, interview requests, additional materials, or permission to use press images, please get in touch.",
+      hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "reviews",
+      title: "Reviews in display order",
+      description: "Choose reviews from the Reviews list and drag them into the order they should appear on the Reviews page.",
+      type: "array",
+      hidden: ({document}) => document?._id?.replace(/^drafts\./, "") !== "page-reviews",
+      of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
+      validation: (Rule) => Rule.unique(),
+    }),
+
+    defineField({
       name: "watchListenAlbums",
       title: "Album display order",
       description: "Choose the albums to feature and drag them into their website order. Create or edit albums, tracks, prices, and downloads in the Music Store tool; this list controls display only.",
@@ -325,7 +379,7 @@ export default defineType({
       title: "Trio Members",
       description: "Add the ensemble members in performance order.",
       type: "array",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "object",
         fields: [
@@ -338,12 +392,28 @@ export default defineType({
     }),
 
     defineField({
+      name: "trioAboutLabel",
+      title: "About section label",
+      type: "string",
+      initialValue: "The Trio",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioAboutHeading",
+      title: "About section heading",
+      type: "string",
+      initialValue: "A shared musical life",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
       name: "trioStatement",
-      title: "About the Trio",
-      description: "A short introduction to Katie's work with the Lions Gate Trio.",
+      title: "About section description",
+      description: "The description beside the ‘A shared musical life’ heading.",
       type: "text",
       rows: 5,
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
@@ -351,14 +421,14 @@ export default defineType({
       title: "Featured Quote",
       type: "text",
       rows: 4,
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
       name: "trioQuoteAttribution",
       title: "Quote Attribution",
       type: "string",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
@@ -366,7 +436,7 @@ export default defineType({
       title: "Current Highlight",
       description: "Feature one current release, project, or announcement.",
       type: "object",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
       fields: [
         defineField({name: "title", title: "Title", type: "string"}),
         defineField({name: "description", title: "Description", type: "text", rows: 4}),
@@ -377,42 +447,38 @@ export default defineType({
     }),
 
     defineField({
-      name: "trioNews",
-      title: "News",
-      description: "Optional wording override for the Lions Gate Trio news item. Leave blank to show the current item pulled from the official site.",
-      type: "array",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
-      of: [defineArrayMember({
-        type: "block",
-        styles: [{title: "Normal", value: "normal"}],
-      })],
-    }),
-
-    defineField({
-      name: "trioNewsHeading",
-      title: "News Heading Override",
-      description: "Leave blank to use the heading pulled from the Lions Gate Trio site.",
+      name: "trioHighlightLabel",
+      title: "Current highlight label",
       type: "string",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      initialValue: "Current highlight",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
-      name: "trioNewsImage",
-      title: "News Image Override",
-      description: "Leave blank to use the image pulled from the Lions Gate Trio site.",
-      type: "image",
-      options: {hotspot: true},
-      fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      name: "trioNewsLabel",
+      title: "News section label",
+      type: "string",
+      initialValue: "News",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({
-      name: "trioNewsLink",
-      title: "News Link Override",
-      description: "Leave blank to use the link pulled from the Lions Gate Trio site.",
-      type: "url",
-      validation: (Rule) => Rule.uri({scheme: ["http", "https"]}),
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      name: "trioNewsItems",
+      title: "News items",
+      description: "Add, edit, delete, or drag to reorder Lions Gate Trio news items.",
+      type: "array",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "description", title: "Description", type: "text", rows: 5}),
+          defineField({name: "image", title: "Image", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+          defineField({name: "linkLabel", title: "Link label", type: "string", initialValue: "Learn more"}),
+          defineField({name: "linkUrl", title: "Link URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+        ],
+        preview: {select: {title: "title", subtitle: "description", media: "image"}},
+      })],
     }),
 
     defineField({
@@ -420,28 +486,31 @@ export default defineType({
       title: "Selected Recordings",
       description: "Show a small, curated selection. For the complete discography, link to the Lions Gate Trio site.",
       type: "array",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "object",
         fields: [
           defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
-          defineField({name: "subtitle", title: "Subtitle", type: "string"}),
+          defineField({name: "composer", title: "Composer", type: "string"}),
+          defineField({name: "albumName", title: "Album name", type: "string"}),
+          defineField({name: "subtitle", title: "Legacy subtitle", type: "string", hidden: ({value}) => value === undefined, deprecated: {reason: "Use Composer and Album name for new recordings."}}),
           defineField({name: "coverArt", title: "Cover Art", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+          defineField({name: "audioFile", title: "Audio file", description: "Upload an audio recording to play from this card.", type: "file", options: {accept: "audio/*"}}),
           defineField({name: "url", title: "Listen or Learn More URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-          defineField({name: "audioUrl", title: "Audio Recording URL", description: "Paste the direct URL of the audio recording played when this cover is selected.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({name: "audioUrl", title: "Audio Recording URL (optional)", description: "Use this only for an externally hosted audio recording. Upload an Audio file for new recordings.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
           defineField({name: "youtubeUrl", title: "YouTube Video URL (Legacy)", description: "Use Audio Recording URL for new selected recordings.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]}), hidden: ({value}) => value === undefined, deprecated: {reason: "Selected recordings now use cover art and audio players."}}),
         ],
-        preview: {select: {title: "title", subtitle: "subtitle", media: "coverArt"}},
+        preview: {select: {title: "title", subtitle: "composer", media: "coverArt"}},
       })],
       validation: (Rule) => Rule.max(5),
     }),
 
     defineField({
       name: "trioEvents",
-      title: "Selected Upcoming Performances",
-      description: "Keep this list to a few current performances and link to the trio's complete calendar.",
+      title: "Custom upcoming performances",
+      description: "These appear alongside performances pulled from the Lions Gate Trio calendar. Add, edit, delete, or drag to reorder them here.",
       type: "array",
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "object",
         fields: [
@@ -449,6 +518,8 @@ export default defineType({
           defineField({name: "title", title: "Performance Title", type: "string", validation: (Rule) => Rule.required()}),
           defineField({name: "venue", title: "Venue", type: "string"}),
           defineField({name: "location", title: "Location", type: "string"}),
+          defineField({name: "description", title: "Description", type: "text", rows: 4}),
+          defineField({name: "image", title: "Image", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
           defineField({name: "url", title: "Event URL", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
         ],
         preview: {select: {title: "title", subtitle: "date"}},
@@ -462,7 +533,72 @@ export default defineType({
       type: "url",
       initialValue: "https://lionsgatetrio.org/",
       validation: (Rule) => Rule.uri({scheme: ["http", "https"]}),
-      hidden: ({document}) => isLionsGateTrioPage(document?._id),
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioListenLabel",
+      title: "Listen section label",
+      type: "string",
+      initialValue: "Listen",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioListenHeading",
+      title: "Listen section heading",
+      type: "string",
+      initialValue: "Selected recordings",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioListenLinkLabel",
+      title: "Listen section link label",
+      type: "string",
+      initialValue: "Full discography",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioEventsLabel",
+      title: "Performances section label",
+      type: "string",
+      initialValue: "On stage",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioEventsHeading",
+      title: "Performances section heading",
+      type: "string",
+      initialValue: "Upcoming performances",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioEventsLinkLabel",
+      title: "Performances section link label",
+      type: "string",
+      initialValue: "Full calendar",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioCtaText",
+      title: "Bottom callout text",
+      type: "text",
+      rows: 3,
+      initialValue: "For complete concert information, recordings, and news, visit the Lions Gate Trio official website.",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
+      name: "trioCtaLinkLabel",
+      title: "Bottom callout link label",
+      type: "string",
+      initialValue: "Visit LionsGateTrio.org",
+      hidden: ({document}) => isNotLionsGateTrioPage(document?._id?.replace(/^drafts\./, "")),
     }),
 
     defineField({

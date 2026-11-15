@@ -4,10 +4,8 @@ import type {SanityImageSource} from "@sanity/image-url"
 import {getPageById, getPageMetadata} from "@/sanity/data/pages"
 import {urlFor} from "@/sanity/lib/image"
 import type {CmsPage, SanityImage, TrioEvent, TrioMember, TrioRecording} from "@/types/page"
-import {RichTextContent} from "@/components/cms/PageContent"
 import RecordingPlayer from "@/components/lions-gate-trio/RecordingPlayer"
 import {getLionsGateCalendarEvents, type LionsGateCalendarEvent} from "@/lib/lions-gate-calendar"
-import {getLionsGateNews, type LionsGateNewsItem} from "@/lib/lions-gate-news"
 import styles from "./page.module.css"
 
 export const revalidate = 60
@@ -29,10 +27,11 @@ const defaultRecordings: TrioRecording[] = [
 ]
 
 export default async function LionsGateTrioPage() {
-  const [page, calendarEvents, sourceNews] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents(), getLionsGateNews()])
+  const [page, calendarEvents] = await Promise.all([getPageById("page-lions-gate-trio"), getLionsGateCalendarEvents()])
   const websiteUrl = page?.trioWebsiteUrl || "https://lionsgatetrio.org/"
   const members = page?.trioMembers?.length ? page.trioMembers : defaultMembers
   const recordings = page?.trioRecordings?.length ? page.trioRecordings : defaultRecordings
+  const events = [...(page?.trioEvents || []), ...calendarEvents].sort((a, b) => a.date.localeCompare(b.date))
 
   return <main className={styles.page} data-quiet-background>
     <header className={styles.hero}>
@@ -52,8 +51,8 @@ export default async function LionsGateTrioPage() {
 
     <section className={styles.about}>
       <div>
-        <p className={styles.sectionLabel}>The Trio</p>
-        <h2>A shared musical life</h2>
+        <p className={styles.sectionLabel}>{page?.trioAboutLabel || "The Trio"}</p>
+        <h2>{page?.trioAboutHeading || "A shared musical life"}</h2>
       </div>
       <p>{page?.trioStatement || "For over three decades, Katie Lansdale has performed with the internationally acclaimed Lions Gate Trio. Together with cellist Darrett Adkins and pianist Florence Millet, she brings the piano-trio repertoire to life through performances, recordings, residencies, and educational work in the United States and Europe."}</p>
     </section>
@@ -63,17 +62,17 @@ export default async function LionsGateTrioPage() {
       {page.trioQuoteAttribution && <footer>— {page.trioQuoteAttribution}</footer>}
     </blockquote>}
 
-    <Highlight highlight={page?.trioHighlight} />
+    <Highlight highlight={page?.trioHighlight} label={page?.trioHighlightLabel} />
 
-    <NewsSection page={page} sourceNews={sourceNews} />
+    <NewsSection page={page} />
 
     <section className={styles.recordings}>
       <div className={styles.sectionHeading}>
         <div>
-          <p className={styles.sectionLabel}>Listen</p>
-          <h2>Selected recordings</h2>
+          <p className={styles.sectionLabel}>{page?.trioListenLabel || "Listen"}</p>
+          <h2>{page?.trioListenHeading || "Selected recordings"}</h2>
         </div>
-        <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/listen`}>Full discography</ExternalLink>
+        <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/listen`}>{page?.trioListenLinkLabel || "Full discography"}</ExternalLink>
       </div>
       <div className={styles.recordingGrid}>
         {recordings.map((recording) => <RecordingCard key={recording._key} recording={recording} />)}
@@ -83,17 +82,17 @@ export default async function LionsGateTrioPage() {
     <section className={styles.events}>
       <div className={styles.sectionHeading}>
         <div>
-          <p className={styles.sectionLabel}>On stage</p>
-          <h2>Upcoming performances</h2>
+          <p className={styles.sectionLabel}>{page?.trioEventsLabel || "On stage"}</p>
+          <h2>{page?.trioEventsHeading || "Upcoming performances"}</h2>
         </div>
-        <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/calendar`}>Full calendar</ExternalLink>
+        <ExternalLink href={`${websiteUrl.replace(/\/$/, "")}/calendar`}>{page?.trioEventsLinkLabel || "Full calendar"}</ExternalLink>
       </div>
-      {calendarEvents.length || page?.trioEvents?.length ? <div className={styles.eventList}>{calendarEvents.length ? calendarEvents.map((event) => <EventCard key={event.id} event={event} />) : page?.trioEvents?.map((event) => <EventCard key={event._key} event={event} />)}</div> : <p className={styles.empty}>Upcoming Lions Gate Trio performances will be announced soon.</p>}
+      {events.length ? <div className={styles.eventList}>{events.map((event) => <EventCard key={"id" in event ? event.id : event._key} event={event} />)}</div> : <p className={styles.empty}>Upcoming Lions Gate Trio performances will be announced soon.</p>}
     </section>
 
     <section className={styles.cta}>
-      <p>For complete concert information, recordings, and news, visit the Lions Gate Trio official website.</p>
-      <ExternalLink href={websiteUrl}>Visit LionsGateTrio.org</ExternalLink>
+      <p>{page?.trioCtaText || "For complete concert information, recordings, and news, visit the Lions Gate Trio official website."}</p>
+      <ExternalLink href={websiteUrl}>{page?.trioCtaLinkLabel || "Visit LionsGateTrio.org"}</ExternalLink>
     </section>
   </main>
 }
@@ -103,14 +102,14 @@ function HeroImage({image}: {image?: SanityImage}) {
   return <div className={styles.heroImage}>{src ? <Image src={src} alt={image?.alt || "Lions Gate Trio"} fill priority sizes="100vw" /> : <Image src="/images/lions-gate-trio.webp" alt="Lions Gate Trio" fill priority sizes="100vw" />}</div>
 }
 
-function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
+function Highlight({highlight, label}: {highlight?: CmsPage["trioHighlight"]; label?: string}) {
   if (!highlight?.title && !highlight?.description) return null
   const src = highlight.image?.asset ? urlFor(highlight.image as SanityImageSource).width(1000).height(700).fit("crop").url() : null
 
   return <section className={styles.highlight}>
     {src && <div className={styles.highlightImage}><Image src={src} alt={highlight.image?.alt || "Lions Gate Trio current highlight"} fill sizes="(max-width: 800px) 100vw, 42vw" /></div>}
     <div className={styles.highlightContent}>
-      <p className={styles.sectionLabel}>Current highlight</p>
+      <p className={styles.sectionLabel}>{label || "Current highlight"}</p>
       {highlight.title && <h2>{highlight.title}</h2>}
       {highlight.description && <p>{highlight.description}</p>}
       {highlight.linkUrl && <ExternalLink href={highlight.linkUrl}>{highlight.linkLabel || "Learn more"}</ExternalLink>}
@@ -120,45 +119,45 @@ function Highlight({highlight}: {highlight?: CmsPage["trioHighlight"]}) {
 
 function RecordingCard({recording}: {recording: TrioRecording}) {
   const coverArtUrl = recording.coverArt?.asset ? urlFor(recording.coverArt as SanityImageSource).width(800).height(800).fit("crop").url() : recording.coverArtUrl
+  const audioUrl = recording.audioFile?.asset?.url || recording.audioUrl
+  const detailsLabel = [recording.composer, recording.albumName].filter(Boolean).join(" · ") || recording.subtitle
   const details = <div className={styles.recordingDetails}>
     <h3>{recording.title}</h3>
-    {recording.subtitle && <p>{recording.subtitle}</p>}
+    {detailsLabel && <p>{detailsLabel}</p>}
   </div>
   return <article className={styles.recordingCard}>
-    {recording.audioUrl && coverArtUrl ? <RecordingPlayer audioUrl={recording.audioUrl} coverArtUrl={coverArtUrl} coverArtAlt={recording.coverArt?.alt || `Cover art for ${recording.title}`} title={recording.title} /> : <div className={styles.albumArt}>{coverArtUrl ? <Image src={coverArtUrl} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
+    {audioUrl && coverArtUrl ? <RecordingPlayer audioUrl={audioUrl} coverArtUrl={coverArtUrl} coverArtAlt={recording.coverArt?.alt || `Cover art for ${recording.title}`} title={recording.title} /> : <div className={styles.albumArt}>{coverArtUrl ? <Image src={coverArtUrl} alt={recording.coverArt?.alt || `Cover art for ${recording.title}`} fill sizes="(max-width: 700px) 100vw, 30vw" /> : <span>LGT</span>}</div>}
     {recording.url ? <ExternalLink href={recording.url}>{details}</ExternalLink> : details}
   </article>
 }
 
-function NewsSection({page, sourceNews}: {page: CmsPage | null; sourceNews: LionsGateNewsItem | null}) {
-  const defaultNews: LionsGateNewsItem = {
+function NewsSection({page}: {page: CmsPage | null}) {
+  const defaultNews = {
     heading: "Recently released: Lumières",
     body: "Lumières features music by Fauré, Saariaho, Höller, Iannotta, and Bertrand. The album is available on Spotify, Apple Music, Amazon Music, and through Editions Hortus.",
     linkUrl: "https://www.editionshortus.com/",
   }
-  const news = sourceNews || defaultNews
-  const imageUrl = page?.trioNewsImage?.asset ? urlFor(page.trioNewsImage as SanityImageSource).width(1000).height(1000).fit("max").url() : news.imageUrl
-  const heading = page?.trioNewsHeading || news.heading
-  const linkUrl = page?.trioNewsLink || news.linkUrl
+  const items = page?.trioNewsItems?.length ? page.trioNewsItems : [{_key: "default-news", title: defaultNews.heading, description: defaultNews.body, linkUrl: defaultNews.linkUrl}]
 
-  return <section className={`${styles.news} ${imageUrl ? styles.newsWithImage : ""}`}>
-    {imageUrl && <div className={styles.newsImage}><Image src={imageUrl} alt={page?.trioNewsImage?.alt || "Lions Gate Trio news"} fill sizes="(max-width: 800px) 100vw, 360px" /></div>}
+  return <>{items.map((news) => {
+    const imageUrl = news.image?.asset ? urlFor(news.image as SanityImageSource).width(1000).height(1000).fit("max").url() : null
+    return <section key={news._key} className={`${styles.news} ${imageUrl ? styles.newsWithImage : ""}`}>
+    {imageUrl && <div className={styles.newsImage}><Image src={imageUrl} alt={news.image?.alt || "Lions Gate Trio news"} fill sizes="(max-width: 800px) 100vw, 360px" /></div>}
     <div className={styles.newsText}>
-      <p className={styles.sectionLabel}>News</p>
-      <h2>{heading}</h2>
-      <div className={styles.newsContent}>
-        {page?.trioNews?.length ? <RichTextContent content={page.trioNews} /> : <p>{news.body}</p>}
-      </div>
-      {linkUrl && <ExternalLink href={linkUrl}>Learn more</ExternalLink>}
+      <p className={styles.sectionLabel}>{page?.trioNewsLabel || "News"}</p>
+      <h2>{news.title}</h2>
+      {news.description && <div className={styles.newsContent}><p>{news.description}</p></div>}
+      {news.linkUrl && <ExternalLink href={news.linkUrl}>{news.linkLabel || "Learn more"}</ExternalLink>}
     </div>
   </section>
+  })}</>
 }
 
 function EventCard({event}: {event: TrioEvent | LionsGateCalendarEvent}) {
   const date = new Intl.DateTimeFormat("en-US", {month: "short", day: "numeric", year: "numeric", timeZone: "UTC"}).format(new Date(`${event.date}T12:00:00Z`))
   const description = "description" in event ? event.description : undefined
-  const imageUrl = "imageUrl" in event ? event.imageUrl : undefined
-  const imageAlt = "imageAlt" in event ? event.imageAlt : undefined
+  const imageUrl = "image" in event && event.image?.asset ? urlFor(event.image as SanityImageSource).width(700).height(500).fit("crop").url() : "imageUrl" in event ? event.imageUrl : undefined
+  const imageAlt = "image" in event ? event.image?.alt : "imageAlt" in event ? event.imageAlt : undefined
   const content = <>
     {imageUrl && <div className={styles.eventImage}><Image src={imageUrl} alt={imageAlt || "Lions Gate Trio performance"} fill sizes="(max-width: 800px) 100vw, 260px" /></div>}
     <div className={styles.eventContent}><p className={styles.eventDate}>{date}</p><h3>{event.title}</h3><p className={styles.eventVenue}>{[event.venue, event.location].filter(Boolean).join(" · ")}</p>{description && <p className={styles.eventDescription}>{description}</p>}</div>

@@ -25,6 +25,7 @@ export default async function PhotosPressKitPage() {
     label: photo.label || "Press photo",
   }] : []) || fallbackPhotos
   const longBio = toParagraphs(page?.pressKitLongBio?.length ? page.pressKitLongBio : pressKitLongBio)
+  const selectedReviews = page?.selectedReviews?.length === 3 ? page.selectedReviews : topReviews
   return <main className={styles.page}>
     <header className={styles.header}>
       <h1>{page?.title || "Photos & Press Kit"}</h1>
@@ -55,21 +56,21 @@ export default async function PhotosPressKitPage() {
         <h2 id="selected-reviews-heading">Selected reviews</h2>
       </div>
       <div className={styles.reviewGrid}>
-        {topReviews.map((review) => <figure key={review.source}>
+        {selectedReviews.map((review) => <figure key={"_id" in review ? review._id : review.source}>
           <blockquote>“{review.quote}”</blockquote>
-          <figcaption>— {review.source}</figcaption>
+          <figcaption>— {"attribution" in review ? review.attribution : review.source}</figcaption>
         </figure>)}
       </div>
       <Link className={styles.allReviewsLink} href="/reviews">Read all reviews <span aria-hidden="true">→</span></Link>
     </section>
 
     <section className={styles.resources} aria-label="Press kit contact information">
-      <p className={styles.label}>For presenters & media</p>
+      <p className={styles.label}>{page?.pressKitContactLabel || "For presenters & media"}</p>
       <div className={styles.resourceHeading}>
-        <h2>Get in touch</h2>
-        <Link href="/contact">Contact <span aria-hidden="true">→</span></Link>
+        <h2>{page?.pressKitContactHeading || "Get in touch"}</h2>
+        <Link href="/contact">{page?.pressKitContactLinkLabel || "Contact"} <span aria-hidden="true">→</span></Link>
       </div>
-      <p className={styles.resourceCopy}>For booking, interview requests, additional materials, or permission to use press images, please get in touch.</p>
+      <p className={styles.resourceCopy}>{page?.pressKitContactDescription || "For booking, interview requests, additional materials, or permission to use press images, please get in touch."}</p>
     </section>
   </main>
 }
