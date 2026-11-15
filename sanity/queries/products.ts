@@ -63,3 +63,9 @@ export const productBySlugQuery = defineQuery(groq`
   ${productProjection}
 }
 `);
+
+export const productsByIdsQuery = defineQuery(groq`
+*[_type == "product" && availableForPurchase == true && _id in $ids] {
+  ${productProjection}
+}
+`);

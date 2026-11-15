@@ -16,7 +16,10 @@
 .items button { border: 0; padding: 0; background: transparent; color: #7b4220; cursor: pointer; font: inherit; font-size: .75rem; font-weight: 700; letter-spacing: .07em; text-decoration: underline; text-transform: uppercase; }
 .total { display: flex; justify-content: space-between; padding: 20px 0; border-top: 1px solid #decab6; border-bottom: 1px solid #decab6; font-size: 1rem; }
 .total strong { font-family: var(--font-cormorant), serif; font-size: 1.8rem; line-height: .8; }
-.checkout { width: 100%; margin-top: 24px; border: 1px solid #b9875d; padding: 14px; background: #ead5bd; color: #795333; cursor: not-allowed; font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.checkout { width: 100%; margin-top: 24px; border: 1px solid #7b4220; padding: 14px; background: #7b4220; color: #fffaf5; cursor: pointer; font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; transition: background-color .2s ease; }
+.checkout:hover:not(:disabled), .checkout:focus-visible { background: #9d5e28; }
+.checkout:disabled { cursor: wait; opacity: .7; }
 .note { margin-top: 14px; color: #7b583d; font-size: .68rem; letter-spacing: .06em; line-height: 1.5; text-align: center; text-transform: none; }
+.error { margin: 10px 0 0; color: #9b3f32; font-size: .9rem; font-weight: 600; line-height: 1.5; text-align: center; }
 .empty { margin: 34px 0; color: #7b583d; font-size: 1rem; line-height: 1.6; }
 @media (max-width: 500px) { .panel { padding: 25px; } }

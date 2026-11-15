@@ -6,6 +6,8 @@ import styles from "./CartPanel.module.css"
 
 export default function CartPanel() {
   const [isOpen, setIsOpen] = useState(false)
+  const [checkoutMessage, setCheckoutMessage] = useState("")
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
   const cart = useSyncExternalStore(subscribeToCart, readCart, () => EMPTY_CART)
   const subtotal = cart.reduce((total, item) => total + item.price, 0)
 
@@ -20,6 +22,24 @@ export default function CartPanel() {
 
   function removeItem(id: string) {
     writeCart(cart.filter((item) => item.id !== id))
+  }
+
+  async function checkout() {
+    setIsCheckingOut(true)
+    setCheckoutMessage("")
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({productIds: cart.map((item) => item.id)}),
+      })
+      const body = await response.json().catch(() => null) as {message?: string; url?: string} | null
+      if (!response.ok || !body?.url) throw new Error(body?.message || "We could not start checkout. Please try again.")
+      window.location.assign(body.url)
+    } catch (error) {
+      setCheckoutMessage(error instanceof Error ? error.message : "We could not start checkout. Please try again.")
+      setIsCheckingOut(false)
+    }
   }
 
   if (cart.length === 0) return null
@@ -44,8 +64,9 @@ export default function CartPanel() {
             <button type="button" onClick={() => removeItem(item.id)}>Remove</button>
           </li>)}</ul>
           <div className={styles.total}><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <button type="button" className={styles.checkout} disabled>Checkout coming soon</button>
-          <p className={styles.note}>Secure checkout will be available here soon.</p>
+          <button type="button" className={styles.checkout} onClick={() => void checkout()} disabled={isCheckingOut}>{isCheckingOut ? "Opening checkout…" : "Checkout"}</button>
+          <p className={styles.note}>Test checkout only. No real charges will be made.</p>
+          {checkoutMessage && <p className={styles.error} role="alert">{checkoutMessage}</p>}
         </> : <p className={styles.empty}>Your cart is empty. Add an album or single to begin.</p>}
       </section>
     </div>}
