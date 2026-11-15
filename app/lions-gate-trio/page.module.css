@@ -75,7 +75,7 @@
 .highlightContent > p:not(.sectionLabel) { margin: 24px 0 30px; font-size: 1.1rem; line-height: 1.7; }
 
 .news { max-width: none; margin: 0 0 125px; padding: 55px 7%; background: #fbf6ef; border-left: 3px solid #a86c34; }
-.newsWithImage { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(0, 1fr); padding: 0; border-left: 0; }
+.newsWithImage { display: grid; grid-template-columns: minmax(300px, .7fr) minmax(0, 1.3fr); padding: 0; border-left: 0; }
 .newsImage { position: relative; align-self: start; aspect-ratio: 1; background: #e8d5c1; }
 .newsImage :global(img) { object-fit: contain; }
 .newsText { padding: 55px 10%; }
