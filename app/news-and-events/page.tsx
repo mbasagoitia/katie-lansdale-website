@@ -1,102 +1,94 @@
 import type {Metadata} from "next"
 import Image from "next/image"
+import type {SanityImageSource} from "@sanity/image-url"
+import {getNewsAndEvents} from "@/sanity/data/newsAndEvents"
+import {urlFor} from "@/sanity/lib/image"
+import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 import styles from "./page.module.css"
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "News & Events | Katie Lansdale",
-  description: "Selected upcoming performances and events with violinist Katie Lansdale.",
+  description: "Upcoming performances, events, and news from violinist Katie Lansdale.",
 }
 
-type Event = {
-  date: string
-  title: string
-  description: string
-  location?: string
-  href?: string
-  image?: {src: string; alt: string}
-  status?: string
-}
+export default async function NewsAndEventsPage() {
+  const {news, events} = await getNewsAndEvents()
+  const eventMonths = groupEventsByMonth(events)
+  const topMonth = eventMonths[0]?.label || (news[0] ? monthLabel(news[0].publishedAt) : monthLabel(new Date().toISOString()))
 
-const lionsGateCalendar = "https://lionsgatetrio.org/calendar"
-
-const events: Event[] = [
-  {
-    date: "February 20 · 2 PM",
-    title: "Soundwaves Concert: Lions Gate Trio",
-    description: "The library’s trio-in-residence presents an exquisite pairing of a beloved masterpiece and a forgotten treasure, followed by light refreshments and time with the musicians.",
-    location: "Memorial Room, Fairfield Public Library · Fairfield, CT",
-    href: lionsGateCalendar,
-    image: {src: "/images/lions-gate-trio.webp", alt: "The Lions Gate Trio"},
-  },
-  {
-    date: "February 21 · 1 PM",
-    title: "Guilford Free Library Performance",
-    description: "Katie joins Darrett Adkins and Florence Millet for an afternoon performance with the Lions Gate Trio.",
-    location: "Guilford Free Library · Guilford, CT",
-    href: lionsGateCalendar,
-    image: {src: "/images/lions-gate-trio.webp", alt: "The Lions Gate Trio"},
-  },
-  {
-    date: "February 21 · 6 PM",
-    title: "Hartt Spring Residency",
-    description: "An evening with the Lions Gate Trio at The Hartt School. Program details will be announced soon.",
-    location: "Lincoln Theater, University of Hartford · West Hartford, CT",
-    href: lionsGateCalendar,
-  },
-  {
-    date: "Date forthcoming",
-    title: "Promisek Concert",
-    description: "A sample calendar event for the Promisek Solo Strings Workshop.",
-    image: {src: "/images/projects/promisek-house.png", alt: "Promisek workshop setting"},
-    status: "Sample event",
-  },
-  {
-    date: "Date forthcoming",
-    title: "Violin & Verse",
-    description: "A sample calendar event for a Violin & Verse event.",
-    image: {src: "/images/projects/violin-and-verse-canyon.png", alt: "Canyon landscape for Violin and Verse"},
-    status: "Sample event",
-  },
-]
-
-export default function NewsAndEventsPage() {
   return <main className={styles.page} data-quiet-background>
-    <header className={styles.header}>
-      <h1>February <span>2027</span></h1>
-    </header>
+    <header className={styles.header}><h1>{topMonth}</h1></header>
 
-    <section className={styles.contentSection} aria-labelledby="news-heading">
+    {news.length > 0 && <section className={styles.contentSection} aria-labelledby="news-heading">
       <h2 className={styles.sectionHeading} id="news-heading">News</h2>
-      <article className={styles.news} aria-labelledby="new-cd-release">
-        <div className={styles.newsImage} aria-label="Placeholder image"><span>Placeholder<br />Image</span></div>
-        <div className={styles.newsDetails}>
-          <h3 id="new-cd-release">New CD Release</h3>
-          <p>A new CD, [CD name] is now available.</p>
-        </div>
-      </article>
-    </section>
+      <div className={styles.list}>{news.map((item) => <NewsCard key={item._id} item={item} />)}</div>
+    </section>}
 
-    <section className={styles.contentSection} aria-labelledby="events-heading">
+    {eventMonths.length > 0 && <section className={styles.contentSection} aria-labelledby="events-heading">
       <h2 className={styles.sectionHeading} id="events-heading">Highlighted Events</h2>
-      <div className={styles.eventList} aria-label="Selected events for February 2027">
-        {events.map((event) => <EventCard key={event.title} event={event} />)}
-      </div>
-    </section>
+      {eventMonths.map((group, index) => <div className={styles.monthGroup} key={group.key}>
+        {index > 0 && <h2 className={styles.monthHeading}>{group.label}</h2>}
+        <div className={styles.list} aria-label={`Highlighted events for ${group.label}`}>{group.events.map((event) => <EventCard key={event._id} event={event} />)}</div>
+      </div>)}
+    </section>}
+
+    {!news.length && !events.length && <p className={styles.empty}>Check back soon for upcoming events and performances.</p>}
   </main>
 }
 
-function EventCard({event}: {event: Event}) {
-  const title = event.href ? <a href={event.href} target="_blank" rel="noreferrer">{event.title} <span aria-hidden="true">↗</span></a> : event.title
-
-  return <article className={styles.event}>
-    <div className={styles.media}>
-      {event.image ? <Image src={event.image.src} alt={event.image.alt} fill sizes="(max-width: 700px) 100vw, 300px" /> : <div className={styles.imagePlaceholder} aria-label="Placeholder image"><span>Placeholder<br />Image</span></div>}
-    </div>
+function NewsCard({item}: {item: NewsItem}) {
+  return <article className={styles.item}>
+    <ItemImage image={item.image} />
     <div className={styles.details}>
-      <div className={styles.meta}><p className={styles.date}>{event.date}</p>{event.status && <p className={styles.status}>{event.status}</p>}</div>
-      <h2>{title}</h2>
+      <p className={styles.date}>{formatDateTime(item.publishedAt)}</p>
+      <h2><LinkedTitle title={item.title} href={item.linkUrl} /></h2>
+      <p className={styles.description}>{item.description}</p>
+    </div>
+  </article>
+}
+
+function EventCard({event}: {event: HighlightedEvent}) {
+  return <article className={styles.item}>
+    <ItemImage image={event.image} />
+    <div className={styles.details}>
+      <p className={styles.date}>{formatDateTime(event.startsAt)}</p>
+      <h2><LinkedTitle title={event.title} href={event.linkUrl} /></h2>
       {event.location && <p className={styles.location}>{event.location}</p>}
       <p className={styles.description}>{event.description}</p>
     </div>
   </article>
+}
+
+function ItemImage({image}: {image?: NewsItem["image"]}) {
+  const imageUrl = image ? urlFor(image as SanityImageSource).width(900).url() : null
+  return <div className={styles.media}>{imageUrl ? <Image src={imageUrl} alt={image?.alt || ""} fill sizes="(max-width: 700px) 100vw, 300px" /> : <div className={styles.imagePlaceholder} aria-label="Placeholder image"><span>Placeholder<br />Image</span></div>}</div>
+}
+
+function LinkedTitle({title, href}: {title: string; href?: string}) {
+  return href ? <a href={href} target="_blank" rel="noreferrer">{title} <span aria-hidden="true">↗</span></a> : title
+}
+
+function groupEventsByMonth(events: HighlightedEvent[]) {
+  const groups = new Map<string, {key: string; label: string; events: HighlightedEvent[]}>()
+  for (const event of events) {
+    const key = monthKey(event.startsAt)
+    const group = groups.get(key) || {key, label: monthLabel(event.startsAt), events: []}
+    group.events.push(event)
+    groups.set(key, group)
+  }
+  return [...groups.values()]
+}
+
+function monthKey(value: string) {
+  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit"}).format(new Date(value))
+}
+
+function monthLabel(value: string) {
+  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", year: "numeric"}).format(new Date(value))
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(value)).replace(", ", " · ")
 }

@@ -5,6 +5,8 @@ import recording from "./documents/recording";
 import product from "./documents/product";
 import page from "./documents/page";
 import siteSettings from "./documents/siteSettings";
+import newsItem from "./documents/newsItem";
+import highlightedEvent from "./documents/highlightedEvent";
 
 import { type SchemaTypeDefinition } from 'sanity'
 
@@ -15,6 +17,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     album,
     recording,
     product,
+    newsItem,
+    highlightedEvent,
     page,
     siteSettings
   ],
