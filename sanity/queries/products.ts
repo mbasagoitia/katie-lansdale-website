@@ -37,7 +37,9 @@ const productProjection = groq`
     movementNumber,
     mediaType,
     previewAudio,
+    fullAudio,
     previewVideo,
+    fullVideo,
     previewPoster,
     coverArt,
     work->{
@@ -66,6 +68,12 @@ export const productBySlugQuery = defineQuery(groq`
 
 export const productsByIdsQuery = defineQuery(groq`
 *[_type == "product" && availableForPurchase == true && _id in $ids] {
+  ${productProjection}
+}
+`);
+
+export const productsByIdsForDeliveryQuery = defineQuery(groq`
+*[_type == "product" && _id in $ids] {
   ${productProjection}
 }
 `);

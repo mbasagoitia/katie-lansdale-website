@@ -55,7 +55,9 @@ export interface Product {
     movementNumber?: number;
     mediaType: "audio" | "video";
     previewAudio?: string;
+    fullAudio?: string;
     previewVideo?: string;
+    fullVideo?: string;
     previewPoster?: string;
     coverArt?: unknown;
     work?: {
