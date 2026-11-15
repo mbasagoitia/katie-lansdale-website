@@ -3,13 +3,15 @@
 import { FocusEvent, useState } from "react";
 import Link from "@/components/ui/page-transition/TransitionLink";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
+import type {SitePageId} from "@/sanity/sitePages";
 import styles from "./navigation.module.css";
 
-export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Violinist"}: {siteTitle?: string; tagline?: string}) {
+export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Violinist", labels = {}}: {siteTitle?: string; tagline?: string; labels?: Partial<Record<SitePageId, string>>}) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [mediaOpen, setMediaOpen] = useState(false);
     const displayTitle = siteTitle || "Katie Lansdale";
     const displayTagline = tagline || "Violinist";
+    const label = (id: SitePageId, fallback: string) => labels[id] || fallback;
 
     const closeMenu = () => {
         setMenuOpen(false);
@@ -46,7 +48,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            Home
+                            {label("page-home", "Home")}
                         </Link>
                     </div>
                     <div className={styles.navGroup}>
@@ -55,7 +57,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            About
+                            {label("page-about", "About")}
                         </Link>
                     </div>
                     <div className={styles.navGroup}>
@@ -64,7 +66,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            Lions Gate Trio
+                            {label("page-lions-gate-trio", "Lions Gate Trio")}
                         </Link>
                     </div>
                     <div
@@ -86,16 +88,16 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                         <div className={styles.submenu}>
                             <div className={styles.submenuInner}>
                                 <Link href="/watch-listen" onClick={closeMenu}>
-                                    Watch / Listen
+                                    {label("page-watch-listen", "Watch / Listen")}
                                 </Link>
                                 <Link href="/photos-press-kit" onClick={closeMenu}>
-                                    Photos & Press Kit
+                                    {label("page-photos-press-kit", "Photos & Press Kit")}
                                 </Link>
                                 <Link href="/reviews" onClick={closeMenu}>
-                                    Reviews
+                                    {label("page-reviews", "Reviews")}
                                 </Link>
                                 <Link href="/publications" onClick={closeMenu}>
-                                    Publications &amp; Presentations
+                                    {label("page-publications", "Publications & Presentations")}
                                 </Link>
                             </div>
                         </div>
@@ -106,7 +108,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            News & Events
+                            {label("page-news-and-events", "News & Events")}
                         </Link>
                     </div>
                     <div className={styles.navGroup}>
@@ -115,7 +117,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            Projects & Affiliations
+                            {label("page-projects-and-affiliations", "Projects & Affiliations")}
                         </Link>
                     </div>
                     <div className={styles.navGroup}>
@@ -124,7 +126,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            Donations
+                            {label("page-donations", "Donations")}
                         </Link>
                     </div>
                     <div className={styles.navGroup}>
@@ -133,7 +135,7 @@ export default function Navigation({siteTitle = "Katie Lansdale", tagline = "Vio
                             className={styles.topLink}
                             onClick={closeMenu}
                         >
-                            Contact
+                            {label("page-contact", "Contact")}
                         </Link>
                     </div>
 

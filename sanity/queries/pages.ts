@@ -34,9 +34,15 @@ export const pageByIdQuery = groq`
     pressKitShortBio,
     pressKitLongBio,
     pressKitPhotos[]{_key, label, image{alt, asset->{_id, url, metadata {dimensions}}}},
+    watchListenAlbums[]{_key, _ref},
+    watchListenSingles[]{_key, _ref},
     seoTitle,
     seoDescription
   }
+`
+
+export const pageNavigationQuery = groq`
+  *[_type == "page" && _id in $ids]{_id, title}
 `
 
 export const siteSettingsQuery = groq`

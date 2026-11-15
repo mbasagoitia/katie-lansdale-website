@@ -105,6 +105,11 @@ export type PressPhoto = {
   label?: string
 }
 
+export type ProductReference = {
+  _key: string
+  _ref: string
+}
+
 export type CmsPage = {
   _id: string
   title?: string
@@ -135,6 +140,8 @@ export type CmsPage = {
   pressKitShortBio?: string
   pressKitLongBio?: TypedObject[]
   pressKitPhotos?: PressPhoto[]
+  watchListenAlbums?: ProductReference[]
+  watchListenSingles?: ProductReference[]
   seoTitle?: string
   seoDescription?: string
 }

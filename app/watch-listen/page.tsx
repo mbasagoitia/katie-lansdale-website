@@ -19,8 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function WatchListen() {
   const [products, page] = await Promise.all([getProducts(), getPageById("page-watch-listen")])
-  const albums = products.filter((product) => product.productKind === "album")
-  const singles = products.filter((product) => product.productKind !== "album" && product.recordings.length === 1 && product.recordings[0]?.mediaType === "video")
+  const albums = orderProducts(products.filter((product) => product.productKind === "album"), page?.watchListenAlbums)
+  const singles = orderProducts(products.filter((product) => product.productKind !== "album" && product.recordings.length === 1 && product.recordings[0]?.mediaType === "video"), page?.watchListenSingles)
   const singlesWithArtwork = singles.filter((product) => product.coverArt)
   const singlesWithoutArtwork = singles.filter((product) => !product.coverArt)
 
@@ -44,6 +44,19 @@ export default async function WatchListen() {
       </>}
     </section>
   </div>
+}
+
+function orderProducts(products: Product[], order?: Array<{_ref: string}>): Product[] {
+  if (!order?.length) return products
+
+  const productsById = new Map(products.map((product) => [product._id, product]))
+  const ordered = order.flatMap(({_ref}) => {
+    const product = productsById.get(_ref)
+    return product ? [product] : []
+  })
+  const orderedIds = new Set(ordered.map((product) => product._id))
+
+  return [...ordered, ...products.filter((product) => !orderedIds.has(product._id))]
 }
 
 function SectionHeading({title}: {title: string}) {

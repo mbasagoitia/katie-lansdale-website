@@ -28,7 +28,10 @@
     width: min(42%, 650px);
     opacity: 0;
     will-change: opacity;
+    transition: opacity 850ms ease-in-out;
 }
+
+.visible { opacity: 1; }
 
 .photo {
     object-fit: cover;
@@ -38,7 +41,6 @@
     left: 0;
     overflow: hidden;
     mask-image: linear-gradient(to right, #000 0%, #000 72%, transparent 100%);
-    animation: leftPortrait 78s infinite ease-in-out;
 }
 
 .left .photo { object-position: left bottom; }
@@ -47,7 +49,6 @@
     right: 0;
     overflow: hidden;
     mask-image: linear-gradient(to left, #000 0%, #000 72%, transparent 100%);
-    animation: rightPortrait 78s infinite ease-in-out;
 }
 
 .right .photo { object-position: right bottom; }
@@ -65,34 +66,9 @@
     pointer-events: none;
 }
 
-@keyframes leftPortrait {
-    0%, 15.38% { opacity: 1; }
-    16.67%, 32.05% { opacity: 0; }
-    33.33%, 48.72% { opacity: 1; }
-    50%, 65.38% { opacity: 0; }
-    66.67%, 82.05% { opacity: 1; }
-    83.33%, 98.72% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes rightPortrait {
-    0%, 15.38% { opacity: 0; }
-    16.67%, 32.05% { opacity: 1; }
-    33.33%, 48.72% { opacity: 0; }
-    50%, 65.38% { opacity: 1; }
-    66.67%, 82.05% { opacity: 0; }
-    83.33%, 98.72% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .photoFrame {
-        animation: none;
-        opacity: 0;
-    }
-
-    .photoFrame:first-child {
-        opacity: 1;
+        transition: none;
     }
 }
 

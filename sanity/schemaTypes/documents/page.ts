@@ -3,10 +3,10 @@ import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
 
 const isLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
-const isAboutPage = (documentId?: string) => documentId !== "page-about";
 const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
 const isHomePage = (documentId?: string) => documentId === "page-home";
 const isNotHomePage = (documentId?: string) => documentId !== "page-home";
+const isWatchListenPage = (documentId?: string) => documentId === "page-watch-listen";
 const isProjectsPage = (documentId?: string) => documentId === "page-projects-and-affiliations";
 const isDonationsPage = (documentId?: string) => documentId === "page-donations";
 const isPublicationsPage = (documentId?: string) => documentId === "page-publications";
@@ -31,6 +31,7 @@ export default defineType({
     defineField({
       name: "title",
       title: "Title",
+      description: "Used for this page's navigation label, visible page heading where the design includes one, and default browser/search title. The page URL remains unchanged.",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
@@ -50,7 +51,8 @@ export default defineType({
 
     defineField({
       name: "heroImage",
-      title: "Photo",
+      title: "About portrait",
+      description: "Upload a portrait for the About page. Replace it by uploading another image, or use the Remove control to return to the default portrait.",
       type: "image",
       options: {
         hotspot: true,
@@ -61,23 +63,8 @@ export default defineType({
 
     defineField({
       name: "excerpt",
-      title: "Excerpt",
-      description: "A short public-facing summary of this page. It may appear below the page title and in link previews; it is different from the SEO Description, which is written specifically for search-result snippets.",
-      type: "text",
-      rows: 3,
-    }),
-
-    defineField({
-      name: "seoTitle",
-      title: "SEO Title Override (optional)",
-      description: "The title shown for this specific page in browser tabs and search results. Leave blank to use the sitewide SEO Title from Global Settings.",
-      type: "string",
-    }),
-
-    defineField({
-      name: "seoDescription",
-      title: "SEO Description Override (optional)",
-      description: "A search-engine summary for this specific page. Leave blank to use the sitewide SEO Description from Global Settings.",
+      title: "Intro / excerpt",
+      description: "On the About page, this is the tagline shown before the first biography paragraph. On other pages, it can be used as a short public-facing summary. It is separate from the SEO Description.",
       type: "text",
       rows: 3,
     }),
@@ -87,7 +74,7 @@ export default defineType({
       title: "About Introduction",
       description: "The opening biography paragraph beside Katie's portrait on the About page.",
       type: "array",
-      hidden: ({document}) => isAboutPage(document?._id?.replace(/^drafts\./, "")),
+      hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
         type: "block",
         styles: [{title: "Normal", value: "normal"}],
@@ -260,9 +247,36 @@ export default defineType({
     }),
 
     defineField({
+      name: "watchListenAlbums",
+      title: "Album display order",
+      description: "Choose the albums to feature and drag them into their website order. Create or edit albums, tracks, prices, and downloads in the Music Store tool; this list controls display only.",
+      type: "array",
+      hidden: ({document}) => !isWatchListenPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "reference",
+        to: [{type: "product"}],
+        options: {filter: "productKind == 'album'"},
+      })],
+      validation: (Rule) => Rule.unique(),
+    }),
+
+    defineField({
+      name: "watchListenSingles",
+      title: "Singles display order",
+      description: "Choose the standalone videos to feature and drag them into their website order. Create or edit music in the Music Store tool; this list controls display only.",
+      type: "array",
+      hidden: ({document}) => !isWatchListenPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "reference",
+        to: [{type: "product"}],
+      })],
+      validation: (Rule) => Rule.unique(),
+    }),
+
+    defineField({
       name: "gallery",
       title: "Photo Gallery",
-      description: "Used on the homepage. Add up to two images for the fading photo display.",
+      description: "Used on the homepage. Add any number of photos; they fade in one at a time, alternating left and right in this order.",
       type: "array",
       hidden: ({document}) => isNotHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
@@ -270,7 +284,6 @@ export default defineType({
         options: {hotspot: true},
         fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
       })],
-      validation: (Rule) => Rule.max(2),
     }),
 
     defineField({
@@ -287,7 +300,6 @@ export default defineType({
         ],
         preview: {select: {title: "quote", subtitle: "attribution"}},
       })],
-      validation: (Rule) => Rule.max(10),
     }),
 
     defineField({
@@ -451,6 +463,21 @@ export default defineType({
       initialValue: "https://lionsgatetrio.org/",
       validation: (Rule) => Rule.uri({scheme: ["http", "https"]}),
       hidden: ({document}) => isLionsGateTrioPage(document?._id),
+    }),
+
+    defineField({
+      name: "seoTitle",
+      title: "SEO Title Override (optional)",
+      description: "The title shown for this specific page in browser tabs and search results. Leave blank to use this page's Title.",
+      type: "string",
+    }),
+
+    defineField({
+      name: "seoDescription",
+      title: "SEO Description Override (optional)",
+      description: "A search-engine summary for this specific page. Leave blank to use the sitewide SEO Description from Global Settings.",
+      type: "text",
+      rows: 3,
     }),
 
   ],

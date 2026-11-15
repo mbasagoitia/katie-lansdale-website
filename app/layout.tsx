@@ -6,7 +6,7 @@ import Banner from "@/components/ui/banner/banner";
 import Navigation from "@/components/ui/navigation/navigation";
 import Footer from "@/components/ui/footer/footer";
 import PageTransition, { TransitionOverlay } from "@/components/ui/page-transition/PageTransition";
-import { getSiteSettings } from "@/sanity/data/pages";
+import { getNavigationLabels, getSiteSettings } from "@/sanity/data/pages";
 import {urlFor} from "@/sanity/lib/image";
 import type {SanityImageSource} from "@sanity/image-url";
 
@@ -29,7 +29,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSiteSettings();
+  const [settings, navigationLabels] = await Promise.all([getSiteSettings(), getNavigationLabels()]);
   const backgroundImageUrl = settings?.backgroundImage?.asset
     ? urlFor(settings.backgroundImage as SanityImageSource).width(2400).height(1600).fit("crop").url()
     : "/images/art/rock-art.png";
@@ -43,7 +43,7 @@ export default async function RootLayout({
         <PageTransition>
           <div className={styles.pageWrapper} style={{backgroundImage: `url("${backgroundImageUrl}")`}}>
             <main className={styles.contentCard}>
-              <Navigation siteTitle={settings?.siteTitle} tagline={settings?.tagline} />
+              <Navigation siteTitle={settings?.siteTitle} tagline={settings?.tagline} labels={navigationLabels} />
               <TransitionOverlay>{children}</TransitionOverlay>
               <Footer copyright={settings?.copyright} />
             </main>

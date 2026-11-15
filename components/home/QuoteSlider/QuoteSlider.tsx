@@ -1,3 +1,6 @@
+"use client";
+
+import {useEffect, useState} from "react";
 import styles from "./QuoteSlider.module.css";
 
 const quotes = [
@@ -14,34 +17,47 @@ const quotes = [
     attribution: "Raleigh-Durham Spectator, review of Lansdale's performance of the solo Bach violin works",
   },
 ];
+const displayDuration = 12000;
+const fadeDuration = 850;
 
 type Quote = {quote: string; attribution?: string};
 
 export default function QuoteSlider({quotes: cmsQuotes}: {quotes?: Quote[]}) {
   const displayQuotes = cmsQuotes?.length ? cmsQuotes : quotes;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (displayQuotes.length < 2) return;
+
+    let fadeTimeout: number | undefined;
+    const interval = window.setInterval(() => {
+      setVisible(false);
+      fadeTimeout = window.setTimeout(() => {
+        setActiveIndex((index) => (index + 1) % displayQuotes.length);
+        setVisible(true);
+      }, fadeDuration);
+    }, displayDuration);
+
+    return () => {
+      window.clearInterval(interval);
+      if (fadeTimeout) window.clearTimeout(fadeTimeout);
+    };
+  }, [displayQuotes.length]);
+
+  const activeQuote = displayQuotes[activeIndex % displayQuotes.length];
+
   return (
     <aside className={styles.quotePanel}>
       <div className={styles.quoteBox}>
-        {displayQuotes.map((q, i) => (
-          <figure key={q.quote + i}>
-            <div
-              className={`${styles.quoteDecoration} ${styles.quoteTop}`}
-              aria-hidden="true"
-            >
-            </div>
-
-            <div className={styles.quoteContent}>
-              <blockquote>“{q.quote}”</blockquote>
-              <figcaption>— {q.attribution}</figcaption>
-            </div>
-
-            <div
-              className={`${styles.quoteDecoration} ${styles.quoteBottom}`}
-              aria-hidden="true"
-            >
-            </div>
-          </figure>
-        ))}
+        <figure>
+          <div className={`${styles.quoteDecoration} ${styles.quoteTop}`} aria-hidden="true" />
+          <div className={`${styles.quoteContent} ${visible ? styles.visible : ""}`}>
+            <blockquote>“{activeQuote.quote}”</blockquote>
+            {activeQuote.attribution ? <figcaption>— {activeQuote.attribution}</figcaption> : null}
+          </div>
+          <div className={`${styles.quoteDecoration} ${styles.quoteBottom}`} aria-hidden="true" />
+        </figure>
       </div>
     </aside>
   );

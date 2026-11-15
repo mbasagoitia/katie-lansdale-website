@@ -89,21 +89,10 @@
     justify-content: center;
 
     opacity: 0;
-
-    animation: none;
+    transition: opacity 850ms ease-in-out;
 }
 
-.quoteBox figure:nth-child(1) .quoteContent {
-    animation: quoteOne 78s infinite ease-in-out;
-}
-
-.quoteBox figure:nth-child(2) .quoteContent {
-    animation: quoteTwo 78s infinite ease-in-out;
-}
-
-.quoteBox figure:nth-child(3) .quoteContent {
-    animation: quoteThree 78s infinite ease-in-out;
-}
+.visible { opacity: 1; }
 
 .quoteBox blockquote {
     width: 100%;
@@ -121,30 +110,6 @@
 
     text-align: center;
     text-wrap: balance;
-}
-
-@keyframes quoteOne {
-    0%, 14.1% { opacity: 1; }
-    15.38%, 48.72% { opacity: 0; }
-    50%, 64.1% { opacity: 1; }
-    65.38%, 98.72% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes quoteTwo {
-    0%, 15.38% { opacity: 0; }
-    16.67%, 30.77% { opacity: 1; }
-    32.05%, 65.38% { opacity: 0; }
-    66.67%, 80.77% { opacity: 1; }
-    82.05%, 100% { opacity: 0; }
-}
-
-@keyframes quoteThree {
-    0%, 32.05% { opacity: 0; }
-    33.33%, 47.44% { opacity: 1; }
-    48.72%, 82.05% { opacity: 0; }
-    83.33%, 97.44% { opacity: 1; }
-    98.72%, 100% { opacity: 0; }
 }
 
 @media (min-width: 1100px) {
@@ -201,12 +166,7 @@
 @media (prefers-reduced-motion: reduce) {
 
     .quoteContent {
-        animation: none;
-        opacity: 0;
-    }
-
-    .quoteBox figure:first-child .quoteContent {
-        opacity: 1;
+        transition: none;
     }
 
 }

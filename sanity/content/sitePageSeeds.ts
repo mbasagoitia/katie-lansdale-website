@@ -37,8 +37,8 @@ export const sitePageSeeds: SitePageSeed[] = [
     seoTitle: "Katie Lansdale | Violinist",
     seoDescription: "Discover violinist Katie Lansdale’s performances, recordings, teaching, and work with the Lions Gate Trio.",
     gallery: [
-      {sourcePath: "public/images/headshots/headshot-1.jpg", alt: "Katie Lansdale playing violin"},
-      {sourcePath: "public/images/headshots/headshot-2.JPG", alt: "Katie Lansdale with her violin"},
+      {sourcePath: "public/images/headshots/headshot-1.jpg", alt: "headshot"},
+      {sourcePath: "public/images/headshots/headshot-2.JPG", alt: "headshot with violin"},
     ],
     quotes: [
       {_key: "american-record-guide", quote: "This is one of the best recordings of this music.", attribution: "American Record Guide on Lansdale's Bach CD"},
