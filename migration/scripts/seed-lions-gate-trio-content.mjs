@@ -72,9 +72,10 @@ async function uploadImage(relativePath, alt) {
   return {_type: "image", asset: {_type: "reference", _ref: asset._id}, alt}
 }
 
-const [about, trio] = await Promise.all([
+const [about, trio, trioDraft] = await Promise.all([
   client.fetch(`*[_id == "page-about"][0]{aboutTagline, excerpt}`),
   client.fetch(`*[_id == "page-lions-gate-trio"][0]{title, excerpt, heroImage, trioMembers, trioAboutLabel, trioAboutHeading, trioStatement, trioHighlightLabel, trioNewsLabel, trioNewsItems, trioNewsImage, trioNewsHeading, trioNews, trioNewsLink, trioRecordings, trioListenLabel, trioListenHeading, trioListenLinkLabel, trioEventsLabel, trioEventsHeading, trioEventsLinkLabel, trioWebsiteUrl, trioCtaText, trioCtaLinkLabel}`),
+  client.withConfig({perspective: "raw"}).fetch(`*[_id == "drafts.page-lions-gate-trio"][0]{_id}`),
 ])
 
 if (!trio) throw new Error("Missing page-lions-gate-trio.")
@@ -104,31 +105,35 @@ const existingRecordings = Array.isArray(trio.trioRecordings) && trio.trioRecord
   : defaultRecordings
 
 const tagline = about?.aboutTagline || about?.excerpt || "Soloist. Chamber Musician. Educator. Artistic Catalyst."
+const trioContent = {
+  title: trio.title || trioDefaults.title,
+  excerpt: trio.excerpt || trioDefaults.excerpt,
+  heroImage,
+  trioMembers: Array.isArray(trio.trioMembers) && trio.trioMembers.length === 3 ? trio.trioMembers : trioDefaults.trioMembers,
+  trioAboutLabel: trio.trioAboutLabel || trioDefaults.trioAboutLabel,
+  trioAboutHeading: trio.trioAboutHeading || trioDefaults.trioAboutHeading,
+  trioStatement: trio.trioStatement || trioDefaults.trioStatement,
+  trioHighlightLabel: trio.trioHighlightLabel || trioDefaults.trioHighlightLabel,
+  trioNewsLabel: trio.trioNewsLabel || trioDefaults.trioNewsLabel,
+  trioRecordings: existingRecordings,
+  trioNewsItems: Array.isArray(trio.trioNewsItems) && trio.trioNewsItems.length ? trio.trioNewsItems : defaultNews,
+  trioListenLabel: trio.trioListenLabel || trioDefaults.trioListenLabel,
+  trioListenHeading: trio.trioListenHeading || trioDefaults.trioListenHeading,
+  trioListenLinkLabel: trio.trioListenLinkLabel || trioDefaults.trioListenLinkLabel,
+  trioEventsLabel: trio.trioEventsLabel || trioDefaults.trioEventsLabel,
+  trioEventsHeading: trio.trioEventsHeading || trioDefaults.trioEventsHeading,
+  trioEventsLinkLabel: trio.trioEventsLinkLabel || trioDefaults.trioEventsLinkLabel,
+  trioWebsiteUrl: trio.trioWebsiteUrl || trioDefaults.trioWebsiteUrl,
+  trioCtaText: trio.trioCtaText || trioDefaults.trioCtaText,
+  trioCtaLinkLabel: trio.trioCtaLinkLabel || trioDefaults.trioCtaLinkLabel,
+}
 
-await client.transaction()
+const transaction = client.transaction()
   .patch("page-about", (patch) => patch.set({aboutTagline: tagline}).unset(["excerpt"]))
-  .patch("page-lions-gate-trio", (patch) => patch.set({
-    title: trio.title || trioDefaults.title,
-    excerpt: trio.excerpt || trioDefaults.excerpt,
-    heroImage,
-    trioMembers: Array.isArray(trio.trioMembers) && trio.trioMembers.length === 3 ? trio.trioMembers : trioDefaults.trioMembers,
-    trioAboutLabel: trio.trioAboutLabel || trioDefaults.trioAboutLabel,
-    trioAboutHeading: trio.trioAboutHeading || trioDefaults.trioAboutHeading,
-    trioStatement: trio.trioStatement || trioDefaults.trioStatement,
-    trioHighlightLabel: trio.trioHighlightLabel || trioDefaults.trioHighlightLabel,
-    trioNewsLabel: trio.trioNewsLabel || trioDefaults.trioNewsLabel,
-    trioRecordings: existingRecordings,
-    trioNewsItems: Array.isArray(trio.trioNewsItems) && trio.trioNewsItems.length ? trio.trioNewsItems : defaultNews,
-    trioListenLabel: trio.trioListenLabel || trioDefaults.trioListenLabel,
-    trioListenHeading: trio.trioListenHeading || trioDefaults.trioListenHeading,
-    trioListenLinkLabel: trio.trioListenLinkLabel || trioDefaults.trioListenLinkLabel,
-    trioEventsLabel: trio.trioEventsLabel || trioDefaults.trioEventsLabel,
-    trioEventsHeading: trio.trioEventsHeading || trioDefaults.trioEventsHeading,
-    trioEventsLinkLabel: trio.trioEventsLinkLabel || trioDefaults.trioEventsLinkLabel,
-    trioWebsiteUrl: trio.trioWebsiteUrl || trioDefaults.trioWebsiteUrl,
-    trioCtaText: trio.trioCtaText || trioDefaults.trioCtaText,
-    trioCtaLinkLabel: trio.trioCtaLinkLabel || trioDefaults.trioCtaLinkLabel,
-  }))
-  .commit()
+  .patch("page-lions-gate-trio", (patch) => patch.set(trioContent))
 
-console.log("Seeded the About tagline and Lions Gate Trio CMS content.")
+if (trioDraft?._id) transaction.patch(trioDraft._id, (patch) => patch.set(trioContent))
+
+await transaction.commit()
+
+console.log(`Seeded the About tagline and Lions Gate Trio CMS content${trioDraft?._id ? ", including its draft" : ""}.`)
