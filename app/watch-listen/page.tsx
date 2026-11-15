@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function WatchListen() {
   const [products, page] = await Promise.all([getProducts(), getPageById("page-watch-listen")])
   const albums = products.filter((product) => product.productKind === "album")
-  const singles = products.filter((product) => product.productKind !== "album")
+  const singles = products.filter((product) => product.productKind !== "album" && product.recordings.length === 1 && product.recordings[0]?.mediaType === "video")
   const singlesWithArtwork = singles.filter((product) => product.coverArt)
   const singlesWithoutArtwork = singles.filter((product) => !product.coverArt)
 
@@ -113,7 +113,7 @@ function Cover({product, imageUrl, sizes, fullArt = false}: {product: Product; i
 
 function PurchaseAction({product, compact = false}: {product: Product; compact?: boolean}) {
   return <div className={`${styles.purchaseAction} ${compact ? styles.purchaseActionCompact : ""}`}>
-    <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel(product)}</span></div>
+    <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel()}</span></div>
     <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} />
   </div>
 }
@@ -164,7 +164,6 @@ function publicPreviewUrl(mediaType: "audio" | "video", path: string): string | 
   return `${baseUrl.replace(/\/$/, "")}/storage/v1/object/public/${bucket}/${encodedPath}`
 }
 
-function deliveryLabel(product: Product): string {
-  const types = product.deliveryTypes?.length ? product.deliveryTypes : product.type ? [product.type] : []
-  return types.map((type) => type === "physicalCD" ? "Physical CD" : "Digital download").join(" + ") || "Available for purchase"
+function deliveryLabel(): string {
+  return "Digital download"
 }

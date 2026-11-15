@@ -14,18 +14,13 @@ const bachProduct = await client.fetch(`*[_type == "product" && slug.current == 
 if (!bachProduct?.album?._id) throw new Error("Could not find the existing Bach album product.")
 if (bachProduct.recordings.length !== 28) throw new Error(`Expected 28 Bach tracks, found ${bachProduct.recordings.length}.`)
 
-const discProducts = [
-  {title: "Bach Sonatas and Partitas — Disc 1", slug: "bach-sonatas-and-partitas-disc-1", recordings: bachProduct.recordings.slice(0, 12)},
-  {title: "Bach Sonatas and Partitas — Disc 2", slug: "bach-sonatas-and-partitas-disc-2", recordings: bachProduct.recordings.slice(12)},
-]
-
 const trackProducts = bachProduct.recordings.map((recording, index) => ({
   title: `${recording.work.title} — ${recording.movementNumber ? `${romanNumeral(recording.movementNumber)}. ` : ""}${recording.title}`,
   slug: `bach-track-${String(index + 1).padStart(2, "0")}`,
   recordings: [recording],
 }))
 
-const allSlugs = [...discProducts, ...trackProducts].map((product) => product.slug)
+const allSlugs = trackProducts.map((product) => product.slug)
 const existingProducts = await client.fetch(`*[_type == "product" && slug.current in $slugs]{_id, "slug": slug.current}`, {slugs: allSlugs})
 const existingBySlug = new Map(existingProducts.map((product) => [product.slug, product._id]))
 
@@ -47,15 +42,12 @@ async function upsertProduct({title, slug, recordings, price, deliveryTypes, sho
   return client.create({_type: "product", ...fields})
 }
 
-for (const disc of discProducts) {
-  await upsertProduct({...disc, price: 12, deliveryTypes: ["physicalCD"], productKind: "album", album: bachProduct.album._id, shortDescription: `${disc.title} — physical CD.`})
-}
-
 for (const track of trackProducts) {
   await upsertProduct({...track, price: 0.99, deliveryTypes: ["digitalDownload"], productKind: "recording", shortDescription: "Digital track download."})
 }
 
 const videoProducts = await client.fetch(`*[_type == "product" && count(recordings) == 1 && recordings[0]->mediaType == "video"]{_id}`)
+const unlistedPhysicalProducts = await client.fetch(`*[_type == "product" && "physicalCD" in deliveryTypes]{_id}`)
 const projectsPage = await client.fetch(`*[_id == "page-projects-and-affiliations"][0]{projectCards}`)
 if (!projectsPage?.projectCards?.some((card) => card._key === "music-for-1000-children")) throw new Error("Could not find the Music for 1,000 Children project card.")
 const projectCards = projectsPage.projectCards.map((card) => card._key === "music-for-1000-children"
@@ -63,13 +55,14 @@ const projectCards = projectsPage.projectCards.map((card) => card._key === "musi
   : card,
 )
 const transaction = client.transaction()
-  .patch(bachProduct._id, (patch) => patch.set({availableForPurchase: false}))
+  .patch(bachProduct._id, (patch) => patch.set({availableForPurchase: true, deliveryTypes: ["digitalDownload"], type: "digitalDownload"}))
   .patch("page-projects-and-affiliations", (patch) => patch.set({projectCards}))
 
 for (const product of videoProducts) transaction.patch(product._id, (patch) => patch.set({price: 0.99}))
+for (const product of unlistedPhysicalProducts) transaction.patch(product._id, (patch) => patch.set({availableForPurchase: false}))
 await transaction.commit()
 
-console.log(`Updated the project card, created or updated ${discProducts.length} CD products and ${trackProducts.length} track products, and repriced ${videoProducts.length} video products.`)
+console.log(`Updated the project card, listed the Bach album and ${trackProducts.length} track products, unlisted ${unlistedPhysicalProducts.length} physical products, and repriced ${videoProducts.length} video products.`)
 
 function romanNumeral(value) {
   return ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"][value] || String(value)

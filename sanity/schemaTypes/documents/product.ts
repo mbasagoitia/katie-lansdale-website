@@ -66,27 +66,20 @@ export default defineType({
       name: "type",
       title: "Product Type (Deprecated)",
       type: "string",
-      options: {
-        list: [
-          { title: "Digital Download", value: "digitalDownload" },
-          { title: "Physical CD", value: "physicalCD" },
-        ],
-      },
       readOnly: true,
-      hidden: ({value}) => value === undefined,
-      deprecated: {reason: "Use Delivery Options. This field is kept for existing products."},
+      hidden: true,
+      deprecated: {reason: "Use Delivery Options. This hidden field is kept for existing products."},
     }),
 
     defineField({
       name: "deliveryTypes",
       title: "Delivery Options",
-      description: "Select one or both delivery options.",
+      description: "Products are delivered as digital downloads.",
       type: "array",
       of: [{type: "string"}],
       options: {
         list: [
           {title: "Digital Download", value: "digitalDownload"},
-          {title: "Physical CD", value: "physicalCD"},
         ],
       },
       validation: (Rule) => Rule.required().min(1).unique(),
@@ -169,7 +162,7 @@ export default defineType({
       const productType = (deliveryTypes?.length
         ? deliveryTypes
         : type ? [type] : ["digitalDownload"])
-        .map((deliveryType) => deliveryType === "physicalCD" ? "Physical CD" : "Digital Download")
+        .map(() => "Digital Download")
         .join(" + ");
 
       const kindLabel = {

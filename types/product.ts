@@ -14,9 +14,9 @@ export interface Product {
   productKind: "album" | "work" | "recording" | "bundle";
 
   /** Legacy single delivery option retained for older products. */
-  type?: "digitalDownload" | "physicalCD";
+  type?: "digitalDownload";
 
-  deliveryTypes?: Array<"digitalDownload" | "physicalCD">;
+  deliveryTypes?: Array<"digitalDownload">;
 
   availableForPurchase: boolean;
 

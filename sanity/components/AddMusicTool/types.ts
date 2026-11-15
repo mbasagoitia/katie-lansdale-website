@@ -55,7 +55,7 @@ export type SaleDraft = {
   title: string
   shortDescription?: string
   price: number
-  deliveryTypes: Array<"digitalDownload" | "physicalCD">
+  deliveryTypes: Array<"digitalDownload">
 }
 
 export type CreatedMusic = {recordingIds: string[]; workId: string}

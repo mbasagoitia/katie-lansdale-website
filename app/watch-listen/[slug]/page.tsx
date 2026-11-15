@@ -121,7 +121,7 @@ function Preview({recording}: {recording: Recording}) {
 
 function PurchaseAction({product, compact = false}: {product: Product; compact?: boolean}) {
   return <div className={`${styles.purchaseAction} ${compact ? styles.purchaseActionCompact : ""}`}>
-    <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel(product)}</span></div>
+    <div><strong>${product.price.toFixed(2)}</strong><span>{deliveryLabel()}</span></div>
     <AddToCartButton product={{id: product._id, title: product.title, price: product.price}} />
   </div>
 }
@@ -140,7 +140,6 @@ function publicPreviewUrl(mediaType: "audio" | "video", path: string): string | 
   return `${baseUrl.replace(/\/$/, "")}/storage/v1/object/public/${bucket}/${encodedPath}`
 }
 
-function deliveryLabel(product: Product): string {
-  const types = product.deliveryTypes?.length ? product.deliveryTypes : product.type ? [product.type] : []
-  return types.map((type) => type === "physicalCD" ? "Physical CD" : "Digital download").join(" + ") || "Available for purchase"
+function deliveryLabel(): string {
+  return "Digital download"
 }
