@@ -12,8 +12,8 @@ const isDonationsPage = (documentId?: string) => documentId === "page-donations"
 const isPublicationsPage = (documentId?: string) => documentId === "page-publications";
 const isPhotosPressKitPage = (documentId?: string) => documentId === "page-photos-press-kit";
 const isNewsEventsPage = (documentId?: string) => documentId === "page-news-and-events";
-const supportsExcerpt = (documentId?: string) => ["page-about", "page-contact", "page-donations", "page-lions-gate-trio", "page-photos-press-kit"].includes(documentId || "");
-const supportsContent = (documentId?: string) => ["page-about", "page-contact", "page-watch-listen"].includes(documentId || "");
+const supportsExcerpt = (documentId?: string) => ["page-contact", "page-donations", "page-lions-gate-trio", "page-photos-press-kit"].includes(documentId || "");
+const supportsContent = (documentId?: string) => ["page-about", "page-contact"].includes(documentId || "");
 
 export default defineType({
   name: "page",
@@ -34,7 +34,7 @@ export default defineType({
     defineField({
       name: "title",
       title: "Title",
-      description: "Used for this page's navigation label, visible page heading where the design includes one, and default browser/search title. The page URL remains unchanged.",
+      description: "Used for the page's navigation label and visible page heading where applicable.",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
@@ -65,9 +65,18 @@ export default defineType({
     }),
 
     defineField({
+      name: "aboutTagline",
+      title: "Tagline",
+      description: "Tagline shown before the first biography paragraph",
+      type: "text",
+      rows: 2,
+      hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
+    }),
+
+    defineField({
       name: "excerpt",
-      title: "Intro / excerpt",
-      description: "On the About page, this is the tagline shown before the first biography paragraph. On other pages, it can be used as a short public-facing summary. It is separate from the SEO Description.",
+      title: "Short public-facing summary",
+      description: "A short summary used in select page layouts. It is separate from the SEO description.",
       type: "text",
       rows: 3,
       hidden: ({document}) => !supportsExcerpt(document?._id?.replace(/^drafts\./, "")),
@@ -76,7 +85,7 @@ export default defineType({
     defineField({
       name: "aboutIntroduction",
       title: "About Introduction",
-      description: "The opening biography paragraph beside Katie's portrait on the About page.",
+      description: "The opening biography paragraph shown beside the portrait",
       type: "array",
       hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
@@ -424,7 +433,7 @@ export default defineType({
     defineField({
       name: "gallery",
       title: "Photo Gallery",
-      description: "Used on the homepage. Add any number of photos; they fade in one at a time, alternating left and right in this order.",
+      description: "Add any number of photos to fade in and out",
       type: "array",
       hidden: ({document}) => isNotHomePage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
@@ -596,7 +605,16 @@ export default defineType({
         ],
         preview: {select: {title: "title", subtitle: "composer", media: "coverArt"}},
       })],
-      validation: (Rule) => Rule.max(5),
+      validation: (Rule) => Rule.custom((value, context) => {
+        const pageId = context.document?._id?.replace(/^drafts\./, "")
+        if (!isNotLionsGateTrioPage(pageId)) {
+          return Array.isArray(value) && value.length === 3
+            ? true
+            : "Choose exactly three selected recordings."
+        }
+
+        return true
+      }),
     }),
 
     defineField({

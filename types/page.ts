@@ -137,6 +137,7 @@ export type ProductReference = {
 export type CmsPage = {
   _id: string
   title?: string
+  aboutTagline?: string
   excerpt?: string
   heroImage?: SanityImage
   aboutIntroduction?: TypedObject[]

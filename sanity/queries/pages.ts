@@ -4,6 +4,7 @@ export const pageByIdQuery = groq`
   *[_id == $id][0]{
     _id,
     title,
+    aboutTagline,
     excerpt,
     heroImage{alt, asset->{_id, url, metadata {dimensions}}},
     aboutIntroduction,

@@ -13,6 +13,7 @@
     "migrate:cms-defaults": "node --env-file=.env.local migration/scripts/apply-cms-defaults.mjs",
     "migrate:page-editor-controls": "node --env-file=.env.local migration/scripts/update-page-editor-controls.mjs",
     "migrate:trio-and-reviews": "node --env-file=.env.local migration/scripts/migrate-trio-and-reviews.mjs",
+    "migrate:lions-gate-trio-content": "node --env-file=.env.local migration/scripts/seed-lions-gate-trio-content.mjs",
     "migrate:news-events-order": "node --env-file=.env.local migration/scripts/seed-news-events-order.mjs",
     "migrate:project-images-and-contact": "node --env-file=.env.local migration/scripts/migrate-project-images-and-contact.mjs",
     "migrate:page-excerpts": "node --env-file=.env.local migration/scripts/apply-page-excerpts.mjs",
@@ -37,6 +38,7 @@
     "react-dom": "19.2.4",
     "react-icons": "^5.7.0",
     "sanity": "^5.31.1",
+    "sanity-plugin-media": "^6.6.3",
     "stripe": "^23.1.0",
     "styled-components": "^6.4.4",
     "tus-js-client": "^4.3.1"

@@ -27,7 +27,7 @@ function AboutPage({page}: {page: Awaited<ReturnType<typeof getPageById>>}) {
     ? urlFor(page.heroImage as SanityImageSource).width(900).height(1350).fit("crop").url()
     : null
   const title = page?.title || aboutPageSeed.title
-  const excerpt = page?.excerpt || aboutPageSeed.excerpt
+  const tagline = page?.aboutTagline || aboutPageSeed.excerpt
   const introduction = page?.aboutIntroduction?.length ? page.aboutIntroduction : aboutPageSeed.introduction
   const content = page?.content?.length ? page.content : aboutPageSeed.content
 
@@ -48,7 +48,7 @@ function AboutPage({page}: {page: Awaited<ReturnType<typeof getPageById>>}) {
       </div>
       <div className={styles.introTextWrapper}>
         <h1>{title}</h1>
-        <p>{excerpt}</p>
+        <p>{tagline}</p>
         <RichTextContent content={introduction} />
       </div>
     </section>

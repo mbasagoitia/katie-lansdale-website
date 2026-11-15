@@ -13,8 +13,9 @@ const client = createClient({
 
 const transaction = client.transaction()
 for (const page of sitePageSeeds) {
-  if (page.excerpt) transaction.patch(page.id, (patch) => patch.set({excerpt: page.excerpt}))
+  if (page.aboutTagline) transaction.patch(page.id, (patch) => patch.set({aboutTagline: page.aboutTagline}).unset(["excerpt"]))
+  else if (page.excerpt) transaction.patch(page.id, (patch) => patch.set({excerpt: page.excerpt}))
 }
 
 await transaction.commit()
-console.log(`Updated excerpts for ${sitePageSeeds.filter((page) => page.excerpt).length} pages.`)
+console.log(`Updated summaries and the About tagline for ${sitePageSeeds.filter((page) => page.excerpt || page.aboutTagline).length} pages.`)

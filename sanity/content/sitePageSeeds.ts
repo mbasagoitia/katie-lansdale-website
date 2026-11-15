@@ -8,6 +8,7 @@ export type LocalImageSeed = {
 export type SitePageSeed = {
   id: string
   title: string
+  aboutTagline?: string
   excerpt?: string
   seoTitle?: string
   seoDescription?: string
@@ -59,7 +60,7 @@ export const sitePageSeeds: SitePageSeed[] = [
   {
     id: "page-about",
     title: aboutPageSeed.title,
-    excerpt: aboutPageSeed.excerpt,
+    aboutTagline: aboutPageSeed.excerpt,
     seoTitle: "About Katie Lansdale | Violinist",
     seoDescription: "Learn about violinist Katie Lansdale’s work as a soloist, chamber musician, educator, and artistic leader.",
     aboutIntroduction: aboutPageSeed.introduction,
