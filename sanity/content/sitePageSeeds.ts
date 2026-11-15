@@ -189,7 +189,7 @@ export const sitePageSeeds: SitePageSeed[] = [
       ],
       honors: [
         {_key: "copland-award", title: "Copland Award", description: "Awarded to commission and record new American music"},
-        {_key: "lewis-sudler-prize", title: "Lewis Sudler Prize", organization: "Yale University", description: "For excellence in the performing and creative arts"},
+        {_key: "lewis-sudler-prize", title: "Louis Sudler Prize", organization: "Yale University", description: "For excellence in the performing and creative arts"},
       ],
     } : {}),
   })),
