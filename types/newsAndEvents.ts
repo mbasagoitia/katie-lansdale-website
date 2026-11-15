@@ -13,10 +13,15 @@ export type NewsItem = {
 export type HighlightedEvent = {
   _id: string
   title: string
-  startsAt: string
+  startDate?: string
+  startTime?: string
+  endDate?: string
+  dateDisplay?: string
   description: string
   location?: string
   image?: SanityImage
   linkUrl?: string
+  expirationMode?: "eventEnd" | "custom" | "never"
   expiresAt?: string
+  startsAt?: string
 }

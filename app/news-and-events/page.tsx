@@ -53,7 +53,7 @@ function EventCard({event}: {event: HighlightedEvent}) {
   return <article className={styles.item}>
     <ItemImage image={event.image} />
     <div className={styles.details}>
-      <p className={styles.date}>{formatDateTime(event.startsAt)}</p>
+      <p className={styles.date}>{formatEventDate(event)}</p>
       <h2><LinkedTitle title={event.title} href={event.linkUrl} /></h2>
       {event.location && <p className={styles.location}>{event.location}</p>}
       <p className={styles.description}>{event.description}</p>
@@ -73,8 +73,9 @@ function LinkedTitle({title, href}: {title: string; href?: string}) {
 function groupEventsByMonth(events: HighlightedEvent[]) {
   const groups = new Map<string, {key: string; label: string; events: HighlightedEvent[]}>()
   for (const event of events) {
-    const key = monthKey(event.startsAt)
-    const group = groups.get(key) || {key, label: monthLabel(event.startsAt), events: []}
+    const startDate = eventStartDate(event)
+    const key = monthKey(startDate)
+    const group = groups.get(key) || {key, label: monthLabel(startDate), events: []}
     group.events.push(event)
     groups.set(key, group)
   }
@@ -82,13 +83,36 @@ function groupEventsByMonth(events: HighlightedEvent[]) {
 }
 
 function monthKey(value: string) {
-  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit"}).format(new Date(value))
+  return value.slice(0, 7)
 }
 
 function monthLabel(value: string) {
-  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", year: "numeric"}).format(new Date(value))
+  return new Intl.DateTimeFormat("en-US", {timeZone: "UTC", month: "long", year: "numeric"}).format(calendarDate(value))
 }
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(value)).replace(", ", " · ")
+}
+
+function eventStartDate(event: HighlightedEvent) {
+  if (event.startDate) return event.startDate
+  if (!event.startsAt) return "1970-01-01"
+  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date(event.startsAt))
+}
+
+function formatEventDate(event: HighlightedEvent) {
+  if (event.dateDisplay) return event.dateDisplay
+  const startDate = eventStartDate(event)
+  const dates = event.endDate && event.endDate !== startDate
+    ? `${formatCalendarDate(startDate)}–${formatCalendarDate(event.endDate)}`
+    : formatCalendarDate(startDate)
+  return event.startTime ? `${dates} · ${event.startTime}` : dates
+}
+
+function formatCalendarDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {timeZone: "UTC", month: "long", day: "numeric"}).format(calendarDate(value))
+}
+
+function calendarDate(value: string) {
+  return new Date(`${value}T12:00:00.000Z`)
 }

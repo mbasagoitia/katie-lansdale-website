@@ -14,16 +14,25 @@ export async function getNewsAndEvents(now = new Date()): Promise<{news: NewsIte
 }
 
 function eventExpiry(event: HighlightedEvent): Date {
-  if (event.expiresAt) return new Date(event.expiresAt)
-  return tenPmEastern(event.startsAt)
+  if (event.expirationMode === "never") return new Date("9999-12-31T23:59:59.999Z")
+  if (event.expiresAt && event.expirationMode !== "eventEnd") return new Date(event.expiresAt)
+  return tenPmEastern(event.endDate || eventStartDate(event))
 }
 
-function tenPmEastern(startsAt: string): Date {
-  const parts = new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", timeZoneName: "shortOffset"}).formatToParts(new Date(startsAt))
-  const value = (type: string) => parts.find((part) => part.type === type)?.value || ""
-  const offset = value("timeZoneName").replace("GMT", "") || "-05:00"
-  const normalizedOffset = /^[+-]\d{1,2}$/.test(offset)
-    ? `${offset.slice(0, 1)}${offset.slice(1).padStart(2, "0")}:00`
-    : offset
-  return new Date(`${value("year")}-${value("month")}-${value("day")}T22:00:00${normalizedOffset}`)
+function eventStartDate(event: HighlightedEvent): string {
+  if (event.startDate) return event.startDate
+  if (!event.startsAt) return "1970-01-01"
+  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date(event.startsAt))
+}
+
+function tenPmEastern(date: string): Date {
+  const [year, month, day] = date.split("-").map(Number)
+  const dateAtTenPmUtc = new Date(Date.UTC(year, month - 1, day, 22))
+  const timeZoneName = new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", timeZoneName: "shortOffset"})
+    .formatToParts(dateAtTenPmUtc)
+    .find((part) => part.type === "timeZoneName")?.value || "GMT-05:00"
+  const match = /^GMT([+-])(\d{1,2})(?::(\d{2}))?$/.exec(timeZoneName)
+  if (!match) return dateAtTenPmUtc
+  const offsetMinutes = (Number(match[2]) * 60 + Number(match[3] || 0)) * (match[1] === "+" ? 1 : -1)
+  return new Date(dateAtTenPmUtc.getTime() - offsetMinutes * 60_000)
 }

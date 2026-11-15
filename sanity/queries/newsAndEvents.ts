@@ -9,7 +9,7 @@ export const newsItemsQuery = defineQuery(groq`
 `)
 
 export const highlightedEventsQuery = defineQuery(groq`
-  *[_type == "highlightedEvent"] | order(startsAt asc) {
-    _id, title, startsAt, description, location, linkUrl, expiresAt, ${imageProjection}
+  *[_type == "highlightedEvent"] | order(startDate asc, title asc) {
+    _id, title, startDate, startTime, endDate, dateDisplay, startsAt, description, location, linkUrl, expirationMode, expiresAt, ${imageProjection}
   }
 `)
