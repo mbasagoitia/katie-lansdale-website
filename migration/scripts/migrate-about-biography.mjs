@@ -14,6 +14,7 @@ const client = createClient({
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2026-07-24",
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
+  perspective: "raw",
 })
 
 const documents = await client.fetch(`*[_id in ["page-about", "drafts.page-about"]]{_id}`)
