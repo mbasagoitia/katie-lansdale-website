@@ -1,6 +1,7 @@
 import {DocumentIcon} from "@sanity/icons";
 import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
+import SelectedReviewsInput from "../../components/SelectedReviewsInput";
 
 const isNotLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
 const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
@@ -300,7 +301,7 @@ export default defineType({
     defineField({
       name: "pressKitPhotos",
       title: "Press Photos",
-      description: "Approved color and black-and-white press photos. Visitors can open a larger view from the website.",
+      description: "Approved press photos",
       type: "array",
       hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
@@ -317,10 +318,11 @@ export default defineType({
     defineField({
       name: "selectedReviews",
       title: "Selected reviews",
-      description: "Choose exactly three reviews from the Reviews list to feature on this page. Their wording is edited in Reviews, not here.",
+      description: "Choose three reviews to feature on this page.",
       type: "array",
       hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
+      components: {input: SelectedReviewsInput},
       validation: (Rule) => Rule.custom((value, context) => {
         const pageId = context.document?._id?.replace(/^drafts\./, "")
 
