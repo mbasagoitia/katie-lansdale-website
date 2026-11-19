@@ -261,7 +261,7 @@ export default defineType({
     defineField({
       name: "honors",
       title: "Honors & Awards",
-      description: "List distinctions and awards relevant to Katie’s artistic work.",
+      description: "List distinctions and awards.",
       type: "array",
       hidden: ({document}) => !isPublicationsPage(document?._id?.replace(/^drafts\./, "")),
       of: [defineArrayMember({
