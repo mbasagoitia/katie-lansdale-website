@@ -15,7 +15,7 @@ const isPublicationsPage = (documentId?: string) => documentId === "page-publica
 const isPhotosPressKitPage = (documentId?: string) => documentId === "page-photos-press-kit";
 const isNewsEventsPage = (documentId?: string) => documentId === "page-news-and-events";
 const supportsExcerpt = (documentId?: string) => ["page-contact", "page-donations", "page-lions-gate-trio", "page-photos-press-kit"].includes(documentId || "");
-const supportsContent = (documentId?: string) => ["page-about", "page-contact"].includes(documentId || "");
+const supportsContent = (documentId?: string) => documentId === "page-about";
 
 export default defineType({
   name: "page",
