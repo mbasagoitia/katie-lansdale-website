@@ -387,22 +387,71 @@ export default defineType({
 
     defineField({
       name: "newsItems",
-      title: "News display order",
-      description: "Choose news items from the News list and drag them into their website order. Items not listed here still appear automatically after the ordered items.",
+      title: "News items",
+      description: "Add, remove, or drag news items into their display order.",
       type: "array",
       hidden: ({document}) => !isNewsEventsPage(document?._id?.replace(/^drafts\./, "")),
-      of: [defineArrayMember({type: "reference", to: [{type: "newsItem"}]})],
-      validation: (Rule) => Rule.unique(),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "publishedAt", title: "Date and time", description: "Shown with the news item and used for the month heading when there are no highlighted events.", type: "datetime", validation: (Rule) => Rule.required()}),
+          defineField({name: "description", title: "Description", type: "text", rows: 4, validation: (Rule) => Rule.required()}),
+          defineField({name: "image", title: "Photo", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+          defineField({name: "linkUrl", title: "Link", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({name: "expiresAt", title: "Expires date and time (optional)", description: "The item is automatically removed from the website after this time.", type: "datetime"}),
+        ],
+        preview: {select: {title: "title", subtitle: "publishedAt", media: "image"}},
+      })],
     }),
 
     defineField({
       name: "highlightedEvents",
-      title: "Highlighted events display order",
-      description: "Choose highlighted events from the Highlighted Events list and drag them into their preferred order within each month. Months remain chronological, and newly added events appear automatically.",
+      title: "Highlighted events",
+      description: "Add, remove, or drag highlighted events. The website groups them by month and shows upcoming dates first.",
       type: "array",
       hidden: ({document}) => !isNewsEventsPage(document?._id?.replace(/^drafts\./, "")),
-      of: [defineArrayMember({type: "reference", to: [{type: "highlightedEvent"}]})],
-      validation: (Rule) => Rule.unique(),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "title", title: "Title", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "startDate", title: "Start date", description: "Required so the event can be organized under the correct month.", type: "date", validation: (Rule) => Rule.required()}),
+          defineField({name: "startTime", title: "Time", description: "Optional. For example, 7:30 PM.", type: "string"}),
+          defineField({name: "endDate", title: "End date (optional)", description: "Leave blank for a one-day event.", type: "date", validation: (Rule) => Rule.custom((value, context) => {
+            const startDate = (context.parent as {startDate?: string} | undefined)?.startDate
+            if (!value || !startDate) return true
+            if (value < startDate) return "The end date must be on or after the start date."
+            const days = (Date.parse(`${value}T00:00:00Z`) - Date.parse(`${startDate}T00:00:00Z`)) / 86_400_000
+            return days <= 31 || "Keep highlighted events to 31 days or fewer."
+          })}),
+          defineField({name: "dateDisplay", title: "Custom date display (optional)", description: "Use for an ambiguous or nonstandard date. This replaces the automatically formatted date on the website.", type: "string"}),
+          defineField({name: "description", title: "Description", type: "text", rows: 4, validation: (Rule) => Rule.required()}),
+          defineField({name: "location", title: "Location (optional)", type: "string"}),
+          defineField({name: "image", title: "Photo", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
+          defineField({name: "linkUrl", title: "Link", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
+          defineField({
+            name: "expirationMode",
+            title: "Listing expiration",
+            description: "By default, the event is removed at 10 PM Eastern on its end date (or start date for a one-day event).",
+            type: "string",
+            initialValue: "eventEnd",
+            options: {layout: "radio", list: [
+              {title: "At 10 PM on the event end date", value: "eventEnd"},
+              {title: "At a custom date and time", value: "custom"},
+              {title: "Never expire automatically", value: "never"},
+            ]},
+          }),
+          defineField({
+            name: "expiresAt",
+            title: "Custom expiration date and time",
+            description: "The event is removed from the website after this time.",
+            type: "datetime",
+            hidden: ({parent}) => parent?.expirationMode !== "custom",
+            validation: (Rule) => Rule.custom((value, context) => (context.parent as {expirationMode?: string} | undefined)?.expirationMode !== "custom" || value ? true : "Choose a custom expiration date and time, or select a different expiration option."),
+          }),
+        ],
+        preview: {select: {title: "title", subtitle: "startDate", media: "image"}},
+      })],
     }),
 
     defineField({

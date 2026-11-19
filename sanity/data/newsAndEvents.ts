@@ -1,23 +1,13 @@
 import {client} from "@/sanity/lib/client"
-import {highlightedEventsQuery, newsEventsOrderQuery, newsItemsQuery} from "@/sanity/queries/newsAndEvents"
+import {newsAndEventsQuery} from "@/sanity/queries/newsAndEvents"
 import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 
 export async function getNewsAndEvents(now = new Date()): Promise<{news: NewsItem[]; events: HighlightedEvent[]}> {
-  const [allNews, allEvents, order] = await Promise.all([
-    client.withConfig({useCdn: false}).fetch<NewsItem[]>(newsItemsQuery),
-    client.withConfig({useCdn: false}).fetch<HighlightedEvent[]>(highlightedEventsQuery),
-    client.withConfig({useCdn: false}).fetch<{newsIds?: string[]; eventIds?: string[]} | null>(newsEventsOrderQuery),
-  ])
+  const page = await client.withConfig({useCdn: false}).fetch<{newsItems?: NewsItem[]; highlightedEvents?: HighlightedEvent[]} | null>(newsAndEventsQuery)
   return {
-    news: applyDisplayOrder(allNews.filter((item) => !item.expiresAt || new Date(item.expiresAt) > now), order?.newsIds),
-    events: applyDisplayOrder(allEvents.filter((item) => eventExpiry(item) > now), order?.eventIds),
+    news: (page?.newsItems || []).filter((item) => !item.expiresAt || new Date(item.expiresAt) > now),
+    events: (page?.highlightedEvents || []).filter((item) => eventExpiry(item) > now).sort((a, b) => eventStartDate(a).localeCompare(eventStartDate(b))),
   }
-}
-
-function applyDisplayOrder<T extends {_id: string}>(items: T[], orderedIds?: string[]): T[] {
-  if (!orderedIds?.length) return items
-  const rank = new Map(orderedIds.map((id, index) => [id, index]))
-  return items.slice().sort((a, b) => (rank.get(a._id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b._id) ?? Number.MAX_SAFE_INTEGER))
 }
 
 function eventExpiry(event: HighlightedEvent): Date {
@@ -27,9 +17,7 @@ function eventExpiry(event: HighlightedEvent): Date {
 }
 
 function eventStartDate(event: HighlightedEvent): string {
-  if (event.startDate) return event.startDate
-  if (!event.startsAt) return "1970-01-01"
-  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date(event.startsAt))
+  return event.startDate
 }
 
 function tenPmEastern(date: string): Date {

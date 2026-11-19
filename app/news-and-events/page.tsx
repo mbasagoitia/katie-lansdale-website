@@ -24,14 +24,14 @@ export default async function NewsAndEventsPage() {
 
     {news.length > 0 && <section className={styles.contentSection} aria-labelledby="news-heading">
       <h2 className={styles.sectionHeading} id="news-heading">News</h2>
-      <div className={styles.list}>{news.map((item) => <NewsCard key={item._id} item={item} />)}</div>
+      <div className={styles.list}>{news.map((item) => <NewsCard key={item._key} item={item} />)}</div>
     </section>}
 
     {eventMonths.length > 0 && <section className={styles.contentSection} aria-labelledby="events-heading">
       <h2 className={styles.sectionHeading} id="events-heading">Highlighted Events</h2>
       {eventMonths.map((group, index) => <div className={styles.monthGroup} key={group.key}>
         {index > 0 && <h2 className={styles.monthHeading}>{group.label}</h2>}
-        <div className={styles.list} aria-label={`Highlighted events for ${group.label}`}>{group.events.map((event) => <EventCard key={event._id} event={event} />)}</div>
+        <div className={styles.list} aria-label={`Highlighted events for ${group.label}`}>{group.events.map((event) => <EventCard key={event._key} event={event} />)}</div>
       </div>)}
     </section>}
 
@@ -96,9 +96,7 @@ function formatDateTime(value: string) {
 }
 
 function eventStartDate(event: HighlightedEvent) {
-  if (event.startDate) return event.startDate
-  if (!event.startsAt) return "1970-01-01"
-  return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date(event.startsAt))
+  return event.startDate
 }
 
 function formatEventDate(event: HighlightedEvent) {

@@ -1,4 +1,4 @@
-import {CalendarIcon, CogIcon, DocumentIcon, DocumentTextIcon} from "@sanity/icons"
+import {CogIcon, DocumentIcon, DocumentTextIcon} from "@sanity/icons"
 import type {StructureResolver} from "sanity/structure"
 import {sitePages} from "./sitePages"
 
@@ -14,8 +14,4 @@ export const structure: StructureResolver = (S) => S.list().id("website-content-
   S.listItem().id("global-settings").title("Global Settings").icon(CogIcon).child(S.document().id("global-settings-editor").schemaType("siteSettings").documentId("site-settings").title("Global Settings")),
   S.listItem().id("website-pages").title("Website Pages").icon(DocumentIcon).child(S.list().id("website-pages-list").title("Website Pages").items(sitePages.map((page) => pageItem(S, page)))),
   S.listItem().id("reviews").title("Reviews").icon(DocumentTextIcon).child(S.documentTypeList("review").id("reviews-list").title("Reviews")),
-  S.listItem().id("news-events").title("News & Events").icon(CalendarIcon).child(S.list().id("news-events-list").title("News & Events").items([
-    S.documentTypeListItem("newsItem").id("news-list").title("News"),
-    S.documentTypeListItem("highlightedEvent").id("highlighted-events-list").title("Highlighted Events"),
-  ])),
 ])
