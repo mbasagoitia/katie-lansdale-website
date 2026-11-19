@@ -14,8 +14,8 @@ function eventExpiry(event: HighlightedEvent): Date {
   return listingExpiry(event, event.endDate || eventStartDate(event))
 }
 
-function listingExpiry(item: {doNotExpire?: boolean; expirationDate?: string}, defaultDate: string): Date {
-  if (item.doNotExpire) return new Date("9999-12-31T23:59:59.999Z")
+function listingExpiry(item: {expirationMode?: "expire" | "never"; expirationDate?: string}, defaultDate: string): Date {
+  if (item.expirationMode === "never") return new Date("9999-12-31T23:59:59.999Z")
   return tenPmEastern(item.expirationDate || defaultDate)
 }
 

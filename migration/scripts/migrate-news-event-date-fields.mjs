@@ -21,21 +21,21 @@ const transaction = client.transaction()
 
 for (const page of pages) {
   transaction.patch(page._id, (patch) => patch.set({
-    newsItems: (page.newsItems || []).map((item) => hasNewsDate(item) ? toNewsItem(item) : item),
-    highlightedEvents: (page.highlightedEvents || []).map((item) => hasEventDate(item) ? toEventItem(item) : item),
+    newsItems: (page.newsItems || []).map((item) => hasNewsDate(item) ? toNewsItem(item) : normalizeExpiration(item)),
+    highlightedEvents: (page.highlightedEvents || []).map((item) => hasEventDate(item) ? toEventItem(item) : normalizeExpiration(item)),
   }))
 }
 
 for (const item of newsDocuments) {
   if (!hasNewsDate(item)) continue
   const next = toNewsItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt", "expirationMode"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt", "doNotExpire"]))
 }
 
 for (const item of eventDocuments) {
   if (!hasEventDate(item)) continue
   const next = toEventItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt", "expirationMode"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt", "doNotExpire"]))
 }
 
 await transaction.commit()
@@ -44,7 +44,7 @@ console.log(`Updated ${pages.length} News & Events page documents, ${newsDocumen
 function toNewsItem(item) {
   const fallback = dateAndTime(item.publishedAt)
   const date = item.date || fallback.date
-  const doNotExpire = item.doNotExpire || item.expirationMode === "never"
+  const expirationMode = item.doNotExpire || item.expirationMode === "never" ? "never" : "expire"
   return compact({
     _key: item._key,
     _type: item._type,
@@ -54,14 +54,14 @@ function toNewsItem(item) {
     description: item.description,
     image: item.image,
     linkUrl: item.linkUrl,
-    doNotExpire: doNotExpire || undefined,
-    expirationDate: doNotExpire ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || date,
+    expirationMode,
+    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || date,
   })
 }
 
 function toEventItem(item) {
   const startDate = item.startDate || dateAndTime(item.startsAt).date
-  const doNotExpire = item.doNotExpire || item.expirationMode === "never"
+  const expirationMode = item.doNotExpire || item.expirationMode === "never" ? "never" : "expire"
   return compact({
     _key: item._key,
     _type: item._type,
@@ -74,8 +74,8 @@ function toEventItem(item) {
     location: item.location,
     image: item.image,
     linkUrl: item.linkUrl,
-    doNotExpire: doNotExpire || undefined,
-    expirationDate: doNotExpire ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || item.endDate || startDate,
+    expirationMode,
+    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || item.endDate || startDate,
   })
 }
 
@@ -97,6 +97,11 @@ function hasNewsDate(item) {
 
 function hasEventDate(item) {
   return Boolean(item?.startDate || item?.startsAt)
+}
+
+function normalizeExpiration(item) {
+  const {doNotExpire, expirationMode, ...fields} = item
+  return {...fields, expirationMode: doNotExpire || expirationMode === "never" ? "never" : "expire"}
 }
 
 function compact(value) {

@@ -5,14 +5,14 @@ type Listing = {
   date?: string
   startDate?: string
   endDate?: string
-  doNotExpire?: boolean
+  expirationMode?: "expire" | "never"
 }
 
 /** Keeps the default expiration date aligned with the listing date on new items. */
 export default function ExpirationDateInput(props: StringInputProps) {
   const {onChange, path, renderDefault, value} = props
   const parent = useFormValue(path.slice(0, -1)) as Listing | undefined
-  const usesDefaultDate = !parent?.doNotExpire
+  const usesDefaultDate = parent?.expirationMode !== "never"
   const defaultDate = parent?.endDate || parent?.startDate || parent?.date
 
   useEffect(() => {

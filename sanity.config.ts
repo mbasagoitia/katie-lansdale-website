@@ -17,6 +17,7 @@ import { structure } from "./sanity/structure";
 import { addMusicTool } from "./sanity/tools/addMusicTool";
 import {DeleteMusicDocumentAction} from "./sanity/documentActions";
 import RequiredField from "./sanity/components/RequiredField";
+import QuietRequiredInput from "./sanity/components/QuietRequiredInput";
 
 export default defineConfig({
   basePath: "/studio",
@@ -29,6 +30,7 @@ export default defineConfig({
   form: {
     components: {
       field: RequiredField,
+      input: QuietRequiredInput,
     },
   },
 

@@ -8,7 +8,7 @@ export type NewsItem = {
   description: string
   image?: SanityImage
   linkUrl?: string
-  doNotExpire?: boolean
+  expirationMode?: "expire" | "never"
   expirationDate?: string
 }
 
@@ -23,6 +23,6 @@ export type HighlightedEvent = {
   location?: string
   image?: SanityImage
   linkUrl?: string
-  doNotExpire?: boolean
+  expirationMode?: "expire" | "never"
   expirationDate?: string
 }
