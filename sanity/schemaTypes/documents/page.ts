@@ -2,7 +2,7 @@ import {DocumentIcon} from "@sanity/icons";
 import {defineArrayMember, defineField, defineType} from "sanity";
 import {getSitePageById} from "../../sitePages";
 import SelectedReviewsInput from "../../components/SelectedReviewsInput";
-import ExpirationDateInput from "../../components/ExpirationDateInput";
+import ExpirationDateTimeInput from "../../components/ExpirationDateTimeInput";
 
 const isNotLionsGateTrioPage = (documentId?: string) => documentId !== "page-lions-gate-trio";
 const isNotAboutPage = (documentId?: string) => documentId !== "page-about";
@@ -409,15 +409,15 @@ export default defineType({
             initialValue: "expire",
             options: {layout: "radio", list: [
               {title: "Expire", value: "expire"},
-              {title: "Do not automatically remove", value: "never"},
+              {title: "Do not expire", value: "never"},
             ]},
           }),
           defineField({
-            name: "expirationDate",
-            title: "Expiration date",
-            type: "date",
+            name: "expirationAt",
+            title: "Expiration date and time",
+            type: "datetime",
             hidden: ({parent}) => parent?.expirationMode === "never",
-            components: {input: ExpirationDateInput},
+            components: {input: ExpirationDateTimeInput},
           }),
         ],
         preview: {select: {title: "title", subtitle: "date", media: "image"}},
@@ -456,15 +456,15 @@ export default defineType({
             initialValue: "expire",
             options: {layout: "radio", list: [
               {title: "Expire", value: "expire"},
-              {title: "Do not automatically remove", value: "never"},
+              {title: "Do not expire", value: "never"},
             ]},
           }),
           defineField({
-            name: "expirationDate",
-            title: "Expiration date",
-            type: "date",
+            name: "expirationAt",
+            title: "Expiration date and time",
+            type: "datetime",
             hidden: ({parent}) => parent?.expirationMode === "never",
-            components: {input: ExpirationDateInput},
+            components: {input: ExpirationDateTimeInput},
           }),
         ],
         preview: {select: {title: "title", subtitle: "startDate", media: "image"}},

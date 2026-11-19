@@ -13,8 +13,8 @@ const rawClient = client.withConfig({perspective: "raw"})
 
 const [pages, newsDocuments, eventDocuments] = await Promise.all([
   rawClient.fetch(`*[_id in ["page-news-and-events", "drafts.page-news-and-events"]]{_id, newsItems, highlightedEvents}`),
-  rawClient.fetch(`*[_type == "newsItem"]{_id, title, publishedAt, date, time, description, image, linkUrl, doNotExpire, expirationMode, expirationDate, expiresAt}`),
-  rawClient.fetch(`*[_type == "highlightedEvent"]{_id, title, startsAt, startDate, startTime, endDate, dateDisplay, description, location, image, linkUrl, doNotExpire, expirationMode, expirationDate, expiresAt}`),
+  rawClient.fetch(`*[_type == "newsItem"]{_id, title, publishedAt, date, time, description, image, linkUrl, doNotExpire, expirationMode, expirationAt, expirationDate, expiresAt}`),
+  rawClient.fetch(`*[_type == "highlightedEvent"]{_id, title, startsAt, startDate, startTime, endDate, dateDisplay, description, location, image, linkUrl, doNotExpire, expirationMode, expirationAt, expirationDate, expiresAt}`),
 ])
 
 const transaction = client.transaction()
@@ -29,13 +29,13 @@ for (const page of pages) {
 for (const item of newsDocuments) {
   if (!hasNewsDate(item)) continue
   const next = toNewsItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt", "doNotExpire"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt", "expirationDate", "doNotExpire"]))
 }
 
 for (const item of eventDocuments) {
   if (!hasEventDate(item)) continue
   const next = toEventItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt", "doNotExpire"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt", "expirationDate", "doNotExpire"]))
 }
 
 await transaction.commit()
@@ -55,7 +55,7 @@ function toNewsItem(item) {
     image: item.image,
     linkUrl: item.linkUrl,
     expirationMode,
-    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || date,
+    expirationAt: expirationMode === "never" ? undefined : expirationAt(item.expirationAt || item.expiresAt || item.expirationDate, date),
   })
 }
 
@@ -75,7 +75,7 @@ function toEventItem(item) {
     image: item.image,
     linkUrl: item.linkUrl,
     expirationMode,
-    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || item.endDate || startDate,
+    expirationAt: expirationMode === "never" ? undefined : expirationAt(item.expirationAt || item.expiresAt || item.expirationDate, item.endDate || startDate),
   })
 }
 
@@ -100,8 +100,25 @@ function hasEventDate(item) {
 }
 
 function normalizeExpiration(item) {
-  const {doNotExpire, expirationMode, ...fields} = item
-  return {...fields, expirationMode: doNotExpire || expirationMode === "never" ? "never" : "expire"}
+  const {doNotExpire, expirationMode, expirationDate, ...fields} = item
+  const nextMode = doNotExpire || expirationMode === "never" ? "never" : "expire"
+  return {...fields, expirationMode: nextMode, ...(fields.expirationAt || !expirationDate ? {} : {expirationAt: expirationAt(expirationDate)})}
+}
+
+function expirationAt(value, fallbackDate) {
+  if (value?.includes("T")) return value
+  return tenPmEasternIso(value || fallbackDate)
+}
+
+function tenPmEasternIso(date) {
+  const [year, month, day] = date.split("-").map(Number)
+  const dateAtTenPmUtc = new Date(Date.UTC(year, month - 1, day, 22))
+  const zoneName = new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", timeZoneName: "shortOffset"})
+    .formatToParts(dateAtTenPmUtc)
+    .find((part) => part.type === "timeZoneName")?.value || "GMT-05:00"
+  const match = /^GMT([+-])(\d{1,2})(?::(\d{2}))?$/.exec(zoneName)
+  if (!match) return `${date}T22:00:00-05:00`
+  return `${date}T22:00:00${match[1]}${match[2].padStart(2, "0")}:${match[3] || "00"}`
 }
 
 function compact(value) {

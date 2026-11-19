@@ -1,4 +1,5 @@
 import {client} from "@/sanity/lib/client"
+import {tenPmEastern} from "@/sanity/lib/easternTime"
 import {newsAndEventsQuery} from "@/sanity/queries/newsAndEvents"
 import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 
@@ -14,23 +15,11 @@ function eventExpiry(event: HighlightedEvent): Date {
   return listingExpiry(event, event.endDate || eventStartDate(event))
 }
 
-function listingExpiry(item: {expirationMode?: "expire" | "never"; expirationDate?: string}, defaultDate: string): Date {
+function listingExpiry(item: {expirationMode?: "expire" | "never"; expirationAt?: string}, defaultDate: string): Date {
   if (item.expirationMode === "never") return new Date("9999-12-31T23:59:59.999Z")
-  return tenPmEastern(item.expirationDate || defaultDate)
+  return item.expirationAt ? new Date(item.expirationAt) : tenPmEastern(defaultDate)
 }
 
 function eventStartDate(event: HighlightedEvent): string {
   return event.startDate
-}
-
-function tenPmEastern(date: string): Date {
-  const [year, month, day] = date.split("-").map(Number)
-  const dateAtTenPmUtc = new Date(Date.UTC(year, month - 1, day, 22))
-  const timeZoneName = new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", timeZoneName: "shortOffset"})
-    .formatToParts(dateAtTenPmUtc)
-    .find((part) => part.type === "timeZoneName")?.value || "GMT-05:00"
-  const match = /^GMT([+-])(\d{1,2})(?::(\d{2}))?$/.exec(timeZoneName)
-  if (!match) return dateAtTenPmUtc
-  const offsetMinutes = (Number(match[2]) * 60 + Number(match[3] || 0)) * (match[1] === "+" ? 1 : -1)
-  return new Date(dateAtTenPmUtc.getTime() - offsetMinutes * 60_000)
 }

@@ -14,9 +14,9 @@ const client = createClient({
 const imageAsset = await getLionsGateImage()
 const calendarUrl = "https://lionsgatetrio.org/calendar"
 const events = [
-  {title: "Soundwaves Concert: Lions Gate Trio", startDate: "2027-02-20", startTime: "2 PM", expirationMode: "expire", expirationDate: "2027-02-20", description: "The library’s trio-in-residence presents an exquisite pairing of a beloved masterpiece and a forgotten treasure, followed by light refreshments and time with the musicians.", location: "Memorial Room, Fairfield Public Library · Fairfield, CT"},
-  {title: "Guilford Free Library Performance", startDate: "2027-02-21", startTime: "1 PM", expirationMode: "expire", expirationDate: "2027-02-21", description: "Katie joins Darrett Adkins and Florence Millet for an afternoon performance with the Lions Gate Trio.", location: "Guilford Free Library · Guilford, CT"},
-  {title: "Hartt Spring Residency", startDate: "2027-02-21", startTime: "6 PM", expirationMode: "expire", expirationDate: "2027-02-21", description: "An evening with the Lions Gate Trio at The Hartt School. Program details will be announced soon.", location: "Lincoln Theater, University of Hartford · West Hartford, CT"},
+  {title: "Soundwaves Concert: Lions Gate Trio", startDate: "2027-02-20", startTime: "2 PM", expirationMode: "expire", expirationAt: "2027-02-20T22:00:00-05:00", description: "The library’s trio-in-residence presents an exquisite pairing of a beloved masterpiece and a forgotten treasure, followed by light refreshments and time with the musicians.", location: "Memorial Room, Fairfield Public Library · Fairfield, CT"},
+  {title: "Guilford Free Library Performance", startDate: "2027-02-21", startTime: "1 PM", expirationMode: "expire", expirationAt: "2027-02-21T22:00:00-05:00", description: "Katie joins Darrett Adkins and Florence Millet for an afternoon performance with the Lions Gate Trio.", location: "Guilford Free Library · Guilford, CT"},
+  {title: "Hartt Spring Residency", startDate: "2027-02-21", startTime: "6 PM", expirationMode: "expire", expirationAt: "2027-02-21T22:00:00-05:00", description: "An evening with the Lions Gate Trio at The Hartt School. Program details will be announced soon.", location: "Lincoln Theater, University of Hartford · West Hartford, CT"},
 ]
 
 for (const event of events) {
