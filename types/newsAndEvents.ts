@@ -3,11 +3,13 @@ import type {SanityImage} from "@/types/page"
 export type NewsItem = {
   _key: string
   title: string
-  publishedAt: string
+  date: string
+  time?: string
   description: string
   image?: SanityImage
   linkUrl?: string
-  expiresAt?: string
+  expirationMode?: "itemDate" | "custom" | "never"
+  expirationDate?: string
 }
 
 export type HighlightedEvent = {
@@ -22,5 +24,5 @@ export type HighlightedEvent = {
   image?: SanityImage
   linkUrl?: string
   expirationMode?: "eventEnd" | "custom" | "never"
-  expiresAt?: string
+  expirationDate?: string
 }

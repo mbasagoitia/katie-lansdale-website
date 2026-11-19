@@ -5,15 +5,18 @@ import type {HighlightedEvent, NewsItem} from "@/types/newsAndEvents"
 export async function getNewsAndEvents(now = new Date()): Promise<{news: NewsItem[]; events: HighlightedEvent[]}> {
   const page = await client.withConfig({useCdn: false}).fetch<{newsItems?: NewsItem[]; highlightedEvents?: HighlightedEvent[]} | null>(newsAndEventsQuery)
   return {
-    news: (page?.newsItems || []).filter((item) => !item.expiresAt || new Date(item.expiresAt) > now),
+    news: (page?.newsItems || []).filter((item) => listingExpiry(item, item.date) > now),
     events: (page?.highlightedEvents || []).filter((item) => eventExpiry(item) > now).sort((a, b) => eventStartDate(a).localeCompare(eventStartDate(b))),
   }
 }
 
 function eventExpiry(event: HighlightedEvent): Date {
-  if (event.expirationMode === "never") return new Date("9999-12-31T23:59:59.999Z")
-  if (event.expiresAt && event.expirationMode !== "eventEnd") return new Date(event.expiresAt)
-  return tenPmEastern(event.endDate || eventStartDate(event))
+  return listingExpiry(event, event.endDate || eventStartDate(event))
+}
+
+function listingExpiry(item: {expirationMode?: "itemDate" | "eventEnd" | "custom" | "never"; expirationDate?: string}, defaultDate: string): Date {
+  if (item.expirationMode === "never") return new Date("9999-12-31T23:59:59.999Z")
+  return tenPmEastern(item.expirationDate || defaultDate)
 }
 
 function eventStartDate(event: HighlightedEvent): string {

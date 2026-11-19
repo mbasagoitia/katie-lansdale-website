@@ -1,5 +1,6 @@
 import {CalendarIcon} from "@sanity/icons"
 import {defineField, defineType} from "sanity"
+import ExpirationDateInput from "../../components/ExpirationDateInput"
 
 export default defineType({
   name: "highlightedEvent",
@@ -10,8 +11,7 @@ export default defineType({
     defineField({name: "title", title: "Event title", type: "string", validation: (Rule) => Rule.required()}),
     defineField({
       name: "startDate",
-      title: "Start date",
-      description: "Required to organize this listing under a month. For an approximate date, choose the best estimate and use Display date text to explain.",
+      title: "Date/Start date",
       type: "date",
       validation: (Rule) => Rule.required(),
     }),
@@ -23,8 +23,7 @@ export default defineType({
     }),
     defineField({
       name: "endDate",
-      title: "Event end date",
-      description: "Optional. Keep multi-day events to one month or less. By default, the listing automatically expires at 10 PM Eastern on this date; if no end date is supplied, it expires at 10 PM Eastern on the start date.",
+      title: "End date (optional)",
       type: "date",
       validation: (Rule) => Rule.min(Rule.valueOfField("startDate")).custom((value, context) => {
         const startDate = (context.parent as {startDate?: string} | undefined)?.startDate
@@ -46,37 +45,26 @@ export default defineType({
     defineField({
       name: "expirationMode",
       title: "Expiration",
+      description: "Choose a date and time to unlist this event from your website. The default expiration is 10pm on the event end date, if included.",
       type: "string",
       initialValue: "eventEnd",
       options: {
         layout: "radio",
         list: [
-          {title: "Default: 10 PM Eastern on the end date (or start date)", value: "eventEnd"},
-          {title: "At a specific date and time", value: "custom"},
-          {title: "Never automatically remove", value: "never"},
+          {title: "At 10 PM on the event date", value: "eventEnd"},
+          {title: "At 10 PM on another date", value: "custom"},
+          {title: "Do not automatically remove", value: "never"},
         ],
       },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "expiresAt",
-      title: "Keep on website through",
-      description: "Required only when “At a specific date and time” is selected.",
-      type: "datetime",
-      hidden: ({parent}) => parent?.expirationMode !== "custom",
-      validation: (Rule) => Rule.custom((value, context) => {
-        const parent = context.parent as {expirationMode?: string} | undefined
-        return parent?.expirationMode !== "custom" || value ? true : "Choose a date and time, or select a different automatic-expiration option."
-      }),
-    }),
-    defineField({
-      name: "startsAt",
-      title: "Event date and time (legacy)",
-      description: "This field is retained for older listings. Use Start date and Start time for new listings.",
-      type: "datetime",
-      readOnly: true,
-      hidden: ({value}) => value === undefined,
-      deprecated: {reason: "Use Start date and optional Start time instead."},
+      name: "expirationDate",
+      title: "Expiration date",
+      type: "date",
+      hidden: ({parent}) => parent?.expirationMode === "never",
+      components: {input: ExpirationDateInput},
+      validation: (Rule) => Rule.custom((value, context) => (context.parent as {expirationMode?: string} | undefined)?.expirationMode === "never" || value ? true : "Choose an expiration date, or select Do not automatically remove."),
     }),
   ],
   preview: {select: {title: "title", subtitle: "startDate", media: "image"}},

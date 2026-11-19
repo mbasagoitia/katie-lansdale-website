@@ -17,7 +17,7 @@ export default async function NewsAndEventsPage() {
   const {news, events} = await getNewsAndEvents()
   const eventMonths = groupEventsByMonth(events)
   const nextEvent = events.slice().sort((a, b) => eventStartDate(a).localeCompare(eventStartDate(b)))[0]
-  const topMonth = nextEvent ? monthLabel(eventStartDate(nextEvent)) : (news[0] ? monthLabel(news[0].publishedAt) : monthLabel(new Date().toISOString()))
+  const topMonth = nextEvent ? monthLabel(eventStartDate(nextEvent)) : (news[0] ? monthLabel(news[0].date) : monthLabel(new Date().toISOString()))
 
   return <main className={styles.page} data-quiet-background>
     <header className={styles.header}><h1>{topMonth}</h1></header>
@@ -43,7 +43,7 @@ function NewsCard({item}: {item: NewsItem}) {
   return <article className={styles.item}>
     <ItemImage image={item.image} />
     <div className={styles.details}>
-      <p className={styles.date}>{formatDateTime(item.publishedAt)}</p>
+      <p className={styles.date}>{formatNewsDate(item)}</p>
       <h2><LinkedTitle title={item.title} href={item.linkUrl} /></h2>
       <p className={styles.description}>{item.description}</p>
     </div>
@@ -91,8 +91,9 @@ function monthLabel(value: string) {
   return new Intl.DateTimeFormat("en-US", {timeZone: "UTC", month: "long", year: "numeric"}).format(calendarDate(value))
 }
 
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"}).format(new Date(value)).replace(", ", " · ")
+function formatNewsDate(item: NewsItem) {
+  const date = new Intl.DateTimeFormat("en-US", {timeZone: "UTC", month: "long", day: "numeric", year: "numeric"}).format(calendarDate(item.date))
+  return item.time ? `${date} · ${item.time}` : date
 }
 
 function eventStartDate(event: HighlightedEvent) {
