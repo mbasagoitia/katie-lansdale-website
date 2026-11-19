@@ -14,19 +14,8 @@ export default defineType({
     defineField({name: "description", title: "Description", type: "text", rows: 5, validation: (Rule) => Rule.required()}),
     defineField({name: "image", title: "Photo", type: "image", options: {hotspot: true}, fields: [defineField({name: "alt", title: "Alternative text", type: "string"})]}),
     defineField({name: "linkUrl", title: "Link", description: "Optional full URL. When set, the title links there.", type: "url", validation: (Rule) => Rule.uri({scheme: ["http", "https"]})}),
-    defineField({
-      name: "expirationMode",
-      title: "Expiration",
-      description: "Choose a date and time to unlist this news item from your website. The default expiration is 10pm on the news date.",
-      type: "string",
-      initialValue: "itemDate",
-      options: {layout: "radio", list: [
-        {title: "At 10 PM on the news date", value: "itemDate"},
-        {title: "At 10 PM on another date", value: "custom"},
-        {title: "Do not automatically remove", value: "never"},
-      ]},
-    }),
-    defineField({name: "expirationDate", title: "Expiration date", type: "date", hidden: ({parent}) => parent?.expirationMode === "never", components: {input: ExpirationDateInput}}),
+    defineField({name: "expirationDate", title: "Expiration", description: "Choose a date and time to unlist this news item from your website. The default expiration is 10pm on the news date.", type: "date", hidden: ({parent}) => parent?.doNotExpire, components: {input: ExpirationDateInput}}),
+    defineField({name: "doNotExpire", title: "Do not automatically remove", type: "boolean", initialValue: false}),
   ],
   preview: {select: {title: "title", subtitle: "date", media: "image"}},
 })

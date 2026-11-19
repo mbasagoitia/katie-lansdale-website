@@ -13,8 +13,8 @@ const rawClient = client.withConfig({perspective: "raw"})
 
 const [pages, newsDocuments, eventDocuments] = await Promise.all([
   rawClient.fetch(`*[_id in ["page-news-and-events", "drafts.page-news-and-events"]]{_id, newsItems, highlightedEvents}`),
-  rawClient.fetch(`*[_type == "newsItem"]{_id, title, publishedAt, date, time, description, image, linkUrl, expirationMode, expirationDate, expiresAt}`),
-  rawClient.fetch(`*[_type == "highlightedEvent"]{_id, title, startsAt, startDate, startTime, endDate, dateDisplay, description, location, image, linkUrl, expirationMode, expirationDate, expiresAt}`),
+  rawClient.fetch(`*[_type == "newsItem"]{_id, title, publishedAt, date, time, description, image, linkUrl, doNotExpire, expirationMode, expirationDate, expiresAt}`),
+  rawClient.fetch(`*[_type == "highlightedEvent"]{_id, title, startsAt, startDate, startTime, endDate, dateDisplay, description, location, image, linkUrl, doNotExpire, expirationMode, expirationDate, expiresAt}`),
 ])
 
 const transaction = client.transaction()
@@ -29,13 +29,13 @@ for (const page of pages) {
 for (const item of newsDocuments) {
   if (!hasNewsDate(item)) continue
   const next = toNewsItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["publishedAt", "expiresAt", "expirationMode"]))
 }
 
 for (const item of eventDocuments) {
   if (!hasEventDate(item)) continue
   const next = toEventItem(item)
-  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt"]))
+  transaction.patch(item._id, (patch) => patch.set(documentFields(next)).unset(["startsAt", "expiresAt", "expirationMode"]))
 }
 
 await transaction.commit()
@@ -44,7 +44,7 @@ console.log(`Updated ${pages.length} News & Events page documents, ${newsDocumen
 function toNewsItem(item) {
   const fallback = dateAndTime(item.publishedAt)
   const date = item.date || fallback.date
-  const expirationMode = item.expirationMode === "never" ? "never" : item.expiresAt ? "custom" : item.expirationMode === "custom" ? "custom" : "itemDate"
+  const doNotExpire = item.doNotExpire || item.expirationMode === "never"
   return compact({
     _key: item._key,
     _type: item._type,
@@ -54,14 +54,14 @@ function toNewsItem(item) {
     description: item.description,
     image: item.image,
     linkUrl: item.linkUrl,
-    expirationMode,
-    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || date,
+    doNotExpire: doNotExpire || undefined,
+    expirationDate: doNotExpire ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || date,
   })
 }
 
 function toEventItem(item) {
   const startDate = item.startDate || dateAndTime(item.startsAt).date
-  const expirationMode = item.expirationMode === "never" ? "never" : item.expiresAt ? "custom" : item.expirationMode === "custom" ? "custom" : "eventEnd"
+  const doNotExpire = item.doNotExpire || item.expirationMode === "never"
   return compact({
     _key: item._key,
     _type: item._type,
@@ -74,8 +74,8 @@ function toEventItem(item) {
     location: item.location,
     image: item.image,
     linkUrl: item.linkUrl,
-    expirationMode,
-    expirationDate: expirationMode === "never" ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || item.endDate || startDate,
+    doNotExpire: doNotExpire || undefined,
+    expirationDate: doNotExpire ? undefined : item.expirationDate || dateAndTime(item.expiresAt).date || item.endDate || startDate,
   })
 }
 

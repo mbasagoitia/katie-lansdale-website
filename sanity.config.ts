@@ -16,6 +16,7 @@ import { structure } from "./sanity/structure";
 
 import { addMusicTool } from "./sanity/tools/addMusicTool";
 import {DeleteMusicDocumentAction} from "./sanity/documentActions";
+import RequiredField from "./sanity/components/RequiredField";
 
 export default defineConfig({
   basePath: "/studio",
@@ -24,6 +25,12 @@ export default defineConfig({
   dataset,
 
   schema,
+
+  form: {
+    components: {
+      field: RequiredField,
+    },
+  },
 
   document: {
     actions: (previousActions, context) => ["composer", "work", "recording", "album", "product"].includes(context.schemaType)
