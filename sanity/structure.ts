@@ -1,4 +1,4 @@
-import {CogIcon, DocumentIcon, DocumentTextIcon} from "@sanity/icons"
+import {CogIcon, DocumentIcon} from "@sanity/icons"
 import type {StructureResolver} from "sanity/structure"
 import {sitePages} from "./sitePages"
 
@@ -13,5 +13,4 @@ function pageItem(S: Parameters<StructureResolver>[0], page: (typeof sitePages)[
 export const structure: StructureResolver = (S) => S.list().id("website-content-root").title("Website Content").items([
   S.listItem().id("global-settings").title("Global Settings").icon(CogIcon).child(S.document().id("global-settings-editor").schemaType("siteSettings").documentId("site-settings").title("Global Settings")),
   S.listItem().id("website-pages").title("Website Pages").icon(DocumentIcon).child(S.list().id("website-pages-list").title("Website Pages").items(sitePages.map((page) => pageItem(S, page)))),
-  S.listItem().id("reviews").title("Reviews").icon(DocumentTextIcon).child(S.documentTypeList("review").id("reviews-list").title("Reviews")),
 ])

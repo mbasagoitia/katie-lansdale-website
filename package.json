@@ -17,6 +17,7 @@
     "migrate:lions-gate-recording-assets": "node --env-file=.env.local migration/scripts/migrate-lions-gate-recording-assets.mjs",
     "migrate:news-events-order": "node --env-file=.env.local migration/scripts/seed-news-events-order.mjs",
     "migrate:inline-news-events": "node --env-file=.env.local migration/scripts/migrate-inline-news-events.mjs",
+    "migrate:inline-reviews": "node --env-file=.env.local migration/scripts/migrate-inline-reviews.mjs",
     "migrate:news-event-date-fields": "node --env-file=.env.local migration/scripts/migrate-news-event-date-fields.mjs",
     "migrate:project-images-and-contact": "node --env-file=.env.local migration/scripts/migrate-project-images-and-contact.mjs",
     "migrate:page-excerpts": "node --env-file=.env.local migration/scripts/apply-page-excerpts.mjs",

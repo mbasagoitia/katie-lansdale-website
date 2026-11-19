@@ -322,7 +322,7 @@ export default defineType({
       description: "Choose three reviews to feature on this page.",
       type: "array",
       hidden: ({document}) => !isPhotosPressKitPage(document?._id?.replace(/^drafts\./, "")),
-      of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
+      of: [defineArrayMember({type: "string"})],
       components: {input: SelectedReviewsInput},
       validation: (Rule) => Rule.custom((value, context) => {
         const pageId = context.document?._id?.replace(/^drafts\./, "")
@@ -335,11 +335,7 @@ export default defineType({
           return "Choose exactly three reviews."
         }
 
-        const reviewIds = value
-          .map((review) => typeof review === "object" && review ? (review as {_ref?: string})._ref : undefined)
-          .filter((id): id is string => Boolean(id))
-
-        return new Set(reviewIds).size === reviewIds.length || "Choose three different reviews."
+        return new Set(value).size === value.length || "Choose three different reviews."
       }),
     }),
 
@@ -382,8 +378,14 @@ export default defineType({
       description: "Add, remove, or click and drag reviews to the list.",
       type: "array",
       hidden: ({document}) => document?._id?.replace(/^drafts\./, "") !== "page-reviews",
-      of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
-      validation: (Rule) => Rule.unique(),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "quote", title: "Quote", type: "text", rows: 5, validation: (Rule) => Rule.required()}),
+          defineField({name: "attribution", title: "Attribution", type: "string", validation: (Rule) => Rule.required()}),
+        ],
+        preview: {select: {title: "quote", subtitle: "attribution"}},
+      })],
     }),
 
     defineField({

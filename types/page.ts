@@ -111,7 +111,7 @@ export type PressPhoto = {
 }
 
 export type CmsReview = {
-  _id: string
+  _key: string
   quote: string
   attribution: string
 }

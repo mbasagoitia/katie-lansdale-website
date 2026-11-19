@@ -56,7 +56,7 @@ export default async function PhotosPressKitPage() {
         <h2 id="selected-reviews-heading">Selected reviews</h2>
       </div>
       <div className={styles.reviewGrid}>
-        {selectedReviews.map((review) => <figure key={"_id" in review ? review._id : review.source}>
+        {selectedReviews.map((review) => <figure key={"_key" in review ? review._key : review.source}>
           <blockquote>“{review.quote}”</blockquote>
           <figcaption>— {"attribution" in review ? review.attribution : review.source}</figcaption>
         </figure>)}
