@@ -633,16 +633,9 @@ export default defineType({
         ],
         preview: {select: {title: "title", subtitle: "composer", media: "coverArt"}},
       })],
-      validation: (Rule) => Rule.custom((value, context) => {
-        const pageId = context.document?._id?.replace(/^drafts\./, "")
-        if (!isNotLionsGateTrioPage(pageId)) {
-          return Array.isArray(value) && value.length === 3
-            ? true
-            : "Choose exactly three selected recordings."
-        }
-
-        return true
-      }),
+      // Sanity uses this maximum to disable its Add item controls once all
+      // three featured recording slots are filled.
+      validation: (Rule) => Rule.max(3),
     }),
 
     defineField({

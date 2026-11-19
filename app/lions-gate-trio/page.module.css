@@ -88,8 +88,8 @@
 .recordings, .events { margin-bottom: 125px; }
 .sectionHeading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 38px; }
 .sectionHeading a, .highlight a, .cta a { color: #7b4220; font-size: .92rem; font-weight: 700; text-decoration: underline; text-decoration-color: #a86c34; text-underline-offset: 6px; }
-.recordingGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-.recordingCard { display: block; color: inherit; text-decoration: none; }
+.recordingGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; }
+.recordingCard { flex: 0 1 calc((100% - 56px) / 3); min-width: 0; display: block; color: inherit; text-decoration: none; }
 .recordingCard > a { display: block; color: inherit; text-decoration: none; }
 .recordingCard:hover h3, .event:hover h3 { color: #9d5e28; }
 .albumArt { position: relative; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; background: linear-gradient(145deg, #b77944, #55341d); color: #fff8ef; font-family: var(--font-cormorant), serif; font-size: 3rem; letter-spacing: .08em; }
@@ -117,7 +117,8 @@
   .page { margin-top: 0; }
   .hero { min-height: 490px; }
   .heroContent { padding: 45px 28px; }
-  .members, .recordingGrid { grid-template-columns: 1fr; }
+  .members { grid-template-columns: 1fr; }
+  .recordingCard { flex-basis: 100%; }
   .members > div { border-right: 0; border-bottom: 1px solid #decab6; }
   .members > div:last-child { border-bottom: 0; }
   .about, .highlight { grid-template-columns: 1fr; gap: 26px; }
