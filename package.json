@@ -9,6 +9,7 @@
     "lint": "eslint",
     "migrate:site-pages": "node --env-file=.env.local migration/scripts/seed-site-pages.mjs",
     "migrate:home-gallery": "node --env-file=.env.local migration/scripts/seed-site-pages.mjs --refresh-home-gallery",
+    "migrate:about-biography": "node --env-file=.env.local migration/scripts/migrate-about-biography.mjs",
     "validate:site-pages": "node --env-file=.env.local migration/scripts/validate-site-pages.mjs",
     "migrate:cms-defaults": "node --env-file=.env.local migration/scripts/apply-cms-defaults.mjs",
     "migrate:page-editor-controls": "node --env-file=.env.local migration/scripts/update-page-editor-controls.mjs",

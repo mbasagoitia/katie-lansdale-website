@@ -14,6 +14,7 @@ export type SitePageSeed = {
   seoDescription?: string
   content?: unknown[]
   aboutIntroduction?: unknown[]
+  aboutBiographySections?: Array<{_key: string; heading: string; content: string}>
   heroImage?: LocalImageSeed
   gallery?: LocalImageSeed[]
   quotes?: Array<{_key: string; quote: string; attribution?: string}>
@@ -62,7 +63,7 @@ export const sitePageSeeds: SitePageSeed[] = [
     seoTitle: "About Katie Lansdale | Violinist",
     seoDescription: "Learn about violinist Katie Lansdale’s work as a soloist, chamber musician, educator, and artistic leader.",
     aboutIntroduction: aboutPageSeed.introduction,
-    content: aboutPageSeed.content,
+    aboutBiographySections: aboutPageSeed.biographySections,
     heroImage: {sourcePath: "public/images/headshots/headshot-3.jpg", alt: "Katie Lansdale"},
   },
   {

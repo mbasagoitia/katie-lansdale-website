@@ -8,6 +8,7 @@ export const pageByIdQuery = groq`
     excerpt,
     heroImage{alt, asset->{_id, url, metadata {dimensions}}},
     aboutIntroduction,
+    aboutBiographySections[]{_key, heading, content},
     content[]{
       ...,
       _type == "image" => {..., asset->{_id, url, metadata {dimensions}}}

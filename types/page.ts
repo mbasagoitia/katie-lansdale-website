@@ -23,6 +23,12 @@ export type TrioMember = {
   instrument: string
 }
 
+export type AboutBiographySection = {
+  _key: string
+  heading: string
+  content: string
+}
+
 export type TrioNewsItem = {
   _key: string
   title: string
@@ -128,6 +134,7 @@ export type CmsPage = {
   excerpt?: string
   heroImage?: SanityImage
   aboutIntroduction?: TypedObject[]
+  aboutBiographySections?: AboutBiographySection[]
   content?: TypedObject[]
   gallery?: Array<SanityImage & {_key: string}>
   quotes?: PageQuote[]

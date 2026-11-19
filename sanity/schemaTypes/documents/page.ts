@@ -15,7 +15,6 @@ const isPublicationsPage = (documentId?: string) => documentId === "page-publica
 const isPhotosPressKitPage = (documentId?: string) => documentId === "page-photos-press-kit";
 const isNewsEventsPage = (documentId?: string) => documentId === "page-news-and-events";
 const supportsExcerpt = (documentId?: string) => ["page-contact", "page-donations", "page-lions-gate-trio", "page-photos-press-kit"].includes(documentId || "");
-const supportsContent = (documentId?: string) => documentId === "page-about";
 
 export default defineType({
   name: "page",
@@ -97,27 +96,28 @@ export default defineType({
     }),
 
     defineField({
-      name: "content",
-      title: "Content",
+      name: "aboutBiographySections",
+      title: "Biography sections",
+      description: "Add, remove, or drag sections to reorder them. Separate multiple paragraphs within a section with a blank line.",
       type: "array",
-      hidden: ({document}) => !supportsContent(document?._id?.replace(/^drafts\./, "")),
-      of: [
-        defineArrayMember({
-          type: "block",
-          styles: [
-            {title: "Normal", value: "normal"},
-            {title: "Heading 2", value: "h2"},
-            {title: "Heading 3", value: "h3"},
-          ],
-        }),
-        defineArrayMember({
-          type: "image",
-          options: {
-            hotspot: true,
-          },
-          fields: [defineField({name: "alt", title: "Alternative text", type: "string"})],
-        }),
-      ],
+      hidden: ({document}) => isNotAboutPage(document?._id?.replace(/^drafts\./, "")),
+      of: [defineArrayMember({
+        type: "object",
+        fields: [
+          defineField({name: "heading", title: "Paragraph heading", type: "string", validation: (Rule) => Rule.required()}),
+          defineField({name: "content", title: "Paragraph content", description: "Use a blank line between paragraphs.", type: "text", rows: 8, validation: (Rule) => Rule.required()}),
+        ],
+        preview: {select: {title: "heading", subtitle: "content"}},
+      })],
+    }),
+
+    defineField({
+      name: "content",
+      title: "Legacy content",
+      type: "array",
+      hidden: true,
+      deprecated: {reason: "Use Biography sections on the About page instead."},
+      of: [defineArrayMember({type: "block"})],
     }),
 
     defineField({
