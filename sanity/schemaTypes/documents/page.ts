@@ -378,7 +378,7 @@ export default defineType({
     defineField({
       name: "reviews",
       title: "Reviews in display order",
-      description: "Choose reviews from the Reviews list and drag them into the order they should appear on the Reviews page.",
+      description: "Add, remove, or click and drag reviews to the list.",
       type: "array",
       hidden: ({document}) => document?._id?.replace(/^drafts\./, "") !== "page-reviews",
       of: [defineArrayMember({type: "reference", to: [{type: "review"}]})],
