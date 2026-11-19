@@ -6,6 +6,7 @@ export default defineType({
   title: "Review",
   type: "document",
   icon: DocumentTextIcon,
+  __experimental_formPreviewTitle: false,
   fields: [
     defineField({name: "quote", title: "Quote", type: "text", rows: 5, validation: (Rule) => Rule.required()}),
     defineField({name: "attribution", title: "Attribution", description: "For example: Boston Globe, or Boston Globe — review of the Tanglewood Festival of Contemporary Music.", type: "string", validation: (Rule) => Rule.required()}),
